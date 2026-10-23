@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Campaign · SikhAid</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Manrope:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="assets/styles.css">
+<style>
+.c-layout { display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 40px; align-items: start; }
+@media (max-width: 1040px) { .c-layout { grid-template-columns: minmax(0, 1fr); } }
+.c-main { display: flex; flex-direction: column; gap: 56px; min-width: 0; }
+.c-main section { scroll-margin-top: 150px; display: flex; flex-direction: column; gap: 18px; }
+.c-main h2 { font-size: 32px; }
+.pics { display: grid; grid-template-columns: 2fr 1fr; grid-template-rows: 1fr 1fr; gap: 10px; height: clamp(280px, 40vw, 460px); }
+.pics .ph { border-radius: 18px; }
+.pics .ph:first-child { grid-row: span 2; }
+@media (max-width: 560px) { .pics { grid-template-columns: 1fr; grid-template-rows: 1fr; } .pics .ph:not(:first-child) { display: none; } .pics .ph:first-child { grid-row: auto; } }
+.progress-card { background: var(--bg-alt); border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 14px; }
+.progress-card .progress { height: 14px; }
+.figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 130px), 1fr)); gap: 12px; }
+.figs div { display: flex; flex-direction: column; }
+.figs b { font-family: var(--display); font-size: 24px; color: var(--ink); font-variant-numeric: tabular-nums; }
+.figs span { font-size: 13.5px; color: var(--muted); }
+.trust { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 14px; font-weight: 700; color: var(--green); }
+.trust span { display: inline-flex; gap: 6px; align-items: center; }
+.anchor-nav { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 71px); z-index: 10; background: var(--bg); border-bottom: 1px solid var(--line); display: flex; gap: 4px; overflow-x: auto; margin-top: -20px; }
+.anchor-nav a { flex: none; padding: 14px 14px; font-weight: 700; font-size: 14.5px; color: var(--muted); text-decoration: none; border-bottom: 3px solid transparent; }
+.anchor-nav a:hover, .anchor-nav a.on { color: var(--ink); border-color: var(--saffron); }
+.tier-list { display: grid; gap: 10px; }
+.tier { display: grid; grid-template-columns: 110px 1fr auto; gap: 16px; align-items: center; text-align: left; border: 1.5px solid var(--line); border-radius: 16px; padding: 16px 18px; background: var(--bg); cursor: pointer; font: inherit; color: var(--text); }
+.tier:hover { border-color: var(--ink); }
+.tier[aria-pressed="true"] { border-color: var(--saffron); background: var(--saffron-soft); }
+.tier b.a { font-family: var(--display); font-size: 24px; color: var(--ink); font-variant-numeric: tabular-nums; }
+.tier .pick { font-size: 13px; font-weight: 800; color: var(--indigo); white-space: nowrap; }
+.tier[aria-pressed="true"] .pick { color: var(--saffron-deep); }
+@media (max-width: 560px) { .tier { grid-template-columns: 1fr; gap: 6px; } }
+.journey { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr)); gap: 12px; counter-reset: j; }
+.journey li { background: var(--bg-alt); border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 6px; position: relative; }
+.journey li::before { counter-increment: j; content: counter(j); width: 34px; height: 34px; border-radius: 50%; background: var(--ink); color: #fff; font-weight: 800; display: grid; place-items: center; }
+.journey .when { font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--saffron-deep); }
+.split { display: flex; height: 26px; border-radius: 999px; overflow: hidden; gap: 3px; }
+.legend { display: grid; gap: 12px; }
+.legend div { display: grid; grid-template-columns: 16px 70px 1fr; gap: 12px; align-items: center; }
+.legend i { width: 16px; height: 16px; border-radius: 5px; }
+.legend b { font-family: var(--display); font-size: 22px; color: var(--ink); font-variant-numeric: tabular-nums; }
+.metric { border: 1px solid var(--line); border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 4px; }
+.metric b { font-family: var(--display); font-size: 30px; color: var(--ink); font-variant-numeric: tabular-nums; }
+.timeline { list-style: none; margin: 0; padding: 0; }
+.timeline li { display: grid; grid-template-columns: 20px 1fr; gap: 16px; }
+.timeline .rail { display: flex; flex-direction: column; align-items: center; }
+.timeline .rail i { width: 16px; height: 16px; border-radius: 50%; border: 3px solid var(--indigo); background: var(--bg); margin-top: 4px; }
+.timeline li:first-child .rail i { background: var(--saffron); border-color: var(--saffron); box-shadow: 0 0 0 5px var(--saffron-soft); }
+.timeline .rail span { flex: 1; width: 2px; background: var(--line); }
+.timeline .c { padding-bottom: 26px; display: flex; flex-direction: column; gap: 6px; }
+.wall { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr)); gap: 10px; }
+.wall div { border: 1px solid var(--line); border-radius: 14px; padding: 12px; display: flex; gap: 12px; align-items: center; }
+.give-panel { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 92px); background: var(--bg); border: 1px solid var(--line); border-radius: 24px; padding: 26px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 16px; }
+@media (max-width: 1040px) { .give-panel { position: static; } }
+.impact-line { background: var(--saffron-soft); border-radius: 14px; padding: 14px 16px; display: flex; gap: 12px; align-items: flex-start; }
+.impact-line b { color: var(--ink); }
+.tax { display: flex; justify-content: space-between; font-size: 14px; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 12px; }
+.tax b { color: var(--green); }
+.share { display: flex; flex-wrap: wrap; gap: 10px; }
+</style>
+</head>
+<body data-page="campaigns" class="has-mobile-give">
+<div id="site-header"></div>
+<main class="wrap" style="padding-block:24px 72px">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a> / <a href="campaigns.html">Campaigns</a> / <span id="crumb"></span></nav>
+
+  <div class="stack" style="gap:12px;margin:20px 0 26px">
+    <div class="row" style="gap:8px" id="badges"></div>
+    <h1 id="title" style="font-size:clamp(36px,5vw,56px)"></h1>
+    <p class="lead" id="blurb"></p>
+  </div>
+
+  <div class="c-layout">
+    <div class="c-main">
+      <div class="stack" style="gap:16px">
+        <div class="pics" id="pics"></div>
+        <div class="progress-card" id="progress"></div>
+        <div class="trust"><span>✓ Registered under 80G</span><span>✓ Instant tax receipt</span><span>✓ Audited accounts</span><span>✓ Photo updates on every delivery</span></div>
+      </div>
+
+      <nav class="anchor-nav" aria-label="On this page" id="anav">
+        <a href="#impact">What your gift does</a><a href="#journey">How it reaches them</a><a href="#story">The story</a><a href="#money">Where money goes</a><a href="#updates">Updates</a><a href="#supporters">Supporters</a><a href="#cfaq">Questions</a>
+      </nav>
+
+      <section id="impact" aria-labelledby="impact-h">
+        <span class="eyebrow">Your donation, made clear</span>
+        <h2 id="impact-h">What your donation does</h2>
+        <p style="color:var(--muted)">Pick an amount to see exactly what it pays for. Tap one to set it in the donate box.</p>
+        <div class="tier-list" id="tiers"></div>
+        <div class="panel" id="kit" style="background:var(--bg-alt);border:0"></div>
+      </section>
+
+      <section id="journey" aria-labelledby="journey-h">
+        <span class="eyebrow">From your phone to their hands</span>
+        <h2 id="journey-h">How your donation reaches them</h2>
+        <ol class="journey">
+          <li><span class="when">Right now</span><b style="color:var(--ink)">You donate</b><span style="font-size:14px;color:var(--muted)">UPI, card or net banking via Razorpay.</span></li>
+          <li><span class="when">Instantly</span><b style="color:var(--ink)">80G receipt</b><span style="font-size:14px;color:var(--muted)">Emailed and saved in your account.</span></li>
+          <li><span class="when">Within 12 hours</span><b style="color:var(--ink)">Supplies bought</b><span style="font-size:14px;color:var(--muted)">From local vendors near the affected area.</span></li>
+          <li><span class="when">Within 24 hours</span><b style="color:var(--ink)">Delivered</b><span style="font-size:14px;color:var(--muted)">Our volunteers hand it over directly.</span></li>
+          <li><span class="when">Within 7 days</span><b style="color:var(--ink)">You see proof</b><span style="font-size:14px;color:var(--muted)">Photo update and fund-use report.</span></li>
+        </ol>
+      </section>
+
+      <section id="story" aria-labelledby="story-h">
+        <span class="eyebrow">The story</span>
+        <h2 id="story-h">Why this campaign matters</h2>
+        <div class="stack" id="storyText" style="gap:14px;font-size:17px;line-height:1.75;max-width:70ch"></div>
+        <h3 style="font-size:22px;margin-top:8px">Impact so far</h3>
+        <div class="grid g4" id="metrics" style="gap:12px"></div>
+      </section>
+
+      <section id="money" aria-labelledby="money-h">
+        <span class="eyebrow">100% transparent</span>
+        <h2 id="money-h">Where your money goes</h2>
+        <p id="per100" style="font-size:18px;color:var(--ink)"></p>
+        <div class="split" id="split" role="img"></div>
+        <div class="legend" id="legend"></div>
+        <a class="more" href="about.html#compliance">Download the latest utilisation report (PDF) →</a>
+      </section>
+
+      <section id="updates" aria-labelledby="up-h">
+        <div class="row between"><h2 id="up-h">Campaign updates</h2><span style="font-size:14px;color:var(--muted)">Every donor gets these by email</span></div>
+        <ol class="timeline" id="timeline"></ol>
+      </section>
+
+      <section id="supporters" aria-labelledby="sup-h">
+        <h2 id="sup-h">Recent supporters</h2>
+        <div class="wall" id="wall"></div>
+        <p style="font-size:13.5px;color:var(--muted)" id="wallNote"></p>
+      </section>
+
+      <section id="cfaq" aria-labelledby="cfaq-h">
+        <h2 id="cfaq-h">Questions donors ask</h2>
+        <div id="faq" style="border-top:1px solid var(--line)"></div>
+        <div class="share"><b style="color:var(--ink);align-self:center;margin-right:6px">Share this campaign</b>
+          <a class="btn" id="waShare" style="background:#1F7A4D;color:#fff" href="#">WhatsApp</a>
+          <a class="btn btn-line" id="fbShare" href="#">Facebook</a>
+          <button class="btn btn-line" type="button" id="copyLink">Copy link</button></div>
+      </section>
+    </div>
+
+    <aside aria-label="Donate to this campaign">
+      <div class="give-panel" id="give">
+        <h2 style="font-size:24px" id="giveTitle"></h2>
+        <div class="seg" role="group" aria-label="Donation frequency"><button type="button" id="once" aria-pressed="true">Give once</button><button type="button" id="monthly" aria-pressed="false">Give monthly</button></div>
+        <div class="amts" role="group" aria-label="Choose an amount" id="amts"></div>
+        <label class="field" for="custom">Or enter your own amount
+          <span class="money-input"><span>₹</span><input id="custom" type="number" min="100" inputmode="numeric" placeholder="e.g. 3000"></span></label>
+        <div class="impact-line" aria-live="polite"><span style="color:var(--saffron-deep);flex:none;margin-top:2px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-4.4-9.3-9A5.4 5.4 0 0 1 12 6.3 5.4 5.4 0 0 1 21.3 12C19 16.6 12 21 12 21z"/></svg></span><span id="impactLine"></span></div>
+        <a class="btn btn-give btn-lg btn-block" id="giveBtn" href="donate.html"></a>
+        <div class="tax"><span>Tax deduction under 80G (50%)</span><b id="taxLine"></b></div>
+        <ul class="ticks"><li>Instant receipt by email and in your account</li><li>UPI, cards, RuPay and net banking</li><li>Updates on exactly what you funded</li></ul>
+        <div style="border-top:1px solid var(--line);padding-top:14px;font-size:14px;color:var(--muted)" id="justGave"></div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<section class="band alt" aria-labelledby="xs-h">
+  <div class="wrap">
+    <div class="sec-head"><div class="stack"><span class="eyebrow">Keep the seva going</span><h2 class="h-sec" id="xs-h" style="font-size:36px">Other sewa you can support</h2></div>
+      <div class="row"><div class="scroll-btns"><button type="button" id="xPrev" aria-label="Previous">‹</button><button type="button" id="xNext" aria-label="Next">›</button></div><a class="more" href="campaigns.html">All campaigns →</a></div></div>
+    <div class="scroller" id="others"></div>
+  </div>
+</section>
+
+<div class="mobile-give" id="mGive"><div class="info"><b id="mAmt"></b><span id="mLeft"></span></div><a class="btn btn-give" href="#give">Donate</a></div>
+<div id="site-footer" data-cta="0"></div>
+
+<script src="assets/site.js"></script>
+<script>
+(function () {
+  const { campaigns, TIERS, BREAKDOWN, fmt, pct, esc, photo, card, fallbackImages, wireFaq, wireScroller, IMG } = SA;
+  const $ = (id) => document.getElementById(id);
+  let slug = '';
+  try { slug = decodeURIComponent(location.hash.slice(1)); } catch (e) {}
+  const c = SA.bySlug(slug) || SA.bySlug('bihar-flood-relief-2026');
+  document.title = c.title + ' · SikhAid';
+  const tiers = TIERS[c.type], parts = BREAKDOWN[c.type];
+  const state = { amt: tiers[2].amt, monthly: false };
+
+  $('crumb').textContent = c.title;
+  $('badges').innerHTML = (c.urgent ? '<span class="badge urgent"><span class="dot pulse"></span>' + esc(c.status) + '</span>' : '<span class="badge">' + esc(c.status) + '</span>') +
+    '<span class="badge soft">' + esc(c.category) + '</span><span class="badge soft">' + SA.ICON.pin + esc(c.location) + '</span>';
+  $('title').textContent = c.title; $('blurb').textContent = c.blurb;
+  const gallery = c.type === 'flood' ? [c.img, IMG.assam3, IMG.assam7] : c.type === 'hunger' ? [IMG.food, IMG.langar, IMG.fooddist] : c.type === 'health' ? [IMG.health, IMG.hygiene, IMG.pads] : [null, null, null];
+  $('pics').innerHTML = photo(gallery[0], c.title, c.tone, '', c.title) + photo(gallery[1], 'Ground report', c.tone, '', 'Ground report photo') + photo(gallery[2], 'Volunteers at work', c.tone, '', 'Volunteers at work');
+
+  const p = pct(c);
+  $('progress').innerHTML = '<div class="money"><span><b class="num" style="font-size:32px">' + fmt(c.raised) + '</b> raised of ' + fmt(c.goal) + ' goal</span><strong style="color:var(--indigo);font-size:18px">' + p + '%</strong></div>' +
+    '<div class="progress" role="img" aria-label="' + p + '% of goal raised"><i style="width:' + p + '%"></i></div>' +
+    '<div class="figs"><div><b>' + c.donors.toLocaleString('en-IN') + '</b><span>donors so far</span></div><div><b>' + fmt(c.goal - c.raised) + '</b><span>still needed</span></div>' +
+    '<div><b>' + (c.days ? c.days + ' days' : 'Ongoing') + '</b><span>' + (c.days ? 'left to give' : 'year-round program') + '</span></div><div><b>' + fmt(tiers[2].amt) + '</b><span>most chosen gift</span></div></div>';
+
+  /* tiers */
+  function renderTiers() {
+    $('tiers').innerHTML = tiers.map((t) => '<button type="button" class="tier" data-a="' + t.amt + '" aria-pressed="' + (t.amt === state.amt) + '"><b class="a">' + fmt(t.amt) + '</b><span>' + esc(t.what) + '</span><span class="pick">' + (t.amt === state.amt ? 'Selected ✓' : 'Choose') + '</span></button>').join('');
+  }
+  $('tiers').addEventListener('click', (e) => { const b = e.target.closest('[data-a]'); if (b) { state.amt = +b.dataset.a; $('custom').value = ''; update(); document.getElementById('give').scrollIntoView({ behavior: 'smooth', block: 'center' }); } });
+  const kits = {
+    flood: ['What goes into a ' + fmt(2500) + ' family relief kit', ['10 kg rice and 5 kg atta', '2 kg dal, 1 L cooking oil, salt and spices', 'Tarpaulin sheet for shelter', 'Mosquito net', 'ORS packets and basic medicines', 'Soap, sanitary pads and a bucket']],
+    hunger: ['What a day of langar includes', ['Fresh dal, sabzi, rice and rotis', 'Clean drinking water', 'Served seated, with dignity', 'Leftovers go to shelters, never wasted']],
+    health: ['What one medical camp day includes', ['Doctor consultation for every patient', 'Free medicines for common illnesses', 'Basic tests: BP, sugar, haemoglobin', 'Referral and follow-up for serious cases']],
+    youth: ['What a training month includes', ['Two coached sessions a week', 'Balls, cones and bibs for the team', 'Fitness and nutrition guidance', 'Match play against nearby villages']]
+  }[c.type];
+  $('kit').innerHTML = '<h3 style="font-size:20px">' + kits[0] + '</h3><ul class="ticks" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:10px 20px">' + kits[1].map((k) => '<li>' + esc(k) + '</li>').join('') + '</ul>';
+
+  /* story + metrics */
+  $('storyText').innerHTML = c.story.map((s) => '<p>' + esc(s) + '</p>').join('');
+  $('metrics').innerHTML = c.metrics.map((m) => '<div class="metric"><b>' + esc(m[0]) + '</b><span style="color:var(--muted);font-size:14px">' + esc(m[1]) + '</span></div>').join('');
+
+  /* money */
+  const cols = ['var(--indigo)', 'var(--saffron)', '#9AA0BF'];
+  $('per100').innerHTML = 'Out of every <b>₹100</b> you give, <b>₹' + parts[0][1] + '</b> goes directly to ' + esc(parts[0][0].split(':')[0].toLowerCase()) + '.';
+  $('split').setAttribute('aria-label', parts.map((x) => x[0] + ' ' + x[1] + '%').join(', '));
+  $('split').innerHTML = parts.map((x, i) => '<i style="width:' + x[1] + '%;background:' + cols[i] + '"></i>').join('');
+  $('legend').innerHTML = parts.map((x, i) => '<div><i style="background:' + cols[i] + '"></i><b>' + x[1] + '%</b><span>' + esc(x[0]) + '</span></div>').join('');
+
+  /* updates (sample) */
+  const ups = c.type === 'flood' ? [
+    ['20 Oct 2026', 'Second relief camp opens', 'Hot meals now served twice daily to over 800 people. Our medical team is treating fever and skin infections.'],
+    ['14 Oct 2026', 'Boats reach cut-off villages', 'Dry-ration kits and drinking water delivered by boat to six villages unreachable by road.'],
+    ['08 Oct 2026', '50% of the goal reached', 'Every donor received a milestone thank-you. Funds are moving straight into kits and logistics.'],
+    ['02 Oct 2026', 'Campaign launched', 'Assessment completed within 2 hours of the alert; volunteers mobilised within 8 hours.']
+  ] : [
+    ['18 Oct 2026', 'Monthly report published', 'This month’s outcomes and spending are now in the utilisation report.'],
+    ['30 Sep 2026', 'New volunteers onboarded', 'A fresh batch of volunteers joined after training.'],
+    ['12 Sep 2026', 'Program milestone', 'We crossed half of this year’s goal thanks to monthly givers.']
+  ];
+  $('timeline').innerHTML = ups.map((u) => '<li><span class="rail"><i></i><span></span></span><div class="c"><span class="eyebrow" style="font-size:12px">' + u[0] + '</span><b style="font-size:18px;color:var(--ink)">' + esc(u[1]) + '</b><p style="color:var(--muted)">' + esc(u[2]) + '</p></div></li>').join('');
+
+  /* wall (sample, opt-in donors) */
+  const wall = [['Rohit S.', 5000, '11 min'], ['Neha K.', 1000, '24 min'], ['Harjeet Singh', 11000, '1 hr'], ['A kind soul', 2500, '2 hr'], ['Meera P.', 501, '3 hr'], ['Deepak & family', 5100, '5 hr']];
+  $('wall').innerHTML = wall.map((w) => '<div><span class="av" style="width:40px;height:40px;border-radius:50%;background:var(--indigo-soft);color:var(--indigo);font-weight:800;display:grid;place-items:center;flex:none">' + w[0][0] + '</span><span><b style="color:var(--ink);font-size:15px">' + esc(w[0]) + '</b><br><span style="font-size:13px;color:var(--muted)">' + fmt(w[1]) + ' · ' + w[2] + ' ago</span></span></div>').join('');
+  $('wallNote').textContent = 'Only donors who chose to be shown appear here. ' + (c.donors - wall.length).toLocaleString('en-IN') + ' others gave privately.';
+  $('justGave').innerHTML = '<b style="color:var(--ink)">Just donated:</b> ' + wall.slice(0, 2).map((w) => esc(w[0]) + ' · ' + fmt(w[1])).join(' · ');
+
+  /* campaign FAQ */
+  const faqs = [
+    ['Will I get a tax receipt?', 'Yes. Your 80G receipt is generated instantly after payment, emailed to you, and saved in your account. Add your PAN at checkout to claim the 50% deduction.'],
+    ['How do I know my money was used here?', 'Every donation to this campaign is tagged to it. You get dated photo updates by email, and the utilisation report shows spending by category.'],
+    ['What if the goal is exceeded?', 'Extra funds go to the next phase of the same response, usually rehabilitation, and appear in the utilisation report.'],
+    ['Can I donate supplies instead of money?', 'Yes. Call our 24/7 helpline on +91 98513 41234 and our coordination team will tell you what is needed and where to send it.'],
+    ['Can I get a refund?', 'If you donated by mistake, write to help@sikhaid.ngo within 7 days with your receipt number. See our refund policy for details.']
+  ];
+  $('faq').innerHTML = faqs.map((f, i) => '<div class="faq-item"><h3 style="font-family:var(--body);letter-spacing:0"><button type="button" aria-expanded="' + (i === 0) + '" aria-controls="cf' + i + '"><span>' + f[0] + '</span><span class="pm">' + SA.ICON.plus + '</span></button></h3><div class="ans" id="cf' + i + '"' + (i ? ' hidden' : '') + '><p>' + f[1] + '</p></div></div>').join('');
+  $('faq').querySelectorAll('button').forEach(wireFaq);
+
+  /* donate panel */
+  $('giveTitle').textContent = 'Support ' + c.short + ' today';
+  function closestTier(a) { let t = tiers[0]; tiers.forEach((x) => { if (a >= x.amt) t = x; }); return t; }
+  function update() {
+    $('amts').innerHTML = tiers.map((t) => '<button type="button" class="amt" data-a="' + t.amt + '" aria-pressed="' + (t.amt === state.amt && !$('custom').value) + '">' + fmt(t.amt) + '</button>').join('');
+    const a = state.amt, suffix = state.monthly ? '/month' : '';
+    const t = closestTier(a);
+    $('impactLine').innerHTML = a < tiers[0].amt ? 'Every rupee helps. <b>' + fmt(a) + '</b> goes straight into ' + esc(parts[0][0].split(':')[0].toLowerCase()) + '.'
+      : '<b>' + fmt(a) + suffix + '</b> can fund: ' + esc(t.what.charAt(0).toLowerCase() + t.what.slice(1)) + (a > t.amt * 1.5 ? ', and more' : '') + '.';
+    $('giveBtn').innerHTML = SA.ICON.heart + 'Donate ' + fmt(a) + suffix;
+    $('taxLine').textContent = fmt(a / 2) + (state.monthly ? '/month' : '');
+    $('once').setAttribute('aria-pressed', String(!state.monthly)); $('monthly').setAttribute('aria-pressed', String(state.monthly));
+    $('mAmt').textContent = fmt(c.raised) + ' raised · ' + pct(c) + '%'; $('mLeft').textContent = fmt(c.goal - c.raised) + ' still needed';
+    renderTiers();
+  }
+  $('amts').addEventListener('click', (e) => { const b = e.target.closest('[data-a]'); if (b) { state.amt = +b.dataset.a; $('custom').value = ''; update(); } });
+  $('custom').addEventListener('input', () => { const v = parseInt($('custom').value, 10); if (v > 0) { state.amt = v; update(); } });
+  $('once').onclick = () => { state.monthly = false; update(); };
+  $('monthly').onclick = () => { state.monthly = true; update(); };
+  $('giveBtn').addEventListener('click', (e) => {
+    try { sessionStorage.setItem('sa-gift', JSON.stringify({ slug: c.slug, amt: state.amt, monthly: state.monthly })); } catch (err) {}
+    $('giveBtn').href = 'donate.html#' + c.slug;
+  });
+  $('giveBtn').href = 'donate.html#' + c.slug;
+  update();
+
+  /* share */
+  const shareText = encodeURIComponent('I support ' + c.title + ' with SikhAid. Join me: https://www.sikhaid.ngo/campaigns/' + c.slug);
+  $('waShare').href = 'https://wa.me/?text=' + shareText;
+  $('fbShare').href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent('https://www.sikhaid.ngo/campaigns/' + c.slug);
+  $('copyLink').onclick = () => { const u = 'https://www.sikhaid.ngo/campaigns/' + c.slug; (navigator.clipboard?.writeText(u) || Promise.reject()).then(() => SA.toast('Link copied')).catch(() => SA.toast(u)); };
+
+  /* anchor highlight */
+  const links = [...document.querySelectorAll('#anav a')];
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((ents) => ents.forEach((en) => { if (en.isIntersecting) links.forEach((l) => l.classList.toggle('on', l.getAttribute('href') === '#' + en.target.id)); }), { rootMargin: '-40% 0px -55% 0px' });
+    document.querySelectorAll('.c-main section[id]').forEach((s) => io.observe(s));
+  }
+
+  /* cross-sell */
+  $('others').innerHTML = campaigns.filter((x) => x.slug !== c.slug).map(card).join('');
+  wireScroller($('others'), $('xPrev'), $('xNext'));
+  window.addEventListener('hashchange', () => { const s = location.hash.slice(1); if (s !== c.slug && SA.bySlug(s)) location.reload(); });
+  fallbackImages();
+})();
+</script>
+</body>
+</html>

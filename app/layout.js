@@ -1,0 +1,36 @@
+import { Poppins, Inter } from 'next/font/google';
+import './globals.css';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+
+const poppins = Poppins({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-heading',
+  weight: ['400', '500', '600', '700', '800', '900'],
+});
+
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-body',
+  weight: ['400', '500', '600', '700'],
+});
+
+export const metadata = {
+  title: 'SikhAid Charitable Trust — Humanitarian Aid & Disaster Relief',
+  description:
+    'SikhAid provides immediate humanitarian aid and disaster relief across India. Donate to flood relief, langar sewa, healthcare and youth programs. 80G tax benefit.',
+};
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en" data-scroll-behavior="smooth" className={`${poppins.variable} ${inter.variable}`}>
+      <body>
+        <Header />
+        {children}
+        <Footer />
+      </body>
+    </html>
+  );
+}

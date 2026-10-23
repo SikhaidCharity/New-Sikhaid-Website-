@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Donate · SikhAid</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Manrope:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="assets/styles.css">
+<style>
+body { background: var(--bg-alt); }
+body::before { background: var(--bg); }
+.co-head { background: var(--bg); border-bottom: 1px solid var(--line); position: sticky; top: env(safe-area-inset-top, 0px); z-index: 40; }
+.co-head .wrap { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; justify-content: space-between; padding-block: 12px; }
+.secure { display: inline-flex; gap: 8px; align-items: center; font-size: 14px; font-weight: 800; color: var(--green); }
+.steps { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.steps li { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 15px; padding: 8px 16px 8px 8px; border-radius: 999px; background: var(--bg); color: var(--muted); }
+.steps li span { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-size: 13px; background: #E9EBF3; color: var(--muted); }
+.steps li.on { background: var(--ink); color: #fff; }
+.steps li.on span { background: var(--saffron); color: var(--ink); }
+.steps li.done { background: var(--green-soft); color: var(--green); }
+.steps li.done span { background: var(--green); color: #fff; }
+.co { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 24px; align-items: start; }
+@media (max-width: 980px) { .co { grid-template-columns: minmax(0, 1fr); } }
+.card-w { background: var(--bg); border-radius: 24px; padding: clamp(22px, 3vw, 34px); display: flex; flex-direction: column; gap: 22px; }
+.amt-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 10px; }
+.amt-tile { text-align: left; padding: 14px 16px; min-height: 84px; border-radius: 14px; border: 1.5px solid #D3D7E6; background: var(--bg); cursor: pointer; display: flex; flex-direction: column; gap: 4px; font: inherit; color: var(--ink); }
+.amt-tile b { font-size: 20px; font-variant-numeric: tabular-nums; }
+.amt-tile small { font-size: 12.5px; color: var(--muted); line-height: 1.35; }
+.amt-tile[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: #fff; }
+.amt-tile[aria-pressed="true"] small { color: var(--on-dark); }
+.gift-box { border: 1.5px dashed #C6CBE4; border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 14px; }
+.method { display: flex; gap: 14px; align-items: center; padding: 16px 18px; border-radius: 14px; border: 1.5px solid #D3D7E6; background: var(--bg); cursor: pointer; text-align: left; font: inherit; width: 100%; color: var(--text); }
+.method[aria-checked="true"] { border: 2px solid var(--indigo); background: var(--indigo-soft); }
+.method .r { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #9AA0BF; flex: none; }
+.method[aria-checked="true"] .r { border: 7px solid var(--indigo); }
+.sum { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 84px); display: flex; flex-direction: column; gap: 16px; }
+@media (max-width: 980px) { .sum { position: static; } }
+.sum .ph { height: 150px; }
+.line { display: flex; justify-content: space-between; gap: 10px; font-size: 15px; }
+.line span { color: var(--muted); }
+.line b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.err { color: var(--red); font-size: 13.5px; font-weight: 700; }
+.done-hero { text-align: left; }
+.check-big { width: 76px; height: 76px; border-radius: 50%; background: var(--green-soft); display: grid; place-items: center; color: var(--green); }
+.receipt { border: 1px solid var(--line); border-radius: 18px; padding: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr)); gap: 14px; }
+.receipt span { font-size: 13px; color: var(--muted); display: block; }
+.receipt b { color: var(--ink); font-size: 17px; }
+.next { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.next li { display: flex; gap: 12px; align-items: flex-start; }
+.next i { width: 28px; height: 28px; border-radius: 50%; flex: none; display: grid; place-items: center; font-style: normal; font-size: 13px; font-weight: 800; background: #E9EBF3; color: var(--indigo); }
+.next li:first-child i { background: var(--green); color: #fff; }
+</style>
+</head>
+<body data-page="donate">
+<header class="co-head"><div class="wrap">
+  <a class="brand" href="index.html"><span class="brand-mark"><span style="color:var(--saffron)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-4.4-9.3-9A5.4 5.4 0 0 1 12 6.3 5.4 5.4 0 0 1 21.3 12C19 16.6 12 21 12 21z"/></svg></span><img src="https://www.sikhaid.ngo/sikhaidLogo.webp" alt="" data-fb></span><span class="brand-name"><b>SikhAid</b><span>Charitable Trust</span></span></a>
+  <span class="secure"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Secure checkout · Razorpay</span>
+  <span style="font-size:14px">Need help? <b>+91 98513 41234</b> · <a href="login.html"><b>Log in</b></a></span>
+</div></header>
+
+<main class="wrap stack" style="padding-block:28px 72px;gap:22px">
+  <ol class="steps" id="steps" aria-label="Checkout progress"></ol>
+  <div class="co">
+    <div class="card-w" id="panel"></div>
+    <aside class="sum" aria-label="Donation summary">
+      <div style="background:var(--bg);border-radius:24px;overflow:hidden">
+        <div id="sumPhoto"></div>
+        <div style="padding:22px" class="stack">
+          <b id="sumTitle" style="font-family:var(--display);font-size:21px;color:var(--ink)"></b>
+          <div class="line"><span>Your gift</span><b id="sumAmt"></b></div>
+          <div class="line"><span>Platform fee</span><b style="color:var(--green)">₹0</b></div>
+          <div class="line"><span>80G deduction (50%)</span><b id="sumTax"></b></div>
+          <div class="line" style="border-top:1px solid var(--line);padding-top:14px;align-items:baseline"><span style="color:var(--ink);font-weight:800">Total today</span><b id="sumTotal" style="font-family:var(--display);font-size:28px"></b></div>
+          <div class="note" id="sumImpact"></div>
+        </div>
+      </div>
+      <div style="background:var(--bg);border-radius:24px;padding:22px"><ul class="ticks"><li>Registered under Section 80G</li><li>Receipt emailed instantly</li><li>Photo updates on what you funded</li><li>Pause or cancel monthly gifts anytime</li></ul></div>
+    </aside>
+  </div>
+</main>
+<div id="site-footer" data-cta="0"></div>
+<script src="assets/site.js"></script>
+<script>
+(function () {
+  const { campaigns, TIERS, fmt, esc, photo, fallbackImages, ICON } = SA;
+  const $ = (id) => document.getElementById(id);
+  const options = [{ slug: 'general', title: 'Where it’s needed most', short: 'the greatest need', type: 'flood', tone: '#1A237E', img: null, location: 'General fund' }].concat(campaigns);
+  const S = { step: 1, slug: 'general', amt: 2500, monthly: false, gift: false, method: 'upi', d: { name: '', email: '', phone: '', city: '', pan: '', dob: '' }, account: true, wall: true, wa: true };
+  let h = ''; try { h = decodeURIComponent(location.hash.slice(1)); } catch (e) {}
+  if (h === 'monthly') S.monthly = true; else if (h === 'gift') S.gift = true; else if (SA.bySlug(h)) S.slug = h;
+  try { const g = JSON.parse(sessionStorage.getItem('sa-gift') || 'null'); if (g && g.slug === S.slug) { S.amt = g.amt; S.monthly = g.monthly; } } catch (e) {}
+  const camp = () => options.find((o) => o.slug === S.slug) || options[0];
+  const tiers = () => TIERS[camp().type];
+  const suffix = () => (S.monthly ? '/month' : '');
+  function impactText() { const t = tiers(); let best = null; t.forEach((x) => { if (S.amt >= x.amt) best = x; }); return best ? 'Your ' + fmt(S.amt) + suffix() + ' can fund: ' + best.what.charAt(0).toLowerCase() + best.what.slice(1) + '.' : 'Every rupee helps. Thank you.'; }
+
+  function stepsBar() {
+    const names = ['Amount', 'Your details', 'Payment'];
+    $('steps').innerHTML = names.map((n, i) => { const k = i + 1, cls = S.step === k ? 'on' : S.step > k ? 'done' : ''; return '<li class="' + cls + '"' + (S.step === k ? ' aria-current="step"' : '') + '><span>' + (S.step > k ? '✓' : k) + '</span>' + n + '</li>'; }).join('');
+    $('steps').hidden = S.step === 4;
+  }
+  function summary() {
+    const c = camp();
+    $('sumPhoto').innerHTML = photo(c.img, c.location, c.tone, '', c.title); fallbackImages($('sumPhoto'));
+    $('sumTitle').textContent = c.title;
+    $('sumAmt').textContent = fmt(S.amt) + suffix(); $('sumTax').textContent = fmt(S.amt / 2); $('sumTotal').textContent = fmt(S.amt);
+    $('sumImpact').textContent = impactText();
+  }
+
+  function step1() {
+    return '<h1 style="font-size:32px">Choose your gift</h1>' +
+      '<label class="field" for="camp">Cause<select id="camp">' + options.map((o) => '<option value="' + o.slug + '"' + (o.slug === S.slug ? ' selected' : '') + '>' + esc(o.title) + '</option>').join('') + '</select></label>' +
+      '<div class="seg" role="group" aria-label="Frequency"><button type="button" data-f="once" aria-pressed="' + !S.monthly + '">Give once</button><button type="button" data-f="monthly" aria-pressed="' + S.monthly + '">Give monthly</button></div>' +
+      '<div class="amt-tiles" role="group" aria-label="Amount">' + tiers().map((t) => '<button type="button" class="amt-tile" data-a="' + t.amt + '" aria-pressed="' + (t.amt === S.amt) + '"><b>' + fmt(t.amt) + '</b><small>' + esc(t.what) + '</small></button>').join('') + '</div>' +
+      '<label class="field" for="custom">Or another amount<span class="money-input"><span>₹</span><input id="custom" type="number" min="100" inputmode="numeric" placeholder="Minimum ₹100"' + (tiers().some((t) => t.amt === S.amt) ? '' : ' value="' + S.amt + '"') + '></span></label>' +
+      '<div class="gift-box"><label class="check"><input type="checkbox" id="gift"' + (S.gift ? ' checked' : '') + '>Dedicate this as a birthday gift to someone</label>' +
+      (S.gift ? '<div class="two"><label class="field" for="gName">Their name<input id="gName" type="text" autocomplete="off"></label><label class="field" for="gContact">Their email or WhatsApp<input id="gContact" type="text"></label><label class="field" for="gDate">Send the card on<input id="gDate" type="date"></label><label class="field" for="gMsg">Your message<input id="gMsg" type="text" placeholder="Happy birthday!"></label></div>' : '') + '</div>' +
+      '<p class="err" id="err1" hidden>Please choose an amount of ₹100 or more.</p>' +
+      '<button class="btn btn-give btn-lg btn-block" type="button" id="next1">Continue · ' + fmt(S.amt) + suffix() + '</button>';
+  }
+  function step2() {
+    const d = S.d, f = (id, label, type, extra) => '<label class="field" for="' + id + '">' + label + '<input id="' + id + '" type="' + type + '" value="' + esc(d[id]) + '" ' + (extra || '') + '></label>';
+    return '<h1 style="font-size:32px">Your details</h1><p style="color:var(--muted)">We need these for your 80G receipt and to send you updates on what you funded.</p>' +
+      '<div class="two">' + f('name', 'Full name *', 'text', 'autocomplete="name"') + f('email', 'Email *', 'email', 'autocomplete="email"') + f('phone', 'Mobile *', 'tel', 'autocomplete="tel" placeholder="+91"') + f('city', 'City', 'text', 'autocomplete="address-level2"') +
+      '<label class="field" for="pan">PAN <small>Needed to claim 80G</small><input id="pan" type="text" value="' + esc(d.pan) + '" placeholder="ABCDE1234F" style="text-transform:uppercase" maxlength="10"></label>' +
+      '<label class="field" for="dob">Date of birth <small>Optional: we send a birthday note on your impact</small><input id="dob" type="date" value="' + esc(d.dob) + '"></label></div>' +
+      '<div class="stack" style="gap:12px;background:var(--bg-alt);border-radius:14px;padding:16px">' +
+      '<label class="check"><input type="checkbox" id="optAcc"' + (S.account ? ' checked' : '') + '>Create my free account to track donations and download receipts</label>' +
+      '<label class="check"><input type="checkbox" id="optWall"' + (S.wall ? ' checked' : '') + '>Show my first name and city on the live donor feed</label>' +
+      '<label class="check"><input type="checkbox" id="optWa"' + (S.wa ? ' checked' : '') + '>Send me campaign updates on WhatsApp</label></div>' +
+      '<p class="err" id="err2" hidden></p>' +
+      '<div class="row" style="flex-wrap:nowrap"><button class="btn btn-line btn-lg" type="button" id="back2">Back</button><button class="btn btn-give btn-lg" style="flex:1" type="button" id="next2">Continue to payment</button></div>';
+  }
+  function step3() {
+    const methods = [['upi', 'UPI', 'Google Pay, PhonePe, Paytm, BHIM, or scan a QR'], ['card', 'Debit or credit card', 'Visa, Mastercard, RuPay'], ['nb', 'Net banking', 'All major Indian banks'], ['wallet', 'Wallets', 'Paytm, Mobikwik and more']];
+    return '<h1 style="font-size:32px">Pay securely</h1>' +
+      '<div class="stack" role="radiogroup" aria-label="Payment method" style="gap:10px">' + methods.map((m) => '<button type="button" class="method" role="radio" data-m="' + m[0] + '" aria-checked="' + (S.method === m[0]) + '"><span class="r"></span><span><b style="color:var(--ink)">' + m[1] + '</b><br><span style="font-size:13.5px;color:var(--muted)">' + m[2] + '</span></span></button>').join('') + '</div>' +
+      (S.monthly ? '<div class="note" style="background:var(--indigo-soft);color:var(--indigo)">You are setting up a UPI AutoPay or card mandate of ' + fmt(S.amt) + ' every month. We remind you 3 days before each debit, and you can pause or cancel from your account.</div>' : '') +
+      '<div class="row" style="flex-wrap:nowrap"><button class="btn btn-line btn-lg" type="button" id="back3">Back</button><button class="btn btn-give btn-lg" style="flex:1" type="button" id="pay">' + ICON.lock + 'Pay ' + fmt(S.amt) + suffix() + '</button></div>' +
+      '<p style="font-size:13px;color:var(--muted);text-align:center">On the live site this opens the Razorpay window. Your 80G receipt is generated automatically.</p>';
+  }
+  function step4() {
+    const c = camp(), first = (S.d.name || 'friend').split(' ')[0];
+    const rno = 'SA/80G/26-27/' + String(Math.floor(Date.now() / 1000) % 1000000).padStart(6, '0');
+    return '<div class="done-hero stack" style="gap:18px"><span class="check-big"><svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg></span>' +
+      '<h1 style="font-size:clamp(32px,4vw,44px)">Thank you, ' + esc(first) + '. Your seva is on its way.</h1>' +
+      '<p class="lead">' + esc(impactText()) + ' We will show you exactly where it went.</p></div>' +
+      '<div class="receipt"><div><span>Amount</span><b>' + fmt(S.amt) + suffix() + '</b></div><div><span>Cause</span><b>' + esc(c.title) + '</b></div><div><span>Receipt no.</span><b class="num">' + rno + '</b></div><div><span>Paid via</span><b>' + ({ upi: 'UPI', card: 'Card', nb: 'Net banking', wallet: 'Wallet' })[S.method] + '</b></div></div>' +
+      '<div class="row"><a class="btn btn-dark" href="account.html#history">' + ICON.download + 'Download 80G receipt</a><a class="btn" style="background:#1F7A4D;color:#fff" href="https://wa.me/?text=' + encodeURIComponent('I just supported ' + c.title + ' with SikhAid. Join me: https://www.sikhaid.ngo') + '">Share on WhatsApp</a></div>' +
+      '<p style="font-size:14px;color:var(--muted)">A copy has been sent to ' + esc(S.d.email || 'your email') + ' and by SMS.</p>' +
+      '<div class="stack" style="gap:12px;border-top:1px solid var(--line);padding-top:20px"><h2 style="font-size:20px">What happens next</h2><ol class="next">' +
+      '<li><i>✓</i><span><b style="color:var(--ink)">Now:</b> 80G receipt generated and saved to your account</span></li>' +
+      '<li><i>2</i><span><b style="color:var(--ink)">Within days:</b> photo updates from the ground by email</span></li>' +
+      '<li><i>3</i><span><b style="color:var(--ink)">At 100% of goal:</b> a milestone thank-you and utilisation report</span></li>' +
+      '<li><i>4</i><span><b style="color:var(--ink)">Every March:</b> one consolidated annual 80G statement</span></li></ol></div>' +
+      (S.monthly ? '' : '<div class="panel" style="background:var(--saffron-soft);border:2px solid var(--saffron);display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between"><span><b style="color:var(--ink);font-size:18px">Make it monthly?</b><br><span style="color:var(--muted)">' + fmt(500) + ' a month keeps relief kits ready for the next emergency.</span></span><button class="btn btn-give" type="button" id="goMonthly">Start ' + fmt(500) + '/month</button></div>') +
+      '<a class="more" href="campaigns.html">See other campaigns you can support →</a>';
+  }
+
+  function render() {
+    stepsBar(); summary();
+    $('panel').innerHTML = [null, step1, step2, step3, step4][S.step]();
+    wire(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function readDetails() { ['name', 'email', 'phone', 'city', 'pan', 'dob'].forEach((k) => { const el = $(k); if (el) S.d[k] = el.value.trim(); }); }
+  function wire() {
+    const p = $('panel');
+    if (S.step === 1) {
+      $('camp').onchange = (e) => { S.slug = e.target.value; render(); };
+      p.querySelectorAll('[data-f]').forEach((b) => b.onclick = () => { S.monthly = b.dataset.f === 'monthly'; render(); });
+      p.querySelectorAll('[data-a]').forEach((b) => b.onclick = () => { S.amt = +b.dataset.a; render(); });
+      $('custom').oninput = () => { const v = parseInt($('custom').value, 10); if (v > 0) { S.amt = v; summary(); $('next1').textContent = 'Continue · ' + fmt(v) + suffix(); p.querySelectorAll('[data-a]').forEach((b) => b.setAttribute('aria-pressed', 'false')); } };
+      $('gift').onchange = (e) => { S.gift = e.target.checked; render(); };
+      $('next1').onclick = () => { if (!(S.amt >= 100)) { $('err1').hidden = false; return; } S.step = 2; render(); };
+    }
+    if (S.step === 2) {
+      $('back2').onclick = () => { readDetails(); S.step = 1; render(); };
+      $('next2').onclick = () => {
+        readDetails(); S.account = $('optAcc').checked; S.wall = $('optWall').checked; S.wa = $('optWa').checked;
+        const e = $('err2'); let msg = '';
+        if (!S.d.name) msg = 'Enter your full name.'; else if (!/^\S+@\S+\.\S+$/.test(S.d.email)) msg = 'Enter a valid email so we can send your receipt.'; else if (S.d.phone.replace(/\D/g, '').length < 10) msg = 'Enter a 10-digit mobile number.'; else if (S.d.pan && !/^[A-Za-z]{5}\d{4}[A-Za-z]$/.test(S.d.pan)) msg = 'PAN should look like ABCDE1234F, or leave it blank.';
+        if (msg) { e.textContent = msg; e.hidden = false; return; }
+        S.step = 3; render();
+      };
+    }
+    if (S.step === 3) {
+      p.querySelectorAll('[data-m]').forEach((b) => b.onclick = () => { S.method = b.dataset.m; render(); });
+      $('back3').onclick = () => { S.step = 2; render(); };
+      $('pay').onclick = () => { S.step = 4; render(); };
+    }
+    if (S.step === 4) { const g = $('goMonthly'); if (g) g.onclick = () => { S.monthly = true; S.amt = 500; S.step = 1; render(); }; }
+  }
+  render();
+})();
+</script>
+</body>
+</html>

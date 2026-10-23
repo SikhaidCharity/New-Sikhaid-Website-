@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Log in · SikhAid</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Manrope:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="assets/styles.css">
+<style>
+.auth { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); min-height: 640px; }
+@media (max-width: 900px) { .auth { grid-template-columns: 1fr; } .auth .side { display: none; } }
+.auth .side { background: var(--ink); color: var(--on-dark); padding: 64px max(32px, env(safe-area-inset-left, 0px)); display: flex; flex-direction: column; gap: 22px; justify-content: center; }
+.auth .side h2 { color: #fff; font-size: 40px; }
+.auth .main { padding-block: 56px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; place-items: center; }
+.box { width: min(440px, 100%); display: flex; flex-direction: column; gap: 18px; }
+.gbtn { display: flex; gap: 12px; align-items: center; justify-content: center; border: 1.5px solid #D3D7E6; background: var(--bg); border-radius: 12px; min-height: 52px; font-weight: 800; font-size: 15px; color: var(--ink); cursor: pointer; width: 100%; }
+.or { display: flex; gap: 12px; align-items: center; color: var(--muted); font-size: 13px; }
+.or::before, .or::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.otp { display: flex; gap: 8px; }
+.otp input { width: 100%; min-height: 56px; text-align: center; font-size: 22px; font-weight: 800; border: 1.5px solid #D3D7E6; border-radius: 12px; font-family: var(--body); color: var(--ink); }
+</style>
+</head>
+<body data-page="account">
+<div id="site-header"></div>
+<main class="auth">
+  <div class="side">
+    <span class="eyebrow">Your donor account</span>
+    <h2>Every gift, every receipt, in one place.</h2>
+    <ul class="ticks"><li>Download 80G receipts any time, plus one annual statement</li><li>See the impact of everything you have given</li><li>Pause, change or cancel monthly giving yourself</li><li>Get updates from the campaigns you support</li></ul>
+  </div>
+  <div class="main">
+    <div class="box" id="box">
+      <div class="stack" style="gap:8px"><h1 style="font-size:36px">Log in or sign up</h1><p style="color:var(--muted)">No password needed. We'll send a one-time code to your email or mobile.</p></div>
+      <button class="gbtn" type="button" id="google"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A237E" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 12h8M16 8.5A5 5 0 1 0 17 12"/></svg>Continue with Google</button>
+      <div class="or">or</div>
+      <form id="f1" class="stack" style="gap:14px" novalidate>
+        <label class="field" for="who">Email or mobile number<input id="who" type="text" autocomplete="username" placeholder="you@example.com or 98XXXXXXXX"></label>
+        <p id="e1" hidden style="color:var(--red);font-weight:700;font-size:14px">Enter a valid email or 10-digit mobile number.</p>
+        <button class="btn btn-dark btn-lg" type="submit">Send code</button>
+      </form>
+      <form id="f2" class="stack" style="gap:14px" hidden novalidate>
+        <p id="sentTo" style="color:var(--muted)"></p>
+        <fieldset style="border:0;padding:0;margin:0"><legend class="field" style="margin-bottom:6px">Enter the 6-digit code</legend>
+          <div class="otp"></div></fieldset>
+        <button class="btn btn-give btn-lg" type="submit">Verify and continue</button>
+        <button class="btn btn-line" type="button" id="back">Use a different email or number</button>
+      </form>
+      <p style="font-size:13.5px;color:var(--muted)">Donated as a guest before? Use the same email or mobile and we'll link your past receipts automatically.</p>
+    </div>
+  </div>
+</main>
+<div id="site-footer" data-cta="0"></div>
+<script src="assets/site.js"></script>
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const otp = document.querySelector('.otp');
+  otp.innerHTML = [0, 1, 2, 3, 4, 5].map((i) => '<input id="o' + i + '" inputmode="numeric" maxlength="1" aria-label="Digit ' + (i + 1) + '">').join('');
+  otp.addEventListener('input', (e) => { const n = e.target.nextElementSibling; e.target.value = e.target.value.replace(/\D/g, ''); if (e.target.value && n) n.focus(); });
+  otp.addEventListener('keydown', (e) => { if (e.key === 'Backspace' && !e.target.value && e.target.previousElementSibling) e.target.previousElementSibling.focus(); });
+  $('f1').addEventListener('submit', (e) => {
+    e.preventDefault(); const v = $('who').value.trim();
+    const ok = /\S+@\S+\.\S+/.test(v) || v.replace(/\D/g, '').length >= 10;
+    $('e1').hidden = ok; if (!ok) return;
+    $('sentTo').textContent = 'We sent a code to ' + v + '. It expires in 10 minutes.';
+    $('f1').hidden = true; $('f2').hidden = false; $('o0').focus();
+  });
+  $('back').onclick = () => { $('f2').hidden = true; $('f1').hidden = false; };
+  $('f2').addEventListener('submit', (e) => { e.preventDefault(); location.href = 'account.html'; });
+  $('google').onclick = () => { location.href = 'account.html'; };
+})();
+</script>
+</body>
+</html>

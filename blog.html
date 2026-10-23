@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Blog &amp; Press · SikhAid</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Manrope:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="assets/styles.css">
+<style>
+.feature { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); border-radius: 26px; overflow: hidden; background: var(--ink); color: var(--on-dark); text-decoration: none; }
+@media (max-width: 860px) { .feature { grid-template-columns: 1fr; } }
+.feature .ph { min-height: 340px; }
+.feature .t { padding: clamp(24px, 4vw, 44px); display: flex; flex-direction: column; gap: 14px; justify-content: center; }
+.feature h2 { color: #fff; font-size: clamp(28px, 3.2vw, 38px); }
+.feature:hover { color: var(--on-dark); }
+.post { border-radius: 22px; overflow: hidden; background: var(--bg); display: flex; flex-direction: column; border: 1px solid var(--line); }
+.post .ph { aspect-ratio: 16/9; max-width: 100%; }
+.post .b { padding: 22px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+.press { background: var(--bg); border-radius: 18px; padding: 24px; display: flex; flex-direction: column; gap: 10px; text-decoration: none; color: var(--text); }
+.press:hover { box-shadow: var(--shadow); color: var(--text); }
+.pub { background: var(--bg); border-radius: 12px; padding: 16px 22px; font-weight: 800; color: #3C4257; }
+#press { scroll-margin-top: 90px; }
+.sub { display: flex; flex-wrap: wrap; gap: 10px; }
+.sub input { flex: 1 1 240px; min-height: 52px; border-radius: 12px; border: 0; padding: 0 16px; font: inherit; font-size: 15px; }
+</style>
+</head>
+<body data-page="blog">
+<div id="site-header"></div>
+<main>
+  <section class="band tight"><div class="wrap stack" style="gap:24px">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a> / Blog</nav>
+    <div class="stack" style="gap:12px"><h1 style="font-size:clamp(38px,5.4vw,60px)">Stories from the field</h1><p class="lead">Volunteer diaries, ground reports and the people behind every relief operation.</p></div>
+    <a class="feature" href="#posts" id="feature"></a>
+    <div class="chips" role="group" aria-label="Filter posts" id="cats"></div>
+    <div class="grid g3" id="posts"></div>
+  </div></section>
+
+  <section class="band alt" id="press" aria-labelledby="press-h"><div class="wrap">
+    <div class="sec-head"><div class="stack"><span class="eyebrow">Press coverage</span><h2 class="h-sec" id="press-h">SikhAid in the news</h2></div><span style="color:var(--muted)">Media enquiries: <b style="color:var(--ink)">help@sikhaid.ngo</b></span></div>
+    <div class="row" style="gap:10px;margin-bottom:24px"><span class="pub">[Publication logo]</span><span class="pub">[Publication logo]</span><span class="pub">[Publication logo]</span><span class="pub">[Publication logo]</span><span class="pub">[Publication logo]</span></div>
+    <div class="grid g3">
+      <a class="press" href="#press"><span style="font-size:13px;font-weight:800;color:var(--muted)">[PUBLICATION] · [DATE]</span><b style="font-size:18px;color:var(--ink);line-height:1.35">[Headline of an article about SikhAid's flood relief]</b><span class="more" style="padding:0">Read on publisher site ↗</span></a>
+      <a class="press" href="#press"><span style="font-size:13px;font-weight:800;color:var(--muted)">[PUBLICATION] · [DATE]</span><b style="font-size:18px;color:var(--ink);line-height:1.35">[Headline of an article about Langar Sewa]</b><span class="more" style="padding:0">Read on publisher site ↗</span></a>
+      <a class="press" href="#press"><span style="font-size:13px;font-weight:800;color:var(--muted)">[PUBLICATION] · [DATE]</span><b style="font-size:18px;color:var(--ink);line-height:1.35">[Headline of an article about Health on Wheels]</b><span class="more" style="padding:0">Read on publisher site ↗</span></a>
+    </div>
+  </div></section>
+
+  <section class="band dark tight"><div class="wrap grid g2" style="align-items:center">
+    <div class="stack" style="gap:8px"><h2 style="font-size:30px">Get field updates in your inbox</h2><p>One email a month with stories, photos and where donations went. No spam.</p></div>
+    <form class="sub" id="subForm"><label class="sr-only" for="subEmail">Email address</label><input id="subEmail" type="email" placeholder="you@example.com" required><button class="btn btn-give btn-lg" type="submit">Subscribe</button></form>
+  </div></section>
+</main>
+<div id="site-footer"></div>
+<script src="assets/site.js"></script>
+<script>
+(function () {
+  const { IMG, photo, fallbackImages, esc, toast } = SA;
+  const $ = (id) => document.getElementById(id);
+  $('feature').innerHTML = photo(IMG.food, 'Langar Aid kitchen', '#7A4E26', '', 'Community kitchen') + '<div class="t"><span class="eyebrow" style="color:var(--saffron)">Featured · Food security</span><h2>Inside our community kitchens: a day with Langar Aid</h2><p>Step inside the kitchens where 300+ volunteers prepare over 2,000 fresh, nutritious meals daily for vulnerable communities.</p><b style="color:#fff">Read the story →</b></div>';
+  const posts = [
+    [IMG.langar, '#4A4A6A', 'Volunteer stories', '20 Jan 2025', 'Meet our volunteers: stories from the heart of SikhAid', 'The inspiring people who dedicate their time and energy to serve communities across India, embodying the true spirit of sewa.'],
+    [IMG.food, '#7A4E26', 'Food security', '18 Jan 2025', 'Inside our community kitchens: a day with Langar Aid', '300+ volunteers preparing over 2,000 meals daily, serving fresh, nutritious food to vulnerable communities.'],
+    [null, '#2E6B68', 'Education', '15 Jan 2025', 'Educational support: scholarships changing lives in Odisha', 'How scholarships, school supplies and tuition support are breaking the cycle of poverty for children.']
+  ];
+  const cats = ['All', 'Volunteer stories', 'Food security', 'Education', 'Disaster relief', 'Healthcare'];
+  let f = 'All';
+  function render() {
+    $('cats').innerHTML = cats.map((c) => '<button class="chip" type="button" aria-pressed="' + (c === f) + '" data-c="' + c + '">' + c + '</button>').join('');
+    const list = posts.filter((p) => f === 'All' || p[2] === f);
+    $('posts').innerHTML = list.length ? list.map((p) => '<article class="post">' + photo(p[0], p[2], p[1], '', p[4]) + '<div class="b"><span class="eyebrow" style="font-size:12px">' + p[2] + ' · ' + p[3] + '</span><h2 style="font-size:21px;line-height:1.25">' + esc(p[4]) + '</h2><p style="color:var(--muted);font-size:15px">' + esc(p[5]) + '</p><a class="more" href="#posts" style="margin-top:auto">Read more →</a></div></article>').join('')
+      : '<p style="color:var(--muted);padding:24px 0">No posts in this category yet. Check back soon.</p>';
+    fallbackImages($('posts'));
+  }
+  $('cats').addEventListener('click', (e) => { const b = e.target.closest('[data-c]'); if (b) { f = b.dataset.c; render(); } });
+  render(); fallbackImages();
+  $('subForm').addEventListener('submit', (e) => { e.preventDefault(); toast('Subscribed. Watch your inbox for the next update.'); e.target.reset(); });
+})();
+</script>
+</body>
+</html>

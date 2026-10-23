@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>My Account · SikhAid</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Manrope:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="assets/styles.css">
+<style>
+body { background: var(--bg-alt); }
+.acc { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 28px; align-items: start; padding-block: 32px 72px; }
+@media (max-width: 900px) { .acc { grid-template-columns: 1fr; } }
+.side { background: var(--bg); border-radius: 22px; padding: 14px; display: flex; flex-direction: column; gap: 4px; position: sticky; top: 96px; }
+@media (max-width: 900px) { .side { position: static; flex-direction: row; overflow-x: auto; } .side .me { display: none; } }
+.side button { display: flex; gap: 12px; align-items: center; padding: 12px; border-radius: 12px; border: 0; background: transparent; font-weight: 700; font-size: 15px; color: var(--text); cursor: pointer; text-align: left; min-height: 44px; white-space: nowrap; }
+.side button[aria-selected="true"] { background: var(--indigo-soft); color: var(--indigo); }
+.me { display: flex; gap: 12px; align-items: center; padding: 10px 10px 16px; border-bottom: 1px solid var(--line); margin-bottom: 8px; }
+.av { width: 48px; height: 48px; border-radius: 50%; background: var(--indigo); color: #fff; font-weight: 800; display: grid; place-items: center; flex: none; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 14px; }
+.kpi { background: var(--bg); border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 4px; }
+.kpi b { font-family: var(--display); font-size: 34px; color: var(--ink); font-variant-numeric: tabular-nums; }
+.kpi.dark { background: var(--ink); color: var(--on-dark); }
+.kpi.dark b { color: var(--saffron); }
+.box { background: var(--bg); border-radius: 22px; padding: 26px; display: flex; flex-direction: column; gap: 16px; }
+.imp { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr)); gap: 12px; }
+.imp div { background: var(--saffron-soft); border-radius: 16px; padding: 18px; }
+.imp b { font-family: var(--display); font-size: 30px; color: var(--ink); display: block; }
+.dl { display: inline-flex; gap: 8px; align-items: center; font-weight: 800; font-size: 14px; color: var(--indigo); background: var(--indigo-soft); padding: 10px 14px; border-radius: 10px; border: 0; cursor: pointer; white-space: nowrap; }
+.statement { background: var(--ink); color: var(--on-dark); border-radius: 22px; padding: 24px; display: flex; flex-wrap: wrap; gap: 18px; align-items: center; justify-content: space-between; }
+.pill { font-size: 12px; font-weight: 800; padding: 4px 10px; border-radius: 999px; }
+.pill.on { background: var(--green-soft); color: var(--green); }
+.pill.off { background: var(--saffron-soft); color: var(--saffron-deep); }
+.sample { font-size: 12.5px; font-weight: 700; color: var(--saffron-deep); background: var(--saffron-soft); padding: 6px 12px; border-radius: 999px; align-self: flex-start; }
+</style>
+</head>
+<body data-page="account">
+<div id="site-header"></div>
+<main class="wrap acc">
+  <nav class="side" aria-label="Account" role="tablist" id="side">
+    <div class="me"><span class="av">PS</span><span><b style="color:var(--ink)">Priya Sharma</b><br><span style="font-size:13px;color:var(--muted)">Member since Mar 2024</span></span></div>
+  </nav>
+  <div class="stack" style="gap:22px;min-width:0" id="view"></div>
+</main>
+<div id="site-footer" data-cta="0"></div>
+<script src="assets/site.js"></script>
+<script>
+(function () {
+  const { fmt, esc, ICON, toast } = SA;
+  const $ = (id) => document.getElementById(id);
+  /* Example data so the dashboard opens in a realistic state. On the live site this comes from the donor's record. */
+  const gifts = [
+    ['FY 2026–27', '22 Oct 2026', 'Bihar Flood Relief 2026', 2500, 'UPI', 'bihar-flood-relief-2026'],
+    ['FY 2026–27', '01 Oct 2026', 'Monthly giving', 1000, 'UPI AutoPay', null],
+    ['FY 2026–27', '19 Sep 2026', 'Nepal Flood Relief 2026', 5000, 'Visa ••4421', 'nepal-flood-relief-2026'],
+    ['FY 2026–27', '05 Sep 2026', 'Langar Sewa', 1100, 'UPI', 'langar-sewa'],
+    ['FY 2026–27', '01 Sep 2026', 'Monthly giving', 1000, 'UPI AutoPay', null],
+    ['FY 2026–27', '14 Aug 2026', 'Assam Flood Relief 2026', 3400, 'RuPay ••0917', 'assam-flood-relief-2026'],
+    ['FY 2025–26', '12 Mar 2026', 'Sikh Aid Health on Wheels', 5100, 'Net banking', 'sikh-aid-health-on-wheels'],
+    ['FY 2025–26', '20 Dec 2025', 'Langar Sewa', 2100, 'UPI', 'langar-sewa'],
+    ['FY 2024–25', '18 Nov 2024', 'Langar Sewa', 1000, 'UPI', 'langar-sewa']
+  ];
+  const tabs = [['overview', 'Overview'], ['history', 'Donations & receipts'], ['monthly', 'Monthly giving'], ['profile', 'Profile']];
+  const st = { tab: 'overview', fy: 'FY 2026–27', camp: 'All', paused: false };
+  try { const h = location.hash.slice(1); if (tabs.some((t) => t[0] === h)) st.tab = h; } catch (e) {}
+  $('side').insertAdjacentHTML('beforeend', tabs.map((t) => '<button type="button" role="tab" data-t="' + t[0] + '">' + t[1] + '</button>').join('') + '<button type="button" id="logout">Log out</button>');
+  $('side').addEventListener('click', (e) => { const b = e.target.closest('[data-t]'); if (b) { st.tab = b.dataset.t; render(); } });
+  $('logout').onclick = () => { location.href = 'index.html'; };
+
+  function overview() {
+    const life = gifts.reduce((s, g) => s + g[3], 0), fy = gifts.filter((g) => g[0] === 'FY 2026–27').reduce((s, g) => s + g[3], 0);
+    return '<span class="sample">Example account: your real giving appears here once you log in</span>' +
+      '<div class="row between"><div class="stack" style="gap:4px"><span style="color:var(--muted)">Sat Sri Akal,</span><h1 style="font-size:clamp(30px,4vw,40px)">Priya, here’s the good you’ve done</h1></div><a class="btn btn-give" href="donate.html">Donate again</a></div>' +
+      '<div class="kpis"><div class="kpi dark"><span>Lifetime donated</span><b>' + fmt(life) + '</b><span style="font-size:13px">across ' + gifts.length + ' donations</span></div>' +
+      '<div class="kpi"><span style="color:var(--muted)">Causes supported</span><b>5</b><span style="font-size:13px;color:var(--muted)">Floods, langar, healthcare</span></div>' +
+      '<div class="kpi"><span style="color:var(--muted)">This financial year</span><b>' + fmt(fy) + '</b><span style="font-size:13px;color:var(--muted)">' + fmt(fy / 2) + ' eligible under 80G</span></div>' +
+      '<div class="kpi"><span style="color:var(--muted)">Monthly giving</span><b style="color:var(--green)">' + (st.paused ? 'Paused' : 'Active') + '</b><span style="font-size:13px;color:var(--muted)">' + fmt(1000) + ' · next debit 1 Nov</span></div></div>' +
+      '<div class="box"><div class="row between"><h2 style="font-size:24px">Your impact</h2><span style="font-size:13px;color:var(--muted)">Estimated from your gifts and campaign costs</span></div>' +
+      '<div class="imp"><div><b>640</b>hot langar meals</div><div><b>9</b>family relief kits</div><div><b>3</b>medical camp days</div><div><b>1</b>boat run to cut-off villages</div></div></div>' +
+      '<div class="grid g2"><div class="box"><div class="row between"><h2 style="font-size:22px">Recent donations</h2><button class="more" style="border:0;background:none;cursor:pointer" type="button" data-go="history">View all →</button></div>' +
+      gifts.slice(0, 4).map((g) => '<div class="row" style="flex-wrap:nowrap;border-bottom:1px solid var(--line);padding-bottom:12px"><span style="flex:1;min-width:0"><b style="color:var(--ink)">' + esc(g[2]) + '</b><br><span style="font-size:13px;color:var(--muted)">' + g[1] + ' · ' + g[4] + '</span></span><b class="num" style="color:var(--ink)">' + fmt(g[3]) + '</b></div>').join('') + '</div>' +
+      '<div class="box"><h2 style="font-size:22px">From causes you support</h2>' +
+      '<a href="campaign.html#bihar-flood-relief-2026" style="text-decoration:none"><span class="eyebrow" style="font-size:12px">Bihar · 20 Oct</span><br><b style="color:var(--ink)">Second relief camp opens</b></a>' +
+      '<a href="campaign.html#langar-sewa" style="text-decoration:none"><span class="eyebrow" style="font-size:12px">Langar Sewa · 16 Oct</span><br><b style="color:var(--ink)">Kitchen reaches 2,000 meals a day</b></a>' +
+      '<div style="background:var(--indigo-soft);border-radius:14px;padding:16px" class="stack"><b style="color:var(--ink)">Add your birthday</b><span style="font-size:14px;color:var(--muted)">We’ll send a note on your day showing what your giving achieved that year.</span><button class="more" type="button" data-go="profile" style="border:0;background:none;cursor:pointer;padding:0;align-self:flex-start">Add date of birth →</button></div></div></div>';
+  }
+  function history() {
+    const years = ['FY 2026–27', 'FY 2025–26', 'FY 2024–25'], camps = ['All'].concat([...new Set(gifts.map((g) => g[2]))]);
+    const rows = gifts.filter((g) => g[0] === st.fy && (st.camp === 'All' || g[2] === st.camp));
+    const total = rows.reduce((s, g) => s + g[3], 0);
+    return '<div class="row between"><h1 style="font-size:clamp(28px,4vw,38px)">Donations &amp; receipts</h1><div class="row">' +
+      '<label class="field" for="fy">Financial year<select id="fy">' + years.map((y) => '<option' + (y === st.fy ? ' selected' : '') + '>' + y + '</option>').join('') + '</select></label>' +
+      '<label class="field" for="cp">Campaign<select id="cp">' + camps.map((c) => '<option' + (c === st.camp ? ' selected' : '') + '>' + esc(c) + '</option>').join('') + '</select></label></div></div>' +
+      '<div class="statement"><div class="stack" style="gap:4px"><b style="font-family:var(--display);font-size:22px;color:#fff">Annual 80G statement · ' + st.fy + '</b><span>' + rows.length + ' donations · ' + fmt(total) + ' total · one PDF for your tax filing</span></div><button class="btn btn-give" type="button" data-dl="statement">' + ICON.download + 'Download statement</button></div>' +
+      '<div class="box" style="padding:8px 8px 16px"><div class="table-box"><table class="data"><thead><tr><th scope="col">Date</th><th scope="col">Campaign</th><th scope="col">Amount</th><th scope="col">Payment</th><th scope="col">Receipt</th></tr></thead><tbody>' +
+      (rows.length ? rows.map((g) => '<tr><td style="color:var(--muted);white-space:nowrap">' + g[1] + '</td><td>' + (g[5] ? '<a href="campaign.html#' + g[5] + '" style="font-weight:800;color:var(--ink);text-decoration:none">' + esc(g[2]) + '</a><br><span style="font-size:13px;color:var(--muted)">See what it funded →</span>' : '<b style="color:var(--ink)">' + esc(g[2]) + '</b>') + '</td><td><b style="color:var(--ink)">' + fmt(g[3]) + '</b></td><td style="color:var(--muted)">' + g[4] + '</td><td><button class="dl" type="button" data-dl="receipt">' + ICON.download + '80G PDF</button></td></tr>').join('')
+        : '<tr><td colspan="5" style="color:var(--muted)">No donations match these filters.</td></tr>') + '</tbody></table></div></div>';
+  }
+  function monthly() {
+    return '<h1 style="font-size:clamp(28px,4vw,38px)">Monthly giving</h1>' +
+      '<div class="box"><div class="row between" style="align-items:flex-start"><div class="stack" style="gap:6px"><div class="row" style="gap:10px"><b style="font-size:20px;color:var(--ink)">' + fmt(1000) + ' / month · Where it’s needed most</b><span class="pill ' + (st.paused ? 'off' : 'on') + '">' + (st.paused ? 'Paused' : 'Active') + '</span></div>' +
+      '<span style="color:var(--muted)">' + (st.paused ? 'Paused. No debits until you resume.' : 'UPI AutoPay · next debit 1 Nov 2026 · giving since Mar 2025') + '</span></div>' +
+      '<div class="row"><button class="btn btn-line" type="button" id="chg">Change amount</button><button class="btn btn-line" type="button" id="pause">' + (st.paused ? 'Resume' : 'Pause') + '</button><button class="btn" type="button" id="cancel" style="color:var(--red);background:none">Cancel</button></div></div>' +
+      '<div id="confirm" hidden class="note" style="background:var(--red-soft);color:#7A2F28">Cancel your monthly gift? Relief kits for the next emergency depend on monthly givers. <div class="row" style="margin-top:10px"><button class="btn btn-dark" type="button" id="keep">Keep giving</button><button class="btn btn-line" type="button" id="really">Yes, cancel</button></div></div>' +
+      '<p style="font-size:14px;color:var(--muted)">We email and SMS you 3 days before every renewal.</p></div>' +
+      '<div class="box" style="background:var(--saffron-soft)"><b style="color:var(--ink);font-size:18px">Start another monthly gift</b><span style="color:var(--muted)">Pick a specific campaign, like Langar Sewa or Health on Wheels.</span><a class="btn btn-give" href="donate.html#monthly" style="align-self:flex-start">Add a monthly gift</a></div>';
+  }
+  function profile() {
+    const f = (id, l, t, v, ex) => '<label class="field" for="' + id + '">' + l + '<input id="' + id + '" type="' + t + '" value="' + v + '" ' + (ex || '') + '></label>';
+    return '<h1 style="font-size:clamp(28px,4vw,38px)">Profile</h1><form class="box" id="pf"><div class="grid g2" style="gap:14px">' +
+      f('pName', 'Full name', 'text', 'Priya Sharma', 'autocomplete="name"') + f('pEmail', 'Email', 'email', 'priya@example.com', 'autocomplete="email"') + f('pPhone', 'Mobile', 'tel', '+91 98XXX XXXXX', 'autocomplete="tel"') + f('pCity', 'City', 'text', 'Delhi', '') +
+      f('pPan', 'PAN (for 80G receipts)', 'text', 'ABCPS1234K', 'style="text-transform:uppercase" maxlength="10"') + f('pDob', 'Date of birth (for your birthday impact note)', 'date', '', '') + '</div>' +
+      '<div class="stack" style="gap:10px"><label class="check"><input type="checkbox" checked>Email me campaign updates</label><label class="check"><input type="checkbox" checked>WhatsApp updates</label><label class="check"><input type="checkbox">Show my name on donor walls</label></div>' +
+      '<button class="btn btn-dark" type="submit" style="align-self:flex-start">Save changes</button></form>';
+  }
+  function render() {
+    $('side').querySelectorAll('[data-t]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.t === st.tab)));
+    $('view').innerHTML = { overview, history, monthly, profile }[st.tab]();
+    const v = $('view');
+    v.querySelectorAll('[data-go]').forEach((b) => b.onclick = () => { st.tab = b.dataset.go; render(); });
+    v.querySelectorAll('[data-dl]').forEach((b) => b.onclick = () => toast(b.dataset.dl === 'statement' ? 'Your annual statement PDF will download on the live site.' : 'Your receipt PDF will download on the live site.'));
+    if (st.tab === 'history') { $('fy').onchange = (e) => { st.fy = e.target.value; render(); }; $('cp').onchange = (e) => { st.camp = e.target.value; render(); }; }
+    if (st.tab === 'monthly') {
+      $('pause').onclick = () => { st.paused = !st.paused; toast(st.paused ? 'Monthly gift paused' : 'Monthly gift resumed'); render(); };
+      $('cancel').onclick = () => { $('confirm').hidden = false; };
+      $('keep').onclick = () => { $('confirm').hidden = true; };
+      $('really').onclick = () => { toast('Monthly gift cancelled. Thank you for your seva.'); $('confirm').hidden = true; };
+      $('chg').onclick = () => toast('Choose a new amount on the next screen of the live site.');
+    }
+    if (st.tab === 'profile') $('pf').onsubmit = (e) => { e.preventDefault(); toast('Profile saved'); };
+  }
+  render();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>About · SikhAid</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Manrope:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="assets/styles.css">
+<style>
+.ab-hero .wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; align-items: center; padding-block: 64px; }
+@media (max-width: 900px) { .ab-hero .wrap { grid-template-columns: 1fr; } }
+.ab-hero h1 { font-size: clamp(42px, 6vw, 66px); line-height: 1.02; }
+.mosaic { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 12px; height: clamp(320px, 38vw, 460px); }
+.mosaic .ph { border-radius: 20px; }
+.mosaic .ph:first-child { grid-row: span 2; }
+.pillar { border: 1px solid rgba(255,255,255,.16); border-radius: 22px; padding: 30px; display: flex; flex-direction: column; gap: 10px; }
+.pillar b.g { font-family: var(--display); font-size: 30px; color: var(--saffron); }
+.pillar small { color: #B9BFDD; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; font-weight: 800; }
+.tl { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); border-top: 3px solid var(--ink); }
+.tl li { padding: 22px 20px 0 0; display: flex; flex-direction: column; gap: 8px; position: relative; }
+.tl li::before { content: ""; position: absolute; top: -10px; left: 0; width: 16px; height: 16px; border-radius: 50%; background: var(--saffron); border: 3px solid var(--bg); }
+.tl b.y { font-family: var(--display); font-size: 34px; color: var(--saffron-deep); }
+.person .ph { aspect-ratio: 1; max-width: 100%; border-radius: 18px; }
+.person .ph::after { display: none; }
+.doc { border: 1px solid var(--line); border-radius: 16px; padding: 18px; display: flex; gap: 14px; align-items: center; text-decoration: none; color: var(--ink); background: var(--bg); }
+.doc:hover { border-color: var(--indigo); }
+.doc .ic { width: 46px; height: 46px; border-radius: 12px; background: var(--indigo-soft); color: var(--indigo); display: grid; place-items: center; flex: none; }
+dl.reg { display: grid; grid-template-columns: auto 1fr; gap: 12px 24px; margin: 0; font-size: 15px; }
+dl.reg dt { color: var(--muted); }
+dl.reg dd { margin: 0; font-weight: 800; color: var(--ink); }
+.agal { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); grid-auto-rows: 180px; gap: 10px; }
+.agal .ph { border-radius: 14px; }
+</style>
+</head>
+<body data-page="about">
+<div id="site-header"></div>
+<main>
+  <section class="ab-hero"><div class="wrap">
+    <div class="stack" style="gap:18px">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a> / About us</nav>
+      <span class="eyebrow">Serving India since 2020</span>
+      <h1>Langar for all.<br>Seva for all.</h1>
+      <p class="lead">SikhAid Charitable Trust provides immediate humanitarian aid and disaster relief across India. From natural disasters to community emergencies, we serve with compassion, dignity and full transparency.</p>
+      <div class="row"><a class="btn btn-give btn-lg" href="donate.html">Support our work</a><a class="btn btn-line btn-lg" href="get-involved.html#volunteer">Volunteer with us</a></div>
+    </div>
+    <div class="mosaic" id="mosaic"></div>
+  </div></section>
+
+  <section class="band dark" aria-labelledby="pil-h"><div class="wrap">
+    <div class="sec-head"><div class="stack"><span class="eyebrow">What guides us</span><h2 class="h-sec" id="pil-h">The three pillars we work by</h2></div></div>
+    <div class="grid g3">
+      <div class="pillar"><small>Remember</small><b class="g">Naam Japo</b><p>We see the divine in everyone we serve, so every person is met with dignity, whatever their faith or circumstance.</p></div>
+      <div class="pillar"><small>Honest work</small><b class="g">Kirt Karo</b><p>Every rupee is accounted for: receipts issued, books audited and utilisation published for each campaign.</p></div>
+      <div class="pillar"><small>Share</small><b class="g">Vand Chakho</b><p>The spirit of langar, extended to every community in crisis: what we have, we share.</p></div>
+    </div>
+  </div></section>
+
+  <section class="band alt" aria-labelledby="mv-h"><div class="wrap">
+    <h2 class="sr-only" id="mv-h">Mission and vision</h2>
+    <div class="grid g2">
+      <div class="panel stack"><span class="eyebrow">Our mission</span><p style="font-family:var(--display);font-size:24px;line-height:1.35;color:var(--ink);font-weight:600">To provide immediate humanitarian aid and disaster relief to communities across India during times of crisis. We serve with compassion, dignity, and unwavering commitment to those who need help the most.</p><ul class="ticks"><li>Rapid emergency response within 24 hours</li><li>Community-centred relief and rehabilitation</li><li>100% transparent fund utilisation</li></ul></div>
+      <div class="panel stack"><span class="eyebrow">Our vision</span><p style="font-family:var(--display);font-size:24px;line-height:1.35;color:var(--ink);font-weight:600">A resilient India where no community faces disaster alone. A network of compassionate service that reaches every corner of our nation, ensuring rapid relief and sustainable recovery.</p><ul class="ticks"><li>Pan-India disaster preparedness network</li><li>Empowered communities with resilience training</li><li>Technology-driven humanitarian response</li></ul></div>
+    </div>
+  </div></section>
+
+  <section class="band" aria-labelledby="tl-h"><div class="wrap">
+    <div class="sec-head"><div class="stack"><span class="eyebrow">Our journey</span><h2 class="h-sec" id="tl-h">From one city to 19+ states</h2></div></div>
+    <ol class="tl">
+      <li><b class="y">2020</b><b style="color:var(--ink)">SikhAid is founded</b><span style="color:var(--muted)">Starts with COVID oxygen sewa and ration kits for families in need.</span></li>
+      <li><b class="y">[YEAR]</b><b style="color:var(--ink)">Langar Aid &amp; No Spot</b><span style="color:var(--muted)">Community kitchens and women's health drives expand to new cities.</span></li>
+      <li><b class="y">2025</b><b style="color:var(--ink)">Ratha Yatra Seva, Puri</b><span style="color:var(--muted)">Water, ORS and meals for pilgrims on Grand Road.</span></li>
+      <li><b class="y">2026</b><b style="color:var(--ink)">Bihar, Nepal &amp; Assam floods</b><span style="color:var(--muted)">Three simultaneous flood responses; 250,000+ people rescued to date.</span></li>
+    </ol>
+  </div></section>
+
+  <section class="band alt" aria-labelledby="team-h"><div class="wrap">
+    <div class="sec-head"><div class="stack"><span class="eyebrow">Leadership</span><h2 class="h-sec" id="team-h">The people accountable for every rupee</h2></div></div>
+    <div class="grid g4">
+      <div class="person stack" style="gap:10px"><div class="ph" style="--tone:#2D3354" data-label=""></div><b style="color:var(--ink);font-size:18px">[Founder name]</b><span style="color:var(--muted);font-size:14px">Founder &amp; Managing Trustee</span></div>
+      <div class="person stack" style="gap:10px"><div class="ph" style="--tone:#4C3A2E" data-label=""></div><b style="color:var(--ink);font-size:18px">[Trustee name]</b><span style="color:var(--muted);font-size:14px">Trustee, Operations</span></div>
+      <div class="person stack" style="gap:10px"><div class="ph" style="--tone:#3E5872" data-label=""></div><b style="color:var(--ink);font-size:18px">[Name]</b><span style="color:var(--muted);font-size:14px">Head of Disaster Response</span></div>
+      <div class="person stack" style="gap:10px"><div class="ph" style="--tone:#2E6B68" data-label=""></div><b style="color:var(--ink);font-size:18px">[Name]</b><span style="color:var(--muted);font-size:14px">Finance &amp; Compliance</span></div>
+    </div>
+  </div></section>
+
+  <section class="band" id="gallery" aria-labelledby="ag-h"><div class="wrap">
+    <div class="sec-head"><div class="stack"><span class="eyebrow">Gallery</span><h2 class="h-sec" id="ag-h">Our work, in pictures</h2></div></div>
+    <div class="agal" id="agal"></div>
+  </div></section>
+
+  <section class="band alt" id="compliance" aria-labelledby="comp-h"><div class="wrap">
+    <div class="grid g2" style="align-items:start;gap:40px">
+      <div class="stack" style="gap:16px">
+        <span class="eyebrow">Registration &amp; compliance</span>
+        <h2 class="h-sec" id="comp-h">Verified, registered, accountable</h2>
+        <p class="lead" style="font-size:16px">Every document a donor or CSR partner may need, open to view and download.</p>
+        <dl class="reg"><dt>Trust registration</dt><dd>[TRUST REG. NO.]</dd><dt>80G registration</dt><dd>[80G REG. NO.]</dd><dt>12A registration</dt><dd>[12A REG. NO.]</dd><dt>Trust PAN</dt><dd>[TRUST PAN]</dd><dt>CSR-1</dt><dd>[CSR-1 NO.]</dd></dl>
+      </div>
+      <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:12px" id="docs"></div>
+    </div>
+  </div></section>
+</main>
+<div id="site-footer"></div>
+<script src="assets/site.js"></script>
+<script>
+(function () {
+  const { IMG, photo, fallbackImages, ICON } = SA;
+  document.getElementById('mosaic').innerHTML = photo(IMG.langar, 'Langar seva', '#7A4E26', '', 'Volunteers preparing meals') + photo(IMG.assam4, 'Flood relief', '#3E5872', '', 'Relief materials for flood-affected families') + photo(IMG.health, 'Healthcare', '#2E6B68', '', 'Mobile medical camp');
+  const g = [[IMG.assam1, 'Assam flood relief', '#3E5872'], [IMG.food, 'Community food distribution', '#7A4E26'], [IMG.ratha1, 'Ratha Yatra 2025, Puri', '#8A5A2B'], [IMG.pads, 'No Spot: women’s health', '#6B3A4E'], [IMG.blanket, 'Winter blankets', '#4A4A6A'], [IMG.fooddist, 'Food for the homeless', '#6E4A2A'], [IMG.ration, 'COVID ration kits', '#5C5030'], [IMG.assam7, 'Supporting displaced families', '#46607A'], [IMG.hygiene, 'Hygiene workshop', '#5A3442'], [IMG.ratha6, 'ORS for pilgrims', '#8A5A2B'], [IMG.assam3, 'Relief delivery', '#34506E'], [IMG.langar, 'Langar meals', '#6E4A2A']];
+  document.getElementById('agal').innerHTML = g.map((x) => photo(x[0], x[1], x[2], '', x[1])).join('');
+  document.getElementById('docs').innerHTML = [['80G certificate', 'PDF'], ['12A certificate', 'PDF'], ['Trust deed', 'PDF'], ['Annual report 2025–26', 'PDF'], ['Audited financials 2025–26', 'PDF'], ['Campaign utilisation reports', 'One per campaign']]
+    .map((d) => '<a class="doc" href="#compliance"><span class="ic">' + ICON.download + '</span><span><b>' + d[0] + '</b><br><span style="font-size:13px;color:var(--muted)">' + d[1] + '</span></span></a>').join('');
+  fallbackImages();
+})();
+</script>
+</body>
+</html>

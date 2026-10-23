@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Campaigns · SikhAid</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Manrope:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="assets/styles.css">
+<style>
+.toolbar { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 71px); z-index: 20; background: var(--bg); border-bottom: 1px solid var(--line); }
+.toolbar .wrap { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; padding-block: 14px; }
+.search { flex: 1 1 260px; display: flex; align-items: center; gap: 10px; border: 1.5px solid #D3D7E6; border-radius: 12px; padding: 0 14px; min-height: 48px; }
+.search input { border: 0; outline: none; flex: 1; min-width: 0; font: inherit; font-size: 15px; background: transparent; color: var(--ink); }
+.search:focus-within { border-color: var(--indigo); }
+.hero-stats { display: flex; flex-wrap: wrap; gap: 12px; }
+.hero-stats div { background: rgba(255,255,255,.08); border-radius: 16px; padding: 16px 22px; }
+.hero-stats b { display: block; font-family: var(--display); font-size: 32px; color: var(--saffron); font-variant-numeric: tabular-nums; }
+.done-card { display: flex; gap: 16px; background: var(--bg); border-radius: 18px; padding: 14px; text-decoration: none; color: var(--text); border: 1px solid var(--line); }
+.done-card .ph { width: 110px; flex: none; border-radius: 12px; min-height: 110px; }
+.done-card .ph::after { display: none; }
+.how { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 16px; }
+.how div { background: var(--bg); border-radius: 18px; padding: 22px; display: flex; flex-direction: column; gap: 8px; }
+.how b.n { font-family: var(--display); font-size: 30px; color: var(--saffron-deep); }
+</style>
+</head>
+<body data-page="campaigns">
+<div id="site-header"></div>
+<main>
+  <section class="page-hero">
+    <div class="wrap">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a> / Campaigns</nav>
+      <h1>Every cause, one place</h1>
+      <p class="lead">Emergency relief, hunger, healthcare and youth programs. See progress live, give to the one that moves you, and follow what your gift does.</p>
+      <div class="hero-stats" id="heroStats" style="margin-top:12px"></div>
+    </div>
+  </section>
+
+  <div class="toolbar"><div class="wrap">
+    <label class="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <span class="sr-only">Search campaigns</span><input id="q" type="search" placeholder="Search by cause or place, e.g. flood, Odisha"></label>
+    <div class="chips" role="group" aria-label="Filter by cause" id="filters"></div>
+    <label class="field" style="flex-direction:row;align-items:center;gap:8px">Sort
+      <select id="sort" style="min-height:46px"><option value="urgent">Most urgent</option><option value="close">Closest to goal</option><option value="support">Most supported</option></select></label>
+  </div></div>
+
+  <section class="band tight" aria-labelledby="res-h">
+    <div class="wrap stack" style="gap:20px">
+      <h2 class="sr-only" id="res-h">Campaign results</h2>
+      <p id="count" style="color:var(--muted);font-weight:700" aria-live="polite"></p>
+      <div class="grid g3" id="list"></div>
+      <p id="empty" hidden style="padding:40px;text-align:center;color:var(--muted)">No campaigns match. Try another word or clear the filter.</p>
+    </div>
+  </section>
+
+  <section class="band alt tight" aria-labelledby="how-h">
+    <div class="wrap stack" style="gap:24px">
+      <h2 class="h-sec" id="how-h" style="font-size:34px">How giving to a campaign works</h2>
+      <div class="how">
+        <div><b class="n">1</b><b style="color:var(--ink)">Pick a campaign</b><span style="color:var(--muted);font-size:15px">Each page shows the need, the goal and exactly what your amount buys.</span></div>
+        <div><b class="n">2</b><b style="color:var(--ink)">Donate securely</b><span style="color:var(--muted);font-size:15px">UPI, cards or net banking. Your 80G receipt arrives instantly.</span></div>
+        <div><b class="n">3</b><b style="color:var(--ink)">Relief is delivered</b><span style="color:var(--muted);font-size:15px">Our teams buy and distribute supplies, within 24 hours in emergencies.</span></div>
+        <div><b class="n">4</b><b style="color:var(--ink)">See the proof</b><span style="color:var(--muted);font-size:15px">Photo updates and a fund-use report land in your inbox and account.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band tight">
+    <div class="wrap">
+      <div class="panel" style="background:var(--saffron-soft);border:2px solid var(--saffron);display:flex;flex-wrap:wrap;gap:22px;align-items:center;justify-content:space-between">
+        <div class="stack" style="gap:8px;flex:1 1 480px"><h2 style="font-size:30px">Can't choose? Become a monthly giver.</h2><p style="color:var(--muted)">Your monthly gift goes where need is greatest, emergencies first. Auto-debit via UPI or card, pause anytime, one annual 80G statement.</p></div>
+        <a class="btn btn-dark btn-lg" href="donate.html#monthly">Start monthly giving</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="band alt" aria-labelledby="done-h">
+    <div class="wrap">
+      <div class="sec-head"><div class="stack"><span class="eyebrow">Completed</span><h2 class="h-sec" id="done-h" style="font-size:34px">What past campaigns achieved</h2></div></div>
+      <div class="grid g3" id="done"></div>
+    </div>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script src="assets/site.js"></script>
+<script>
+(function () {
+  const { campaigns, completed, fmt, pct, esc, card, photo, fallbackImages } = SA;
+  const $ = (id) => document.getElementById(id);
+  const total = campaigns.reduce((s, c) => s + c.raised, 0), donors = campaigns.reduce((s, c) => s + c.donors, 0);
+  $('heroStats').innerHTML = '<div><b>' + campaigns.length + '</b>Active campaigns</div><div><b>' + campaigns.filter((c) => c.urgent).length + '</b>Live emergencies</div>' +
+    '<div><b>' + fmt(total) + '</b>Raised this season</div><div><b>' + donors.toLocaleString('en-IN') + '</b>Donors</div>';
+  const groups = ['All', 'Emergency', 'Hunger', 'Healthcare', 'Youth'];
+  let f = 'All';
+  try { const h = location.hash.slice(1); const g = groups.find((x) => x.toLowerCase() === h); if (g) f = g; } catch (e) {}
+  function render() {
+    $('filters').innerHTML = groups.map((g) => '<button class="chip" type="button" aria-pressed="' + (g === f) + '" data-g="' + g + '">' + g + '</button>').join('');
+    const q = $('q').value.trim().toLowerCase();
+    let list = campaigns.filter((c) => (f === 'All' || c.group === f) && (!q || (c.title + ' ' + c.location + ' ' + c.category + ' ' + c.blurb).toLowerCase().includes(q)));
+    const s = $('sort').value;
+    list = list.slice().sort((a, b) => s === 'close' ? pct(b) - pct(a) : s === 'support' ? b.donors - a.donors : (b.urgent - a.urgent) || (a.days || 99) - (b.days || 99));
+    $('list').innerHTML = list.map(card).join('');
+    $('count').textContent = list.length + ' campaign' + (list.length === 1 ? '' : 's');
+    $('empty').hidden = list.length > 0;
+    fallbackImages($('list'));
+  }
+  $('filters').addEventListener('click', (e) => { const b = e.target.closest('[data-g]'); if (b) { f = b.dataset.g; render(); } });
+  $('q').addEventListener('input', render); $('sort').addEventListener('change', render);
+  render();
+  $('done').innerHTML = completed.map((d) => '<a class="done-card" href="blog.html">' + photo(d.img, '', d.tone, '', d.title) +
+    '<span class="stack" style="gap:6px"><span class="badge done" style="align-self:flex-start">Completed</span><b style="color:var(--ink);font-size:17px">' + esc(d.title) + '</b><span style="font-size:14px;color:var(--muted)">' + esc(d.sub) + '</span><span style="font-weight:800;color:var(--indigo);font-size:14px">Read impact report →</span></span></a>').join('');
+  fallbackImages($('done'));
+})();
+</script>
+</body>
+</html>
