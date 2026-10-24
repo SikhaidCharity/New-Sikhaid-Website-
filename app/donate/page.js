@@ -94,18 +94,24 @@ function DonateContent({ initialSlug }) {
         setSelectedSlug(g.slug);
         if (g.amt) setAmount(g.amt);
         if (g.monthly !== undefined) setIsMonthly(Boolean(g.monthly));
+        sessionStorage.removeItem('sa-gift');
         return;
       }
     } catch (e) {}
 
-    const hash = window.location.hash.replace('#', '');
-    if (hash === 'monthly') {
-      setIsMonthly(true);
-    } else if (hash === 'gift') {
-      setIsGift(true);
-    } else if (options.some((o) => o.slug === hash)) {
-      setSelectedSlug(hash);
-    }
+    const syncFromHash = () => {
+      const hash = typeof window !== 'undefined' ? window.location.hash.replace('#', '') : '';
+      if (hash === 'monthly') {
+        setIsMonthly(true);
+      } else if (hash === 'gift') {
+        setIsGift(true);
+      } else if (options.some((o) => o.slug === hash)) {
+        setSelectedSlug(hash);
+      }
+    };
+    syncFromHash();
+    window.addEventListener('hashchange', syncFromHash);
+    return () => window.removeEventListener('hashchange', syncFromHash);
   }, [initialSlug, searchParams]);
 
   const camp = options.find((o) => o.slug === selectedSlug) || options[0];

@@ -1800,17 +1800,19 @@
     const badge = c.urgent ? '<span class="badge urgent"><span class="dot pulse"></span>Emergency</span>' : '<span class="badge">' + esc(c.status) + '</span>';
     const meta = c.days ? c.days + ' days left' : 'Ongoing';
     return '<article class="ccard">' +
+      '<a href="campaign.html#' + c.slug + '" style="display:block;text-decoration:none">' +
       photo(c.img, c.title, c.tone, '', c.title, '<div class="ph-top">' + badge + '<span class="loc">' + ICON.pin + esc(c.location) + '</span></div>') +
+      '</a>' +
       '<div class="body">' +
       '<span class="cat">' + esc(c.category) + '</span>' +
-      '<h3><a href="campaign.html#' + c.slug + '">' + esc(c.title) + '</a></h3>' +
+      '<h3 style="font-weight:700"><a href="campaign.html#' + c.slug + '">' + esc(c.title) + '</a></h3>' +
       '<p>' + esc(c.blurb) + '</p>' +
       '<div class="stack" style="gap:8px;margin-top:auto">' +
       '<div class="progress" role="img" aria-label="' + p + '% of goal raised"><i style="width:' + p + '%"></i></div>' +
       '<div class="money"><span><b class="num">' + fmt(c.raised) + '</b> raised of ' + fmt(c.goal) + '</span><strong style="color:var(--indigo)">' + p + '%</strong></div>' +
       '<div class="meta"><span>' + ICON.people + c.donors.toLocaleString('en-IN') + ' donors</span><span>' + ICON.clock + meta + '</span></div>' +
       '</div>' +
-      '<div class="acts"><a class="btn btn-line" href="campaign.html#' + c.slug + '">Know more</a><a class="btn btn-give" href="donate.html#' + c.slug + '">Donate</a></div>' +
+      '<div class="acts"><a class="btn btn-line" href="campaign.html#' + c.slug + '" style="font-weight:700">Know more</a><a class="btn btn-give" href="donate.html#' + c.slug + '" style="font-weight:700">Donate</a></div>' +
       '</div></article>';
   }
 

@@ -11,28 +11,28 @@ const EMERGENCY_ALERTS = [
     tag: 'Emergency',
     text: 'Nepal flash floods: Thousands need urgent relief.',
     linkText: 'Help Nepal now →',
-    linkUrl: '/campaign#nepal-flood-relief-2026',
+    linkUrl: '/campaigns/nepal-flood-relief-2026',
   },
   {
     id: 'bihar',
     tag: 'Emergency',
     text: 'Bihar flood crisis: Submerged villages need clean water & shelter.',
     linkText: 'Help Bihar now →',
-    linkUrl: '/campaign#bihar-flood-relief-2026',
+    linkUrl: '/campaigns/bihar-flood-relief-2026',
   },
   {
     id: 'assam',
     tag: 'Emergency',
     text: 'Assam floods: Urgent rehabilitation and family kits required.',
     linkText: 'Help Assam now →',
-    linkUrl: '/campaign#assam-flood-relief-2026',
+    linkUrl: '/campaigns/assam-flood-relief-2026',
   },
   {
     id: 'langar',
     tag: 'Emergency',
     text: 'Ground Langar Sewa: Delivering 2,000+ warm meals daily across relief zones.',
     linkText: 'Support Langar →',
-    linkUrl: '/campaign#langar-sewa',
+    linkUrl: '/campaigns/langar-sewa',
   },
 ];
 

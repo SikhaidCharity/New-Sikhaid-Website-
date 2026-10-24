@@ -23,10 +23,15 @@ export function CampaignDetail({ initialSlug }) {
       setSlug(qSlug);
       return;
     }
-    const hash = typeof window !== 'undefined' ? window.location.hash.replace('#', '') : '';
-    if (hash && bySlug(hash)) {
-      setSlug(hash);
-    }
+    const syncFromHash = () => {
+      const hash = typeof window !== 'undefined' ? window.location.hash.replace('#', '') : '';
+      if (hash && bySlug(hash)) {
+        setSlug(hash);
+      }
+    };
+    syncFromHash();
+    window.addEventListener('hashchange', syncFromHash);
+    return () => window.removeEventListener('hashchange', syncFromHash);
   }, [searchParams, initialSlug]);
 
   const campaign = bySlug(slug) || campaigns[0] || {};
@@ -416,9 +421,18 @@ export function CampaignDetail({ initialSlug }) {
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 21s-7-4.4-9.3-9A5.4 5.4 0 0 1 12 6.3 5.4 5.4 0 0 1 21.3 12C19 16.6 12 21 12 21z" /></svg>
                 <span>{impactSummary}</span>
               </div>
-              <button type="button" className="btn btn-give btn-lg btn-block" onClick={handleGive} style={{ fontWeight: 800 }}>
+              <Link
+                href={`/donate/${campaign.slug || 'general'}?amount=${currentAmt}&freq=${isMonthly ? 'monthly' : 'once'}`}
+                className="btn btn-give btn-lg btn-block"
+                onClick={() => {
+                  try {
+                    sessionStorage.setItem('sa-gift', JSON.stringify({ slug: campaign.slug, amt: currentAmt, monthly: isMonthly }));
+                  } catch (e) {}
+                }}
+                style={{ fontWeight: 700 }}
+              >
                 Donate {fmt(currentAmt)}{suffix}
-              </button>
+              </Link>
               <div className="cd-trust-row">
                 <span>✓ 80G Tax Receipt</span>
                 <span>✓ 256-bit SSL</span>
@@ -435,7 +449,7 @@ export function CampaignDetail({ initialSlug }) {
           <div className="sec-head">
             <div className="stack">
               <span className="eyebrow">Keep the Seva Going</span>
-              <h2 className="h-sec" id="xs-h" style={{ fontSize: 'clamp(26px, 3vw, 36px)' }}>Other Active Campaigns</h2>
+              <h2 className="h-sec" id="xs-h" style={{ fontSize: 'clamp(26px, 3vw, 36px)', fontWeight: 700 }}>Other Active Campaigns</h2>
             </div>
             <div className="row" style={{ gap: '10px' }}>
               <div className="scroll-btns">
@@ -459,9 +473,18 @@ export function CampaignDetail({ initialSlug }) {
           <b style={{ fontSize: '16px' }}>{fmt(currentAmt)}</b>
           <span style={{ fontSize: '11px', color: 'var(--muted)' }}>{isMonthly ? '/mo' : ' once'} · {p}% funded</span>
         </div>
-        <button type="button" className="btn btn-give" style={{ padding: '10px 22px', fontWeight: 800, borderRadius: '999px', fontSize: '14px' }} onClick={handleGive}>
+        <Link
+          href={`/donate/${campaign.slug || 'general'}?amount=${currentAmt}&freq=${isMonthly ? 'monthly' : 'once'}`}
+          className="btn btn-give"
+          style={{ padding: '10px 22px', fontWeight: 700, borderRadius: '999px', fontSize: '14px' }}
+          onClick={() => {
+            try {
+              sessionStorage.setItem('sa-gift', JSON.stringify({ slug: campaign.slug, amt: currentAmt, monthly: isMonthly }));
+            } catch (e) {}
+          }}
+        >
           Donate Now →
-        </button>
+        </Link>
       </div>
 
       {toastMessage && (
