@@ -90,6 +90,13 @@ body::before { background: var(--bg); }
   const S = { step: 1, slug: 'general', amt: 2500, monthly: false, gift: false, method: 'upi', d: { name: '', email: '', phone: '', city: '', pan: '', dob: '' }, account: true, wall: true, wa: true };
   let h = ''; try { h = decodeURIComponent(location.hash.slice(1)); } catch (e) {}
   if (h === 'monthly') S.monthly = true; else if (h === 'gift') S.gift = true; else if (SA.bySlug(h)) S.slug = h;
+  try {
+    const urlP = new URLSearchParams(location.search);
+    const qAmt = urlP.get('amount') || urlP.get('amt');
+    if (qAmt && parseInt(qAmt, 10) > 0) S.amt = parseInt(qAmt, 10);
+    const qSlug = urlP.get('slug') || urlP.get('campaign');
+    if (qSlug && SA.bySlug(qSlug)) S.slug = qSlug;
+  } catch (e) {}
   try { const g = JSON.parse(sessionStorage.getItem('sa-gift') || 'null'); if (g && g.slug === S.slug) { S.amt = g.amt; S.monthly = g.monthly; } } catch (e) {}
   const camp = () => options.find((o) => o.slug === S.slug) || options[0];
   const tiers = () => TIERS[camp().type];

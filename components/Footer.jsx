@@ -214,7 +214,7 @@ export default function Footer({ withCta = true }) {
                   <Link href="/blog">Blog</Link>
                 </li>
                 <li>
-                  <Link href="/blog#press">Press coverage</Link>
+                  <Link href="/press">Press coverage</Link>
                 </li>
               </ul>
             </div>
@@ -229,13 +229,13 @@ export default function Footer({ withCta = true }) {
                   <Link href="/donate#monthly">Give monthly</Link>
                 </li>
                 <li>
-                  <Link href="/get-involved#volunteer">Volunteering</Link>
+                  <Link href="/volunteering">Volunteering</Link>
                 </li>
                 <li>
-                  <Link href="/get-involved#csr">CSR partnerships</Link>
+                  <Link href="/csr">CSR partnerships</Link>
                 </li>
                 <li>
-                  <Link href="/get-involved#sponsor">Sponsor</Link>
+                  <Link href="/get-involved#sponsor">Sponsor a program</Link>
                 </li>
                 <li>
                   <Link href="/account">My account</Link>

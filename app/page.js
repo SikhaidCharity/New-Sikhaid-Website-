@@ -179,8 +179,8 @@ export default function HomePage() {
             playsInline
             poster={IMG.food}
           >
+            <source src="/assets/langar-hero-video.mp4" type="video/mp4" />
             <source src="/assets/hero-video.mp4" type="video/mp4" />
-            <source src="https://cdn.feedingindia.org/fi-web/assets/MTc5MTQwMTU1MTE4OTE3MzAxMg.mp4" type="video/mp4" />
           </video>
         </div>
 
@@ -1038,12 +1038,10 @@ export default function HomePage() {
             )}
 
             <div className="faq-footer-help">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span style={{ fontSize: '24px' }}>💬</span>
-                <div>
-                  <b style={{ color: 'var(--ink)', display: 'block', fontSize: '15px' }}>Need more assistance?</b>
-                  <span style={{ color: 'var(--muted)', fontSize: '14px' }}>Our donor support team is available 24/7 to help with receipts or queries.</span>
-                </div>
+              <span className="faq-help-icon" aria-hidden="true">💬</span>
+              <div className="faq-help-text">
+                <b>Need more assistance?</b>
+                <span>Our donor support team is available 24/7 to help with receipts or queries.</span>
               </div>
               <a className="btn btn-dark btn-sm" href="mailto:help@sikhaid.ngo">
                 Email help@sikhaid.ngo

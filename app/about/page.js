@@ -1,29 +1,9 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
 import Photo from '@/components/Photo';
-import Lightbox from '@/components/Lightbox';
-import { IMG } from '@/lib/data';
 
 export default function AboutPage() {
-  const [activePhotoIndex, setActivePhotoIndex] = useState(null);
-
-  const gallery = [
-    [IMG.assam1, 'Assam flood relief', '#3E5872'],
-    [IMG.food, 'Community food distribution', '#7A4E26'],
-    [IMG.ratha1, 'Ratha Yatra 2025, Puri', '#8A5A2B'],
-    [IMG.pads, 'No Spot: women’s health', '#6B3A4E'],
-    [IMG.blanket, 'Winter blankets', '#4A4A6A'],
-    [IMG.fooddist, 'Food for the homeless', '#6E4A2A'],
-    [IMG.ration, 'COVID ration kits', '#5C5030'],
-    [IMG.assam7, 'Supporting displaced families', '#46607A'],
-    [IMG.hygiene, 'Hygiene workshop', '#5A3442'],
-    [IMG.ratha6, 'ORS for pilgrims', '#8A5A2B'],
-    [IMG.assam3, 'Relief delivery', '#34506E'],
-    [IMG.langar, 'Langar meals', '#6E4A2A'],
-  ];
-
   const docs = [
     ['80G certificate', 'PDF'],
     ['12A certificate', 'PDF'],
@@ -36,61 +16,146 @@ export default function AboutPage() {
   return (
     <>
       <main>
-        {/* Hero Section */}
-        <section className="ab-hero">
+        {/* HERO SECTION */}
+        <section className="about-hero" aria-label="About SikhAid">
           <div className="wrap">
-            <div className="stack" style={{ gap: '18px' }}>
-              <nav className="crumbs" aria-label="Breadcrumb">
-                <Link href="/">Home</Link> / About us
-              </nav>
-              <span className="eyebrow">Serving India since 2020</span>
-              <h1>
-                Langar for all.
-                <br />
-                Seva for all.
-              </h1>
-              <p className="lead">
-                SikhAid Charitable Trust provides immediate humanitarian aid and
-                disaster relief across India. From natural disasters to
-                community emergencies, we serve with compassion, dignity and
-                full transparency.
-              </p>
-              <div className="row">
-                <Link className="btn btn-give btn-lg" href="/donate">
-                  Support our work
-                </Link>
-                <Link
-                  className="btn btn-line btn-lg"
-                  href="/get-involved#volunteer"
-                >
-                  Volunteer with us
-                </Link>
+            <h1 className="about-hero-title">SikhAid&apos;s Story</h1>
+            <p className="about-hero-sub">
+              Serving humanity with compassion and dignity. From a small response in 2020 to nationwide impact today.
+            </p>
+            <nav className="about-hero-pill" aria-label="Breadcrumb">
+              <Link href="/">Home</Link>
+              <span className="sep">/</span>
+              <span className="active">About Us</span>
+            </nav>
+          </div>
+        </section>
+
+        {/* INCEPTION & VERTICALS */}
+        <section className="band" aria-labelledby="incep-h">
+          <div className="wrap">
+            <div className="sec-head" style={{ textAlign: 'center', maxWidth: '840px', margin: '0 auto 32px' }}>
+              <div className="stack" style={{ alignItems: 'center' }}>
+                <span className="eyebrow">Inception</span>
+                <h2 className="h-sec" id="incep-h" style={{ lineHeight: '1.2' }}>
+                  How an emergency response<br />grew into a nationwide movement
+                </h2>
               </div>
             </div>
-            <div className="mosaic" id="mosaic">
-              <Photo
-                src={IMG.langar}
-                alt="Volunteers preparing meals"
-                label="Langar seva"
-                tone="#7A4E26"
-              />
-              <Photo
-                src={IMG.assam4}
-                alt="Relief materials for flood-affected families"
-                label="Flood relief"
-                tone="#3E5872"
-              />
-              <Photo
-                src={IMG.health}
-                alt="Mobile medical camp"
-                label="Healthcare"
-                tone="#2E6B68"
-              />
+
+            <div className="story-lead-block">
+              <p>
+                In 2020, when COVID-19 hit India, SikhAid Charitable Trust was founded with a simple yet powerful intention guided by the Sikh principles of compassion, equality, and selfless service (sewa). What began as an immediate response to the pandemic quickly grew into a nationwide humanitarian movement.
+              </p>
+              <p>
+                During the lockdown, the team worked relentlessly to deliver free oxygen tanks, pulse oximeters, masks, and other critical supplies to families in distress. During the second wave, SikhAid expanded its operations and provided life-saving oxygen support to tens of thousands across Odisha and other states. The trust became known for its on-ground efficiency, compassion-driven approach, and commitment to serving people in their most vulnerable moments.
+              </p>
+              <p>
+                Over the years, SikhAid has broadened its impact far beyond Punjab, building a strong network of volunteers and partners across India. Today, the organization works across multiple verticals to uplift communities and ensure holistic development and relief wherever it’s needed most.
+              </p>
+            </div>
+
+            {/* Verticals Grid */}
+            <div className="verticals-grid">
+              <div className="vertical-card">
+                <div className="vertical-card-header">
+                  <div className="vertical-card-icon" aria-hidden="true">🌊</div>
+                  <h3>Disaster Relief &amp; Rehabilitation</h3>
+                </div>
+                <p>
+                  SikhAid responds swiftly to natural calamities such as floods, landslides, and storms. From providing emergency food, water, and medical aid to long-term rehabilitation including rebuilding homes, restoring schools, and supporting livelihoods—the trust has carried out major relief missions in Punjab, Himachal Pradesh, Odisha, and the North-East.
+                </p>
+              </div>
+
+              <div className="vertical-card">
+                <div className="vertical-card-header">
+                  <div className="vertical-card-icon" aria-hidden="true">🎓</div>
+                  <h3>Education &amp; Child Development</h3>
+                </div>
+                <p>
+                  Recognizing education as a pathway to empowerment, SikhAid supports underprivileged children through scholarships, digital learning tools, school supplies, and community-led learning programs. The aim is simple: to give every child a fair chance at a brighter future.
+                </p>
+              </div>
+
+              <div className="vertical-card">
+                <div className="vertical-card-header">
+                  <div className="vertical-card-icon" aria-hidden="true">🧵</div>
+                  <h3>Women Empowerment</h3>
+                </div>
+                <p>
+                  Through stitching centers, vocational training programs, and awareness drives, the trust helps women gain financial independence, confidence, and leadership opportunities within their communities.
+                </p>
+              </div>
+
+              <div className="vertical-card">
+                <div className="vertical-card-header">
+                  <div className="vertical-card-icon" aria-hidden="true">🩺</div>
+                  <h3>Healthcare &amp; Medical Support</h3>
+                </div>
+                <p>
+                  SikhAid conducts free medical camps, blood donation drives, health check-ups, and awareness campaigns in rural and underserved areas. The organization remains actively involved in providing medicines, oxygen support, and medical assistance during health crises.
+                </p>
+              </div>
+
+              <div className="vertical-card">
+                <div className="vertical-card-header">
+                  <div className="vertical-card-icon" aria-hidden="true">🛠️</div>
+                  <h3>Livelihood Support</h3>
+                </div>
+                <p>
+                  Families affected by crises receive vocational tools, skills training, and financial support to rebuild their livelihoods sustainably with dignity and stability at the core of every initiative.
+                </p>
+              </div>
+
+              <div className="vertical-card">
+                <div className="vertical-card-header">
+                  <div className="vertical-card-icon" aria-hidden="true">🍲</div>
+                  <h3>Community Development &amp; Welfare</h3>
+                </div>
+                <p>
+                  From langar (community kitchens) and clean drinking water projects to sanitation initiatives and clothing drives, SikhAid works wherever there is a need, ensuring no individual is left behind regardless of caste, creed, or region.
+                </p>
+              </div>
+            </div>
+
+            {/* Sewa Quote */}
+            <div className="sewa-quote-banner">
+              <blockquote>
+                &ldquo;Every act of sewa contributes to a kinder, stronger, more compassionate world. Together, we can bring meaningful change one step at a time.&rdquo;
+              </blockquote>
             </div>
           </div>
         </section>
 
-        {/* The Three Pillars */}
+        {/* OUR PHILOSOPHY */}
+        <section className="band alt" aria-labelledby="phil-h">
+          <div className="wrap">
+            <div className="sec-head" style={{ textAlign: 'center', maxWidth: '780px', margin: '0 auto 32px' }}>
+              <div className="stack" style={{ alignItems: 'center' }}>
+                <span className="eyebrow">Our Philosophy</span>
+                <h2 className="h-sec" id="phil-h">
+                  Creating lasting change through constant kindness
+                </h2>
+              </div>
+            </div>
+            <div className="philosophy-grid">
+              <div className="philosophy-card">
+                <h3>Thousands of Lives Impacted</h3>
+                <p>Across Odisha and beyond through diverse humanitarian initiatives, disaster relief, and continuous community development.</p>
+              </div>
+              <div className="philosophy-card">
+                <h3>Strong Volunteer Base</h3>
+                <p>Dedicated on-ground volunteers and kind-hearted donors standing united 24/7 to serve when communities need it most.</p>
+              </div>
+              <div className="philosophy-card">
+                <h3>Kindness as a Way of Life</h3>
+                <p>Creating a society where kindness is not occasional or reactionary, but a constant, everyday commitment to humanity.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* WHAT GUIDES US (THE THREE PILLARS) - FIRST */}
         <section className="band dark" aria-labelledby="pil-h">
           <div className="wrap">
             <div className="sec-head">
@@ -130,28 +195,64 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Mission and Vision */}
-        <section className="band alt" aria-labelledby="mv-h">
+        {/* OUR APPROACH - AFTER WHAT GUIDES US */}
+        <section className="band alt" aria-labelledby="appr-h">
           <div className="wrap">
-            <h2 className="sr-only" id="mv-h">
-              Mission and vision
-            </h2>
-            <div className="grid g2">
-              <div className="panel stack">
+            <div className="sec-head" style={{ textAlign: 'center', maxWidth: '780px', margin: '0 auto 32px' }}>
+              <div className="stack" style={{ alignItems: 'center' }}>
+                <span className="eyebrow">Our Approach</span>
+                <h2 className="h-sec" id="appr-h">
+                  Three principles that guide every campaign we run
+                </h2>
+              </div>
+            </div>
+
+            <div className="approach-grid">
+              <div className="approach-card">
+                <span className="approach-num">01</span>
+                <h3>Compassionate Service</h3>
+                <p>
+                  Rooted in the spirit of seva — dignity, education, and healthcare for all, delivered without distinction of caste, creed, or background.
+                </p>
+              </div>
+
+              <div className="approach-card">
+                <span className="approach-num">02</span>
+                <h3>Community Engagement</h3>
+                <p>
+                  Working closely with local communities and leaders to deeply understand and address their most urgent and long-term needs.
+                </p>
+              </div>
+
+              <div className="approach-card">
+                <span className="approach-num">03</span>
+                <h3>Sustainable Impact</h3>
+                <p>
+                  Creating lasting change that empowers communities with vocational tools and self-reliance to thrive independently.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* MISSION / VISION - OUR PURPOSE (LIKE HOMEPAGE) */}
+        <section className="band purpose-section" aria-labelledby="pur-h">
+          <div className="purpose-bg-overlay" aria-hidden="true" />
+          <div className="wrap" style={{ position: 'relative', zIndex: 2 }}>
+            <div className="sec-head">
+              <div className="stack">
+                <span className="eyebrow" style={{ color: 'var(--saffron)' }}>Our purpose</span>
+                <h2 className="h-sec" id="pur-h" style={{ color: '#FFFFFF' }}>Guided by compassion, driven by service</h2>
+              </div>
+            </div>
+
+            <div className="grid g2 purpose-cards-grid">
+              <div className="mv mv-mission">
                 <span className="eyebrow">Our mission</span>
-                <p
-                  style={{
-                    fontFamily: 'var(--display)',
-                    fontSize: '24px',
-                    lineHeight: '1.35',
-                    color: 'var(--ink)',
-                    fontWeight: '600',
-                  }}
-                >
+                <p className="big">
                   To provide immediate humanitarian aid and disaster relief to
-                  communities across India during times of crisis. We serve
-                  with compassion, dignity, and unwavering commitment to those
-                  who need help the most.
+                  communities across India during times of crisis, serving with
+                  compassion, dignity and unwavering commitment.
                 </p>
                 <ul className="ticks">
                   <li>Rapid emergency response within 24 hours</li>
@@ -159,20 +260,13 @@ export default function AboutPage() {
                   <li>100% transparent fund utilisation</li>
                 </ul>
               </div>
-              <div className="panel stack">
+
+              <div className="mv mv-vision">
                 <span className="eyebrow">Our vision</span>
-                <p
-                  style={{
-                    fontFamily: 'var(--display)',
-                    fontSize: '24px',
-                    lineHeight: '1.35',
-                    color: 'var(--ink)',
-                    fontWeight: '600',
-                  }}
-                >
-                  A resilient India where no community faces disaster alone. A
-                  network of compassionate service that reaches every corner of
-                  our nation, ensuring rapid relief and sustainable recovery.
+                <p className="big">
+                  A resilient India where no community faces disaster alone:
+                  a network of compassionate service reaching every corner of
+                  the nation.
                 </p>
                 <ul className="ticks">
                   <li>Pan-India disaster preparedness network</li>
@@ -184,8 +278,8 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Our Journey */}
-        <section className="band" aria-labelledby="tl-h">
+        {/* OUR JOURNEY */}
+        <section className="band alt" aria-labelledby="tl-h">
           <div className="wrap">
             <div className="sec-head">
               <div className="stack">
@@ -233,8 +327,8 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Leadership */}
-        <section className="band alt" aria-labelledby="team-h">
+        {/* LEADERSHIP */}
+        <section className="band" aria-labelledby="team-h">
           <div className="wrap">
             <div className="sec-head">
               <div className="stack">
@@ -285,124 +379,77 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Gallery */}
-        <section className="band" id="gallery" aria-labelledby="ag-h">
-          <div className="wrap">
-            <div className="sec-head">
-              <div className="stack">
-                <span className="eyebrow">Gallery</span>
-                <h2 className="h-sec" id="ag-h">
-                  Our work, in pictures
-                </h2>
-              </div>
-            </div>
-            <div className="agal" id="agal">
-              {gallery.map((x, i) => (
-                <div
-                  key={i}
-                  onClick={() => setActivePhotoIndex(i)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <Photo src={x[0]} alt={x[1]} label={x[1]} tone={x[2]} />
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Compliance */}
+        {/* REGISTRATION & COMPLIANCE - CENTERED WITH 1-LINE DOWNLOADS */}
         <section className="band alt" id="compliance" aria-labelledby="comp-h">
           <div className="wrap">
-            <div
-              className="grid g2"
-              style={{ alignItems: 'start', gap: '40px' }}
-            >
-              <div className="stack" style={{ gap: '16px' }}>
+            {/* Centered Heading */}
+            <div className="sec-head" style={{ textAlign: 'center', maxWidth: '780px', margin: '0 auto 28px' }}>
+              <div className="stack" style={{ alignItems: 'center' }}>
                 <span className="eyebrow">Registration &amp; compliance</span>
                 <h2 className="h-sec" id="comp-h">
                   Verified, registered, accountable
                 </h2>
-                <p className="lead" style={{ fontSize: '16px' }}>
-                  Every document a donor or CSR partner may need, open to view
-                  and download.
+                <p className="lead" style={{ fontSize: '15.5px', maxWidth: '640px', margin: '6px auto 0' }}>
+                  Every document a donor or CSR partner may need, open to view and download.
                 </p>
-                <dl className="reg">
+              </div>
+            </div>
+
+            {/* Centered Registration Details in the Middle */}
+            <div className="compliance-centered-details">
+              <dl className="reg-inline">
+                <div className="reg-item">
                   <dt>Trust registration</dt>
                   <dd>[TRUST REG. NO.]</dd>
+                </div>
+                <div className="reg-item">
                   <dt>80G registration</dt>
                   <dd>[80G REG. NO.]</dd>
+                </div>
+                <div className="reg-item">
                   <dt>12A registration</dt>
                   <dd>[12A REG. NO.]</dd>
+                </div>
+                <div className="reg-item">
                   <dt>Trust PAN</dt>
                   <dd>[TRUST PAN]</dd>
+                </div>
+                <div className="reg-item">
                   <dt>CSR-1</dt>
                   <dd>[CSR-1 NO.]</dd>
-                </dl>
-              </div>
-              <div
-                className="grid"
-                style={{
-                  gridTemplateColumns:
-                    'repeat(auto-fit,minmax(min(100%,230px),1fr))',
-                  gap: '12px',
-                }}
-                id="docs"
-              >
-                {docs.map((d, i) => (
-                  <a className="doc" href="#compliance" key={i}>
-                    <span className="ic">
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2.3"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        aria-hidden="true"
-                      >
-                        <path d="M12 3v12M7 10l5 5 5-5M5 21h14" />
-                      </svg>
-                    </span>
-                    <span>
-                      <b>{d[0]}</b>
-                      <br />
-                      <span
-                        style={{ fontSize: '13px', color: 'var(--muted)' }}
-                      >
-                        {d[1]}
-                      </span>
-                    </span>
-                  </a>
-                ))}
-              </div>
+                </div>
+              </dl>
+            </div>
+
+            {/* Download PDF Cards in One Line Below */}
+            <div className="docs-single-line" id="docs">
+              {docs.map((d, i) => (
+                <a className="doc-card-compact" href="#compliance" key={i}>
+                  <span className="ic">
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.3"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M12 3v12M7 10l5 5 5-5M5 21h14" />
+                    </svg>
+                  </span>
+                  <div className="doc-text">
+                    <b>{d[0]}</b>
+                    <span>{d[1]}</span>
+                  </div>
+                </a>
+              ))}
             </div>
           </div>
         </section>
       </main>
-
-      {/* Lightbox for gallery */}
-      {activePhotoIndex !== null && (
-        <Lightbox
-          images={gallery.map((x) => ({
-            src: x[0],
-            alt: x[1],
-            caption: x[1],
-            cat: 'Gallery',
-          }))}
-          index={activePhotoIndex}
-          onClose={() => setActivePhotoIndex(null)}
-          onNext={() =>
-            setActivePhotoIndex((activePhotoIndex + 1) % gallery.length)
-          }
-          onPrev={() =>
-            setActivePhotoIndex(
-              (activePhotoIndex - 1 + gallery.length) % gallery.length
-            )
-          }
-        />
-      )}
     </>
   );
 }

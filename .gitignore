@@ -16,6 +16,8 @@
 # misc
 .DS_Store
 *.pem
+/Langar YT  video 1.mp4
+/public/Langar YT  video 1.mp4
 
 # debug
 npm-debug.log*

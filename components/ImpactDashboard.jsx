@@ -4,6 +4,97 @@ import React, { useState, useEffect, useRef } from 'react';
 
 // Unified Impact Data with Ground Locations by Name and Historical Timeline Combined
 const IMPACT_DATA = {
+  funds: {
+    id: 'funds',
+    name: 'Fund Raised',
+    metricTitle: 'TRANSPARENT FUNDS RAISED & COMMUNITY CAPITAL DEPLOYED',
+    totalHighlight: '₹90+ Cr',
+    growthBadge: '↗ 2020 → 2026 Mobilised Capital',
+    cards: [
+      {
+        val: '90+ Cr',
+        label: 'Raised',
+        sub: 'Total humanitarian relief funds mobilized across India & Nepal',
+        badge: 'Cumulative Capital',
+        category: 'Overall Fund',
+        iconType: 'currency',
+      },
+      {
+        val: '40+',
+        label: 'City/Villages Impacted',
+        sub: 'Active urban clusters and flood-affected rural corridors reached',
+        badge: 'Ground Footprint',
+        category: 'Geographic Reach',
+        iconType: 'map',
+      },
+      {
+        val: '5300+',
+        label: 'Donar Community',
+        sub: 'Active donors and monthly supporters backing the mission',
+        badge: 'Supporter Network',
+        category: 'Community Support',
+        iconType: 'users',
+      },
+    ],
+    locationItems: [
+      {
+        name: 'Relief Aid Funds',
+        shortName: 'Relief Aid',
+        value: 38500000,
+        displayVal: '₹38.5 Cr',
+        unitBadge: 'Disaster Operations',
+        summary: 'Emergency boats, food kits, water purification plants, and shelter materials.',
+        locations: ['Assam Flood Basin', 'Nepal Landslide Camps', 'Bihar Embankments', 'Odisha Coastal Belts'],
+        capacity: '43% of total funds deployed directly to life-saving emergency rescue.',
+      },
+      {
+        name: 'Langar Sewa Funds',
+        shortName: 'Langar Sewa',
+        value: 24000000,
+        displayVal: '₹24.0 Cr',
+        unitBadge: 'Community Nutrition',
+        summary: 'Mechanized community kitchens, food vans, grain procurement, and daily langar distribution.',
+        locations: ['Punjab 8 Cities', 'Cuttack Central Kitchen', 'Bihar Kosi Outskirts', 'Delhi Floodplains'],
+        capacity: '27% of total funds powering 1.25M+ hot nutritious meals.',
+      },
+      {
+        name: 'Healthcare Funds',
+        shortName: 'Healthcare',
+        value: 14200000,
+        displayVal: '₹14.2 Cr',
+        unitBadge: 'Mobile Ambulances',
+        summary: 'Health on Wheels ambulances, diagnostic machinery, free medicines, and doctors.',
+        locations: ['Odisha Tribal Blocks', 'Punjab Border Villages', 'Kendrapara Cyclone Belts'],
+        capacity: '16% of total funds delivering free medical diagnostics & emergency care.',
+      },
+      {
+        name: 'Education Funds',
+        shortName: 'Education',
+        value: 8500000,
+        displayVal: '₹8.5 Cr',
+        unitBadge: 'School Infrastructure',
+        summary: 'Rebuilt rural schools, solar computer labs, student scholarships, and learning kits.',
+        locations: ['Nepal Mountain School', 'Amritsar Vidya Kendra', 'Cuttack Tribal Learning Centers'],
+        capacity: '9% of total funds educating 28,500+ young rural students.',
+      },
+      {
+        name: 'COVID Emergency Funds',
+        shortName: 'COVID Relief',
+        value: 4800000,
+        displayVal: '₹4.8 Cr',
+        unitBadge: 'Oxygen Reserves',
+        summary: 'Oxygen concentrators, cylinder refill banks, and lockdown dry ration relief.',
+        locations: ['Delhi Oxygen Langar', 'Punjab Hospital Peripheries', 'Odisha Slum Relief'],
+        capacity: '5% of total funds protecting 150,000+ vulnerable families during pandemic.',
+      },
+    ],
+    quickStats: [
+      { val: '₹90+ Cr', label: 'Total Mobilized' },
+      { val: '100%', label: 'Audited & 80G Certified' },
+    ],
+    yAxisLabels: ['40 Cr', '30 Cr', '20 Cr', '10 Cr', '0'],
+  },
+
   relief: {
     id: 'relief',
     name: 'Relief Aid',
@@ -482,7 +573,7 @@ const IMPACT_DATA = {
 };
 
 export default function ImpactDashboard() {
-  const [activeTab, setActiveTab] = useState('relief');
+  const [activeTab, setActiveTab] = useState('funds');
   const [activeLocationIndex, setActiveLocationIndex] = useState(0);
   const [hoveredNode, setHoveredNode] = useState(null);
   const [animKey, setAnimKey] = useState(0);
@@ -608,305 +699,345 @@ export default function ImpactDashboard() {
             </div>
           </div>
 
-          {/* Main 2-Column Grid: Left Graph with Names, Right Location Inspector */}
-          <div className="dash-content-grid">
-            {/* LEFT COLUMN: Interactive Graph with Location Names & Smooth Loading Animation */}
-            <div className="dash-graph-col">
-              <div className="graph-subhead-row">
-                <div className="graph-active-label">
-                  <span className="graph-counter-num anim-counter-num">{activeCategory.totalHighlight}</span>
-                  <span className="graph-counter-sub">
-                    Direct ground beneficiaries across active field locations
-                  </span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <button
-                    type="button"
-                    className="graph-replay-btn"
-                    onClick={() => setAnimKey((k) => k + 1)}
-                    title="Replay graph animation"
-                  >
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                      <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.19"/>
-                    </svg>
-                    <span>Replay</span>
-                  </button>
-                  <div className="graph-growth-pill">
-                    <span className="growth-indicator-dot"></span>
-                    {activeCategory.growthBadge}
-                  </div>
-                </div>
-              </div>
-
-              {/* Interactive SVG Canvas with Sequenced Rising Bars & Connecting Line */}
-              <div className="chart-svg-container" key={`chart-svg-${activeTab}-${animKey}-${hasEnteredView}`}>
-                <svg
-                  viewBox={`0 0 ${svgWidth} ${svgHeight}`}
-                  className={`impact-svg-canvas ${hasEnteredView ? 'is-animated' : ''}`}
-                  preserveAspectRatio="xMidYMid meet"
-                >
-                  <defs>
-                    <linearGradient id={`chartGrad-${activeTab}`} x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#F6A21A" stopOpacity="0.32" />
-                      <stop offset="65%" stopColor="#F6A21A" stopOpacity="0.08" />
-                      <stop offset="100%" stopColor="#F6A21A" stopOpacity="0.0" />
-                    </linearGradient>
-
-                    <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#F6A21A" />
-                      <stop offset="100%" stopColor="#FDE68A" stopOpacity="0.3" />
-                    </linearGradient>
-
-                    <linearGradient id="barGradActive" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#EA580C" />
-                      <stop offset="100%" stopColor="#F6A21A" stopOpacity="0.55" />
-                    </linearGradient>
-                  </defs>
-
-                  {/* Horizontal Dashed Guidelines & Clean Non-Overlapping Y-Axis Labels */}
-                  {[0, 0.25, 0.5, 0.75, 1].map((ratio, idx) => {
-                    const y = padTop + plotHeight * ratio;
-                    const label = activeCategory.yAxisLabels[idx] || '';
-                    return (
-                      <g key={`grid-${idx}`} className="chart-grid-row">
-                        <line
-                          x1={padLeft - 8}
-                          y1={y}
-                          x2={svgWidth - padRight}
-                          y2={y}
-                          stroke="#EAEFF8"
-                          strokeDasharray="4 4"
-                          strokeWidth="1"
-                        />
-                        <text
-                          x={padLeft - 16}
-                          y={y + 4}
-                          textAnchor="end"
-                          className="chart-axis-text"
-                        >
-                          {label}
-                        </text>
-                      </g>
-                    );
-                  })}
-
-                  {/* 1. Vertical Location Column Bars: Rise up first (0.05s to 0.6s) */}
-                  {nodeCoords.map((node, i) => {
-                    const isSelected = activeLocationIndex === i;
-                    const isHovered = hoveredNode && hoveredNode.name === node.name;
-                    const barWidth = 38;
-                    const barHeight = Math.max(30, (padTop + plotHeight) - node.y);
-                    const barX = node.x - barWidth / 2;
-
-                    return (
-                      <g
-                        key={`bar-${i}`}
-                        className="chart-bar-group"
-                        onClick={() => {
-                          setActiveLocationIndex(i);
-                          setHoveredNode(node);
-                        }}
-                        onMouseEnter={() => setHoveredNode(node)}
-                        onMouseLeave={() => setHoveredNode(null)}
-                        style={{ cursor: 'pointer' }}
-                      >
-                        {/* Hit area */}
-                        <rect
-                          x={barX - 10}
-                          y={padTop}
-                          width={barWidth + 20}
-                          height={plotHeight}
-                          fill="transparent"
-                        />
-
-                        {/* Animated Gradient Vertical Bar */}
-                        <rect
-                          x={barX}
-                          y={node.y}
-                          width={barWidth}
-                          height={barHeight}
-                          rx={barWidth / 2}
-                          fill={isSelected || isHovered ? 'url(#barGradActive)' : 'url(#barGrad)'}
-                          opacity={isSelected || isHovered ? 1 : 0.82}
-                          stroke={isSelected ? '#EA580C' : 'transparent'}
-                          strokeWidth="2.5"
-                          className="chart-pill-bar anim-chart-bar"
-                          style={{
-                            animationDelay: `${0.05 + i * 0.1}s`,
-                          }}
-                        />
-
-                        {/* Value above bar floats up as the connecting line reaches it */}
-                        <text
-                          x={node.x}
-                          y={node.y - 12}
-                          textAnchor="middle"
-                          className={`bar-val-text anim-bar-val ${isSelected || isHovered ? 'active' : ''}`}
-                          style={{ animationDelay: `${0.7 + i * 0.18}s` }}
-                        >
-                          {node.displayVal}
-                        </text>
-
-                        {/* Location Name Label under bar */}
-                        <text
-                          x={node.x}
-                          y={padTop + plotHeight + 24}
-                          textAnchor="middle"
-                          className={`chart-name-label anim-name-label ${isSelected || isHovered ? 'active' : ''}`}
-                          style={{ animationDelay: `${0.1 + i * 0.1}s` }}
-                        >
-                          {node.shortName || node.name}
-                        </text>
-                      </g>
-                    );
-                  })}
-
-                  {/* 2. Gradient Area Fill: Fades in underneath connecting line */}
-                  {areaPath && (
-                    <path
-                      d={areaPath}
-                      fill={`url(#chartGrad-${activeTab})`}
-                      className="chart-area-path anim-area-path"
-                    />
-                  )}
-
-                  {/* 3. Spline Connecting Curve: Draws across connecting all bars AFTER they rise */}
-                  {curvePath && (
-                    <path
-                      d={curvePath}
-                      pathLength="1000"
-                      fill="none"
-                      stroke="#F6A21A"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="chart-line-path anim-line-path"
-                    />
-                  )}
-
-                  {/* 4. Steady Nodes: Pop on apex of each bar as the connecting line reaches it */}
-                  {nodeCoords.map((node, i) => {
-                    const isSelected = activeLocationIndex === i;
-                    const isHovered = hoveredNode && hoveredNode.name === node.name;
-
-                    return (
-                      <g
-                        key={`node-${i}`}
-                        className="chart-node-group"
-                        onClick={() => {
-                          setActiveLocationIndex(i);
-                          setHoveredNode(node);
-                        }}
-                        onMouseEnter={() => setHoveredNode(node)}
-                        onMouseLeave={() => setHoveredNode(null)}
-                        style={{ cursor: 'pointer' }}
-                      >
-                        <circle cx={node.x} cy={node.y} r="20" fill="transparent" />
-
-                        {/* Pop-in Node circle */}
-                        <circle
-                          cx={node.x}
-                          cy={node.y}
-                          r={isSelected || isHovered ? 6.5 : 5}
-                          fill="#FFFFFF"
-                          stroke={isSelected ? '#EA580C' : '#F6A21A'}
-                          strokeWidth={isSelected ? '3.5' : '2.8'}
-                          className="chart-node-circle anim-node-circle"
-                          style={{
-                            animationDelay: `${0.65 + i * 0.18}s`,
-                          }}
-                        />
-                      </g>
-                    );
-                  })}
-                </svg>
-
-                {/* Tooltip on bar hover */}
-                {hoveredNode && (
-                  <div
-                    className="chart-floating-tooltip"
-                    style={{
-                      left: `${(hoveredNode.x / svgWidth) * 100}%`,
-                      top: `${(hoveredNode.y / svgHeight) * 100}%`,
-                    }}
-                  >
-                    <div className="tooltip-year-badge">{hoveredNode.unitBadge}</div>
-                    <div className="tooltip-main-val">{hoveredNode.displayVal}</div>
-                    <div className="tooltip-desc-text">{hoveredNode.summary}</div>
-                  </div>
-                )}
-              </div>
-
-              {/* Location Selector Chips directly under Graph */}
-              <div className="dash-location-strip">
-                <span className="strip-title">Click location to view details:</span>
-                <div className="strip-chips-scroll">
-                  {activeCategory.locationItems.map((loc, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() => {
-                        setActiveLocationIndex(idx);
-                        setHoveredNode(nodeCoords[idx]);
-                      }}
-                      className={`strip-chip-btn ${activeLocationIndex === idx ? 'active' : ''}`}
-                    >
-                      <span className="chip-dot"></span>
-                      {loc.name}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* RIGHT COLUMN: Active Location & Villages Inspector (Image 5 Reference) */}
-            <div className="dash-inspector-col">
-              {selectedLocation && (
-                <div className="inspector-card">
-                  <div className="inspector-card-header">
-                    <div className="inspector-top-row">
-                      <span className="inspector-badge">{selectedLocation.unitBadge}</span>
-                      <span className="inspector-live-count">{selectedLocation.displayVal}</span>
-                    </div>
-                    <h4 className="inspector-title">{selectedLocation.name}</h4>
-                    <p className="inspector-summary">{selectedLocation.summary}</p>
-                  </div>
-
-                  {/* Specific Villages & Cities Mentioned by Name */}
-                  <div className="inspector-villages-block">
-                    <h5 className="villages-title">Key Cities, Villages & Units Served:</h5>
-                    <div className="inspector-chips-grid">
-                      {selectedLocation.locations.map((locName, lIdx) => (
-                        <div key={lIdx} className="village-name-chip">
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          {/* Main Content: If Fund Raised tab is active, show only the 3 Cards, else show Graph + Inspector */}
+          {activeTab === 'funds' ? (
+            <div className="funds-section-wrapper">
+              {/* Only the 3 Cards for Fund Raised */}
+              <div className="funds-three-cards-grid">
+                {activeCategory.cards.map((card, idx) => (
+                  <div key={idx} className="fund-impact-card">
+                    <div className="fund-impact-card-top">
+                      <span className="fund-impact-badge">{card.badge}</span>
+                      <div className="fund-impact-icon-circle">
+                        {card.iconType === 'currency' && (
+                          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <line x1="12" y1="1" x2="12" y2="23"/>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                          </svg>
+                        )}
+                        {card.iconType === 'map' && (
+                          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"/>
                             <circle cx="12" cy="10" r="3"/>
                           </svg>
-                          <span>{locName}</span>
-                        </div>
-                      ))}
+                        )}
+                        {card.iconType === 'users' && (
+                          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                          </svg>
+                        )}
+                      </div>
                     </div>
-                  </div>
-
-                  {/* Deployment Capacity */}
-                  <div className="inspector-capacity-box">
-                    <span className="capacity-label">Deployment Capacity:</span>
-                    <span className="capacity-val">{selectedLocation.capacity}</span>
-                  </div>
-                </div>
-              )}
-
-              {/* 2 Quick Summary Stats */}
-              <div className="dash-quick-stats-row">
-                {activeCategory.quickStats.map((qs, qIdx) => (
-                  <div key={qIdx} className="dash-mini-stat-card">
-                    <div className="mini-stat-num">{qs.val}</div>
-                    <div className="mini-stat-label">{qs.label}</div>
+                    <div className="fund-impact-num">{card.val}</div>
+                    <div className="fund-impact-label">{card.label}</div>
+                    <p className="fund-impact-desc">{card.sub}</p>
                   </div>
                 ))}
               </div>
             </div>
-          </div>
+          ) : (
+            <div className="dash-content-grid">
+              {/* LEFT COLUMN: Interactive Graph with Location Names & Smooth Loading Animation */}
+              <div className="dash-graph-col">
+                <div className="graph-subhead-row">
+                  <div className="graph-active-label">
+                    <span className="graph-counter-num anim-counter-num">{activeCategory.totalHighlight}</span>
+                    <span className="graph-counter-sub">
+                      Direct ground beneficiaries across active field locations
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <button
+                      type="button"
+                      className="graph-replay-btn"
+                      onClick={() => setAnimKey((k) => k + 1)}
+                      title="Replay graph animation"
+                    >
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.19"/>
+                      </svg>
+                      <span>Replay</span>
+                    </button>
+                    <div className="graph-growth-pill">
+                      <span className="growth-indicator-dot"></span>
+                      {activeCategory.growthBadge}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Interactive SVG Canvas with Sequenced Rising Bars & Connecting Line */}
+                <div className="chart-svg-container" key={`chart-svg-${activeTab}-${animKey}-${hasEnteredView}`}>
+                  <svg
+                    viewBox={`0 0 ${svgWidth} ${svgHeight}`}
+                    className={`impact-svg-canvas ${hasEnteredView ? 'is-animated' : ''}`}
+                    preserveAspectRatio="xMidYMid meet"
+                  >
+                    <defs>
+                      <linearGradient id={`chartGrad-${activeTab}`} x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#F6A21A" stopOpacity="0.32" />
+                        <stop offset="65%" stopColor="#F6A21A" stopOpacity="0.08" />
+                        <stop offset="100%" stopColor="#F6A21A" stopOpacity="0.0" />
+                      </linearGradient>
+
+                      <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#F6A21A" />
+                        <stop offset="100%" stopColor="#FDE68A" stopOpacity="0.3" />
+                      </linearGradient>
+
+                      <linearGradient id="barGradActive" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#EA580C" />
+                        <stop offset="100%" stopColor="#F6A21A" stopOpacity="0.55" />
+                      </linearGradient>
+                    </defs>
+
+                    {/* Horizontal Dashed Guidelines & Clean Non-Overlapping Y-Axis Labels */}
+                    {[0, 0.25, 0.5, 0.75, 1].map((ratio, idx) => {
+                      const y = padTop + plotHeight * ratio;
+                      const label = activeCategory.yAxisLabels[idx] || '';
+                      return (
+                        <g key={`grid-${idx}`} className="chart-grid-row">
+                          <line
+                            x1={padLeft - 8}
+                            y1={y}
+                            x2={svgWidth - padRight}
+                            y2={y}
+                            stroke="#EAEFF8"
+                            strokeDasharray="4 4"
+                            strokeWidth="1"
+                          />
+                          <text
+                            x={padLeft - 16}
+                            y={y + 4}
+                            textAnchor="end"
+                            className="chart-axis-text"
+                          >
+                            {label}
+                          </text>
+                        </g>
+                      );
+                    })}
+
+                    {/* 1. Vertical Location Column Bars: Rise up first (0.05s to 0.6s) */}
+                    {nodeCoords.map((node, i) => {
+                      const isSelected = activeLocationIndex === i;
+                      const isHovered = hoveredNode && hoveredNode.name === node.name;
+                      const barWidth = 38;
+                      const barHeight = Math.max(30, (padTop + plotHeight) - node.y);
+                      const barX = node.x - barWidth / 2;
+
+                      return (
+                        <g
+                          key={`bar-${i}`}
+                          className="chart-bar-group"
+                          onClick={() => {
+                            setActiveLocationIndex(i);
+                            setHoveredNode(node);
+                          }}
+                          onMouseEnter={() => setHoveredNode(node)}
+                          onMouseLeave={() => setHoveredNode(null)}
+                          style={{ cursor: 'pointer' }}
+                        >
+                          {/* Hit area */}
+                          <rect
+                            x={barX - 10}
+                            y={padTop}
+                            width={barWidth + 20}
+                            height={plotHeight}
+                            fill="transparent"
+                          />
+
+                          {/* Animated Gradient Vertical Bar */}
+                          <rect
+                            x={barX}
+                            y={node.y}
+                            width={barWidth}
+                            height={barHeight}
+                            rx={barWidth / 2}
+                            fill={isSelected || isHovered ? 'url(#barGradActive)' : 'url(#barGrad)'}
+                            opacity={isSelected || isHovered ? 1 : 0.82}
+                            stroke={isSelected ? '#EA580C' : 'transparent'}
+                            strokeWidth="2.5"
+                            className="chart-pill-bar anim-chart-bar"
+                            style={{
+                              animationDelay: `${0.05 + i * 0.1}s`,
+                            }}
+                          />
+
+                          {/* Value above bar floats up as the connecting line reaches it */}
+                          <text
+                            x={node.x}
+                            y={node.y - 12}
+                            textAnchor="middle"
+                            className={`bar-val-text anim-bar-val ${isSelected || isHovered ? 'active' : ''}`}
+                            style={{ animationDelay: `${0.7 + i * 0.18}s` }}
+                          >
+                            {node.displayVal}
+                          </text>
+
+                          {/* Location Name Label under bar */}
+                          <text
+                            x={node.x}
+                            y={padTop + plotHeight + 24}
+                            textAnchor="middle"
+                            className={`chart-name-label anim-name-label ${isSelected || isHovered ? 'active' : ''}`}
+                            style={{ animationDelay: `${0.1 + i * 0.1}s` }}
+                          >
+                            {node.shortName || node.name}
+                          </text>
+                        </g>
+                      );
+                    })}
+
+                    {/* 2. Gradient Area Fill: Fades in underneath connecting line */}
+                    {areaPath && (
+                      <path
+                        d={areaPath}
+                        fill={`url(#chartGrad-${activeTab})`}
+                        className="chart-area-path anim-area-path"
+                      />
+                    )}
+
+                    {/* 3. Spline Connecting Curve: Draws across connecting all bars AFTER they rise */}
+                    {curvePath && (
+                      <path
+                        d={curvePath}
+                        pathLength="1000"
+                        fill="none"
+                        stroke="#F6A21A"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="chart-line-path anim-line-path"
+                      />
+                    )}
+
+                    {/* 4. Steady Nodes: Pop on apex of each bar as the connecting line reaches it */}
+                    {nodeCoords.map((node, i) => {
+                      const isSelected = activeLocationIndex === i;
+                      const isHovered = hoveredNode && hoveredNode.name === node.name;
+
+                      return (
+                        <g
+                          key={`node-${i}`}
+                          className="chart-node-group"
+                          onClick={() => {
+                            setActiveLocationIndex(i);
+                            setHoveredNode(node);
+                          }}
+                          onMouseEnter={() => setHoveredNode(node)}
+                          onMouseLeave={() => setHoveredNode(null)}
+                          style={{ cursor: 'pointer' }}
+                        >
+                          <circle cx={node.x} cy={node.y} r="20" fill="transparent" />
+
+                          {/* Pop-in Node circle */}
+                          <circle
+                            cx={node.x}
+                            cy={node.y}
+                            r={isSelected || isHovered ? 6.5 : 5}
+                            fill="#FFFFFF"
+                            stroke={isSelected ? '#EA580C' : '#F6A21A'}
+                            strokeWidth={isSelected ? '3.5' : '2.8'}
+                            className="chart-node-circle anim-node-circle"
+                            style={{
+                              animationDelay: `${0.65 + i * 0.18}s`,
+                            }}
+                          />
+                        </g>
+                      );
+                    })}
+                  </svg>
+
+                  {/* Tooltip on bar hover */}
+                  {hoveredNode && (
+                    <div
+                      className="chart-floating-tooltip"
+                      style={{
+                        left: `${(hoveredNode.x / svgWidth) * 100}%`,
+                        top: `${(hoveredNode.y / svgHeight) * 100}%`,
+                      }}
+                    >
+                      <div className="tooltip-year-badge">{hoveredNode.unitBadge}</div>
+                      <div className="tooltip-main-val">{hoveredNode.displayVal}</div>
+                      <div className="tooltip-desc-text">{hoveredNode.summary}</div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Location Selector Chips directly under Graph */}
+                <div className="dash-location-strip">
+                  <span className="strip-title">Click location to view details:</span>
+                  <div className="strip-chips-scroll">
+                    {activeCategory.locationItems.map((loc, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => {
+                          setActiveLocationIndex(idx);
+                          setHoveredNode(nodeCoords[idx]);
+                        }}
+                        className={`strip-chip-btn ${activeLocationIndex === idx ? 'active' : ''}`}
+                      >
+                        <span className="chip-dot"></span>
+                        {loc.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* RIGHT COLUMN: Active Location & Villages Inspector (Image 5 Reference) */}
+              <div className="dash-inspector-col">
+                {selectedLocation && (
+                  <div className="inspector-card">
+                    <div className="inspector-card-header">
+                      <div className="inspector-top-row">
+                        <span className="inspector-badge">{selectedLocation.unitBadge}</span>
+                        <span className="inspector-live-count">{selectedLocation.displayVal}</span>
+                      </div>
+                      <h4 className="inspector-title">{selectedLocation.name}</h4>
+                      <p className="inspector-summary">{selectedLocation.summary}</p>
+                    </div>
+
+                    {/* Specific Villages & Cities Mentioned by Name */}
+                    <div className="inspector-villages-block">
+                      <h5 className="villages-title">Key Cities, Villages & Units Served:</h5>
+                      <div className="inspector-chips-grid">
+                        {selectedLocation.locations.map((locName, lIdx) => (
+                          <div key={lIdx} className="village-name-chip">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                              <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"/>
+                              <circle cx="12" cy="10" r="3"/>
+                            </svg>
+                            <span>{locName}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Deployment Capacity */}
+                    <div className="inspector-capacity-box">
+                      <span className="capacity-label">Deployment Capacity:</span>
+                      <span className="capacity-val">{selectedLocation.capacity}</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* 2 Quick Summary Stats */}
+                <div className="dash-quick-stats-row">
+                  {activeCategory.quickStats.map((qs, qIdx) => (
+                    <div key={qIdx} className="dash-mini-stat-card">
+                      <div className="mini-stat-num">{qs.val}</div>
+                      <div className="mini-stat-label">{qs.label}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </section>

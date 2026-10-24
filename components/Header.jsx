@@ -5,6 +5,37 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { IMG } from '@/lib/data';
 
+const EMERGENCY_ALERTS = [
+  {
+    id: 'nepal',
+    tag: 'Emergency',
+    text: 'Nepal flash floods: Thousands need urgent relief.',
+    linkText: 'Help Nepal now →',
+    linkUrl: '/campaign#nepal-flood-relief-2026',
+  },
+  {
+    id: 'bihar',
+    tag: 'Emergency',
+    text: 'Bihar flood crisis: Submerged villages need clean water & shelter.',
+    linkText: 'Help Bihar now →',
+    linkUrl: '/campaign#bihar-flood-relief-2026',
+  },
+  {
+    id: 'assam',
+    tag: 'Emergency',
+    text: 'Assam floods: Urgent rehabilitation and family kits required.',
+    linkText: 'Help Assam now →',
+    linkUrl: '/campaign#assam-flood-relief-2026',
+  },
+  {
+    id: 'langar',
+    tag: 'Emergency',
+    text: 'Ground Langar Sewa: Delivering 2,000+ warm meals daily across relief zones.',
+    linkText: 'Support Langar →',
+    linkUrl: '/campaign#langar-sewa',
+  },
+];
+
 export default function Header() {
   const pathname = usePathname();
   const [alertOpen, setAlertOpen] = useState(true);
@@ -54,22 +85,20 @@ export default function Header() {
     <div ref={headerGroupRef} className="site-header-group">
       {alertOpen && (
         <div className="alert-bar" id="alertBar">
-          <div className="wrap">
-            <strong>
-              <span className="dot pulse"></span>Emergency
-            </strong>
-            <span className="alert-text">
-              Nepal flash floods: Thousands need urgent relief.
-            </span>
-            <Link href="/campaign#nepal-flood-relief-2026">Help Nepal now →</Link>
-            <button
-              className="x"
-              type="button"
-              aria-label="Dismiss emergency alert"
-              onClick={closeAlert}
-            >
-              ×
-            </button>
+          <div className="alert-ticker-container">
+            <div className="alert-ticker-track">
+              {EMERGENCY_ALERTS.concat(EMERGENCY_ALERTS).map((alert, idx) => (
+                <div key={idx} className="alert-ticker-item">
+                  <strong>
+                    <span className="dot pulse"></span>
+                    {alert.tag}
+                  </strong>
+                  <span className="alert-text">{alert.text}</span>
+                  <Link href={alert.linkUrl}>{alert.linkText}</Link>
+                  <span className="alert-ticker-dot" aria-hidden="true">•</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}
@@ -96,18 +125,19 @@ export default function Header() {
             <Link href="/campaigns" aria-current={isActive('/campaigns') ? 'page' : undefined} onClick={() => setMenuOpen(false)}>Campaigns</Link>
             
             <div className="has-menu">
-              <Link href="/get-involved" aria-current={isActive('/get-involved') ? 'page' : undefined}>Get Involved</Link>
+              <Link href="/get-involved" aria-current={isActive('/get-involved') || isActive('/volunteering') || isActive('/csr') ? 'page' : undefined}>Get Involved</Link>
               <div className="menu">
-                <Link href="/get-involved#volunteer" onClick={() => setMenuOpen(false)}>Volunteering</Link>
-                <Link href="/get-involved#csr" onClick={() => setMenuOpen(false)}>CSR partnerships</Link>
+                <Link href="/volunteering" onClick={() => setMenuOpen(false)}>Volunteering</Link>
+                <Link href="/csr" onClick={() => setMenuOpen(false)}>CSR partnerships</Link>
                 <Link href="/get-involved#sponsor" onClick={() => setMenuOpen(false)}>Sponsor a program</Link>
               </div>
             </div>
 
             <Link href="/blog" aria-current={isActive('/blog') ? 'page' : undefined} onClick={() => setMenuOpen(false)}>Blog</Link>
-            <Link href="/blog#press" onClick={() => setMenuOpen(false)}>Press</Link>
+            <Link href="/press" aria-current={isActive('/press') ? 'page' : undefined} onClick={() => setMenuOpen(false)}>Press Coverage</Link>
             <Link href="/contact" aria-current={isActive('/contact') ? 'page' : undefined} onClick={() => setMenuOpen(false)}>Contact</Link>
             
+            {/* Mobile-only item: on phone drawer, Login / My Account appears */}
             <div className="nav-divider" />
             <Link
               href="/login"
@@ -124,7 +154,8 @@ export default function Header() {
           </nav>
 
           <div className="header-cta">
-            <Link className="icon-btn" href="/login" aria-label="Login / My Account">
+            {/* PC Icon button: on PC only the icon is visible and works. On phone, accessible via menu */}
+            <Link className="icon-btn header-user-icon-btn" href="/login" aria-label="Login / My Account">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <circle cx="12" cy="8" r="4"/>
                 <path d="M4 21a8 8 0 0 1 16 0"/>

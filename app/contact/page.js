@@ -67,81 +67,74 @@ export default function ContactPage() {
 
             {/* SOS Banner */}
             <div className="sos">
-              <span className="i">
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#fff"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z" />
-                </svg>
-              </span>
-              <span style={{ flex: 1 }}>
-                <span
-                  style={{
-                    fontSize: '12px',
-                    fontWeight: 800,
-                    letterSpacing: '.08em',
-                    textTransform: 'uppercase',
-                  }}
-                >
-                  Emergency helpline · 24/7
+              <div className="sos-content">
+                <span className="i">
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#fff"
+                    strokeWidth="2.3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z" />
+                  </svg>
                 </span>
-                <b>+91 98513 41234</b>
-              </span>
-              <button
-                className="btn btn-light"
-                type="button"
-                onClick={() => copyToClipboard('+91 98513 41234', 'phone')}
-              >
-                {copiedPhone ? 'Copied ✓' : 'Copy'}
-              </button>
+                <div className="sos-details">
+                  <span className="sos-badge">
+                    Emergency helpline · 24/7
+                  </span>
+                  <b className="sos-number">+91 98513 41234</b>
+                </div>
+              </div>
+              <div className="sos-actions">
+                <a
+                  className="btn btn-light sos-btn-call"
+                  href="tel:+919851341234"
+                  aria-label="Call emergency helpline"
+                >
+                  Call now
+                </a>
+                <button
+                  className="btn sos-btn-copy"
+                  type="button"
+                  onClick={() => copyToClipboard('+91 98513 41234', 'phone')}
+                >
+                  {copiedPhone ? 'Copied ✓' : 'Copy'}
+                </button>
+              </div>
             </div>
 
             {/* Email & WhatsApp Tiles */}
-            <div
-              className="grid"
-              style={{
-                gridTemplateColumns:
-                  'repeat(auto-fit, minmax(min(100%, 200px), 1fr))',
-                gap: '12px',
-              }}
-            >
-              <div className="tile">
-                <span style={{ fontSize: '13px', color: 'var(--muted)' }}>
-                  Email
-                </span>
-                <b style={{ color: 'var(--ink)' }}>help@sikhaid.ngo</b>
+            <div className="contact-quick-tiles">
+              <div className="tile contact-tile">
+                <div className="contact-tile-head">
+                  <span className="contact-tile-label">Email</span>
+                  <span className="contact-tile-status">Reply in 2d</span>
+                </div>
+                <b className="contact-tile-val">help@sikhaid.ngo</b>
                 <button
-                  className="copy btn-line btn"
+                  className="btn btn-line btn-contact-act"
                   type="button"
-                  style={{
-                    minHeight: '36px',
-                    padding: '0 12px',
-                    fontSize: '13px',
-                    alignSelf: 'flex-start',
-                  }}
                   onClick={() => copyToClipboard('help@sikhaid.ngo', 'email')}
                 >
                   {copiedEmail ? 'Copied ✓' : 'Copy email'}
                 </button>
               </div>
-              <div className="tile">
-                <span style={{ fontSize: '13px', color: 'var(--muted)' }}>
-                  WhatsApp
-                </span>
-                <b style={{ color: 'var(--ink)' }}>+91 98513 41234</b>
+              <div className="tile contact-tile">
+                <div className="contact-tile-head">
+                  <span className="contact-tile-label">WhatsApp</span>
+                  <span className="contact-tile-status">Direct chat</span>
+                </div>
+                <b className="contact-tile-val">+91 98513 41234</b>
                 <a
+                  className="btn btn-line btn-contact-act"
                   href="https://wa.me/919851341234"
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={{ fontWeight: 800, fontSize: '14px' }}
                 >
                   Open chat ↗
                 </a>
@@ -305,10 +298,10 @@ export default function ContactPage() {
             </div>
           </div>
 
-          <div className="grid g2">
+          <div className="legal-grid-4">
             <div className="legal" id="privacy">
-              <h3 style={{ fontSize: '22px' }}>Privacy policy</h3>
-              <p style={{ color: 'var(--muted)' }}>
+              <h3>Privacy policy</h3>
+              <p>
                 How we collect, store and protect donor data, including PAN and
                 contact details.
               </p>
@@ -328,8 +321,8 @@ export default function ContactPage() {
             </div>
 
             <div className="legal" id="terms">
-              <h3 style={{ fontSize: '22px' }}>Terms of service</h3>
-              <p style={{ color: 'var(--muted)' }}>
+              <h3>Terms of service</h3>
+              <p>
                 Terms for using this website, donor accounts and recurring
                 donations.
               </p>
@@ -347,8 +340,8 @@ export default function ContactPage() {
             </div>
 
             <div className="legal" id="refund">
-              <h3 style={{ fontSize: '22px' }}>Refund &amp; cancellation</h3>
-              <p style={{ color: 'var(--muted)' }}>
+              <h3>Refund &amp; cancellation</h3>
+              <p>
                 How to request a refund or cancel a monthly gift.
               </p>
               <details open={openRefund}>
@@ -364,16 +357,15 @@ export default function ContactPage() {
               </details>
             </div>
 
-            <div className="legal">
-              <h3 style={{ fontSize: '22px' }}>80G certificate</h3>
-              <p style={{ color: 'var(--muted)' }}>
+            <div className="legal" id="compliance-80g">
+              <h3>80G certificate</h3>
+              <p>
                 Our Income Tax Section 80G registration. Registration no. [80G
                 REG. NO.]
               </p>
               <Link
-                className="btn btn-line"
+                className="btn btn-line btn-compliance"
                 href="/about#compliance"
-                style={{ alignSelf: 'flex-start' }}
               >
                 View all compliance documents
               </Link>

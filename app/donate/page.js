@@ -4,9 +4,9 @@ import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Photo from '@/components/Photo';
-import { campaigns, TIERS, fmt, esc } from '@/lib/data';
+import { campaigns, TIERS, CAMPAIGN_IMPACT_TIERS, fmt, esc, getFeaturedCampaignStory } from '@/lib/data';
 
-function DonateContent() {
+function DonateContent({ initialSlug }) {
   const searchParams = useSearchParams();
 
   const options = [
@@ -14,19 +14,36 @@ function DonateContent() {
       slug: 'general',
       title: 'Where it’s needed most',
       short: 'the greatest need',
+      subtitle: 'General Relief Fund: Fast Response to Sudden Humanitarian Crises',
+      tagText: 'Rapid Humanitarian Relief Fund',
       type: 'flood',
       tone: '#1A237E',
       img: null,
       location: 'General fund',
+      blurb: 'Support our comprehensive humanitarian work across India. This fund allows us to respond quickly to emergencies.',
+      story: [
+        'Support our comprehensive humanitarian work across India. The General Relief Fund allows our volunteers to respond within 24 hours to sudden flash floods, landslides, and rural crises.',
+        'Your contribution provides emergency dry ration kits, freshly cooked langar meals, clean drinking water, temporary shelter, and mobile healthcare wherever the need is greatest.',
+        '100% transparent allocation ensures your kindness immediately transforms into life-saving seva on the ground.'
+      ],
     },
     ...campaigns,
   ];
 
+  const paramSlug = searchParams.get('slug') || searchParams.get('campaign');
+  const targetSlug = initialSlug || paramSlug;
+  const validInitial = options.some((o) => o.slug === targetSlug) ? targetSlug : 'general';
+
+  const initialAmtParam = searchParams.get('amount') || searchParams.get('amt');
+  const validInitialAmt = initialAmtParam ? parseInt(initialAmtParam, 10) || 2500 : 2500;
+
   const [step, setStep] = useState(1);
-  const [selectedSlug, setSelectedSlug] = useState('general');
-  const [amount, setAmount] = useState(2500);
+  const [selectedSlug, setSelectedSlug] = useState(validInitial);
+  const [amount, setAmount] = useState(validInitialAmt);
   const [customAmount, setCustomAmount] = useState('');
   const [isMonthly, setIsMonthly] = useState(false);
+  const [tipPct, setTipPct] = useState(12); // Default to 12% matching SikhAid live flow
+
   const [isGift, setIsGift] = useState(false);
   const [giftDetails, setGiftDetails] = useState({
     name: '',
@@ -53,12 +70,30 @@ function DonateContent() {
   const [error2, setError2] = useState('');
 
   useEffect(() => {
+    const qAmt = searchParams.get('amount') || searchParams.get('amt');
+    if (qAmt) {
+      const parsed = parseInt(qAmt, 10);
+      if (parsed > 0) {
+        setAmount(parsed);
+        setCustomAmount('');
+      }
+    }
+
+    if (initialSlug && options.some((o) => o.slug === initialSlug)) {
+      setSelectedSlug(initialSlug);
+      return;
+    }
+    const qSlug = searchParams.get('slug') || searchParams.get('campaign');
+    if (qSlug && options.some((o) => o.slug === qSlug)) {
+      setSelectedSlug(qSlug);
+      return;
+    }
     try {
       const g = JSON.parse(sessionStorage.getItem('sa-gift') || 'null');
       if (g && options.some((o) => o.slug === g.slug)) {
         setSelectedSlug(g.slug);
-        setAmount(g.amt);
-        setIsMonthly(Boolean(g.monthly));
+        if (g.amt) setAmount(g.amt);
+        if (g.monthly !== undefined) setIsMonthly(Boolean(g.monthly));
         return;
       }
     } catch (e) {}
@@ -71,12 +106,16 @@ function DonateContent() {
     } else if (options.some((o) => o.slug === hash)) {
       setSelectedSlug(hash);
     }
-  }, []);
+  }, [initialSlug, searchParams]);
 
   const camp = options.find((o) => o.slug === selectedSlug) || options[0];
-  const tiers = TIERS[camp.type] || TIERS.flood;
-  const currentAmt = customAmount ? parseInt(customAmount, 10) || 100 : amount;
+  const tiers = TIERS[camp.slug] || TIERS[camp.type] || TIERS.flood;
+  const impactCards = CAMPAIGN_IMPACT_TIERS[camp.slug] || CAMPAIGN_IMPACT_TIERS[camp.type] || CAMPAIGN_IMPACT_TIERS.flood;
+
+  const currentAmt = customAmount ? parseInt(customAmount, 10) || 0 : amount;
   const suffix = isMonthly ? '/month' : '';
+  const tipAmt = Math.round((currentAmt * tipPct) / 100);
+  const grandTotal = currentAmt + tipAmt;
 
   const impactText = () => {
     let best = null;
@@ -85,7 +124,7 @@ function DonateContent() {
     });
     return best
       ? `Your ${fmt(currentAmt)}${suffix} can fund: ${best.what.charAt(0).toLowerCase() + best.what.slice(1)}.`
-      : 'Every rupee helps. Thank you.';
+      : 'Every rupee helps. Thank you for standing with vulnerable communities.';
   };
 
   const handleNext1 = () => {
@@ -201,17 +240,71 @@ function DonateContent() {
           </ol>
         )}
 
+        {/* FEATURED CAMPAIGN DESCRIPTION CARD (Screenshots 1 & 4 from live flow) */}
+        {step === 1 && (
+          <section className="camp-desc-card" aria-label="Campaign information">
+            <div className="camp-desc-tag">
+              <span className="camp-desc-tag-dot" />
+              <span>
+                {camp.tagText || (camp.urgent ? 'Featured Urgent Campaign' : 'Featured Humanitarian Initiative')}
+              </span>
+            </div>
+            <div className="camp-desc-body">
+              <div className="camp-desc-head">
+                <div className="camp-desc-info-icon" aria-hidden="true">i</div>
+                <div className="camp-desc-titles">
+                  <h2>{camp.title}</h2>
+                  <span className="camp-desc-sub">
+                    {camp.subtitle || (camp.short ? `${camp.title}: Your Seva Can Help Someone Today` : camp.blurb)}
+                  </span>
+                </div>
+              </div>
+
+              <div className="camp-desc-text">
+                {getFeaturedCampaignStory(camp).map((par, idx) => (
+                  <p key={idx}>{par}</p>
+                ))}
+              </div>
+
+              {/* 4 Impact Cards Grid (Image 3 layout) */}
+              <div className="camp-impact-grid" role="group" aria-label="Select impact tier">
+                {impactCards.map((item, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    className={`camp-impact-card ${currentAmt === item.amt && !customAmount ? 'active' : ''}`}
+                    onClick={() => {
+                      setAmount(item.amt);
+                      setCustomAmount('');
+                    }}
+                  >
+                    <b className="camp-impact-amt">{fmt(item.amt)}</b>
+                    <span className="camp-impact-title">{item.title}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
         <div className="co">
           <div className="card-w">
             {step === 1 && (
               <>
-                <h1 style={{ fontSize: '32px' }}>Choose your gift</h1>
+                <h1 style={{ fontSize: '30px' }}>Quick Online Payment</h1>
+
                 <label className="field" htmlFor="camp">
-                  Cause
+                  Choose cause
                   <select
                     id="camp"
                     value={selectedSlug}
-                    onChange={(e) => setSelectedSlug(e.target.value)}
+                    onChange={(e) => {
+                      const newSlug = e.target.value;
+                      setSelectedSlug(newSlug);
+                      if (typeof window !== 'undefined' && window.history) {
+                        window.history.replaceState(null, '', `/donate/${newSlug}`);
+                      }
+                    }}
                   >
                     {options.map((o) => (
                       <option key={o.slug} value={o.slug}>
@@ -227,14 +320,14 @@ function DonateContent() {
                     aria-pressed={!isMonthly}
                     onClick={() => setIsMonthly(false)}
                   >
-                    Give once
+                    One-time
                   </button>
                   <button
                     type="button"
                     aria-pressed={isMonthly}
                     onClick={() => setIsMonthly(true)}
                   >
-                    Give monthly
+                    Monthly
                   </button>
                 </div>
 
@@ -256,21 +349,49 @@ function DonateContent() {
                   ))}
                 </div>
 
+                {/* Custom Amount without scrolling or number spinners bug (Screenshot 2) */}
                 <label className="field" htmlFor="custom">
                   Or another amount
-                  <span className="money-input">
+                  <div className="money-input">
                     <span>₹</span>
                     <input
                       id="custom"
-                      type="number"
-                      min="100"
+                      type="text"
                       inputMode="numeric"
+                      pattern="[0-9]*"
                       placeholder="Minimum ₹100"
                       value={customAmount}
-                      onChange={(e) => setCustomAmount(e.target.value)}
+                      onWheel={(e) => e.target.blur()}
+                      onChange={(e) => {
+                        const clean = e.target.value.replace(/[^0-9]/g, '');
+                        setCustomAmount(clean);
+                      }}
                     />
-                  </span>
+                  </div>
                 </label>
+
+                {/* Support SikhAid Tip Section (Screenshot 3) */}
+                <div className="support-box">
+                  <div className="support-head">
+                    <div className="support-title-wrap">
+                      <span className="heart-icon" aria-hidden="true">🧡</span>
+                      <span className="support-title">Support SikhAid by</span>
+                    </div>
+                    <div className="support-select-wrap">
+                      <select
+                        className="support-select"
+                        value={tipPct}
+                        onChange={(e) => setTipPct(parseInt(e.target.value, 10) || 0)}
+                        aria-label="Extra contribution to support SikhAid"
+                      >
+                        <option value={0}>No, thanks</option>
+                        <option value={5}>5% ({fmt(Math.round(currentAmt * 0.05))})</option>
+                        <option value={12}>12% ({fmt(Math.round(currentAmt * 0.12))})</option>
+                        <option value={18}>18% ({fmt(Math.round(currentAmt * 0.18))})</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
 
                 <div className="gift-box">
                   <label className="check">
@@ -355,9 +476,39 @@ function DonateContent() {
                   type="button"
                   onClick={handleNext1}
                 >
-                  Continue · {fmt(currentAmt)}
+                  Continue · {fmt(grandTotal)}
                   {suffix}
                 </button>
+
+                {/* Trust list from live site */}
+                <ul className="trust-list" aria-label="Donation trust signals">
+                  <li className="trust-item">
+                    <span>✓</span>
+                    <span>Registered NGO</span>
+                  </li>
+                  <li className="trust-item">
+                    <span>✓</span>
+                    <span>80G Tax Exemption</span>
+                  </li>
+                  <li className="trust-item">
+                    <span>✓</span>
+                    <span>Secure Razorpay Payments</span>
+                  </li>
+                  <li className="trust-item">
+                    <span>✓</span>
+                    <span>Transparent Utilization Reports</span>
+                  </li>
+                </ul>
+
+                <div className="payment-methods">
+                  <p className="payment-methods-label">Secure payments powered by Razorpay:</p>
+                  <div className="payment-pills">
+                    <span className="pill">UPI</span>
+                    <span className="pill">Cards</span>
+                    <span className="pill">Net Banking</span>
+                    <span className="pill">Wallets</span>
+                  </div>
+                </div>
               </>
             )}
 
@@ -375,6 +526,7 @@ function DonateContent() {
                       id="name"
                       type="text"
                       autoComplete="name"
+                      placeholder="Enter your full name"
                       value={donor.name}
                       onChange={(e) =>
                         setDonor({ ...donor, name: e.target.value })
@@ -387,6 +539,7 @@ function DonateContent() {
                       id="email"
                       type="email"
                       autoComplete="email"
+                      placeholder="you@example.com"
                       value={donor.email}
                       onChange={(e) =>
                         setDonor({ ...donor, email: e.target.value })
@@ -399,7 +552,8 @@ function DonateContent() {
                       id="phone"
                       type="tel"
                       autoComplete="tel"
-                      placeholder="+91"
+                      placeholder="10-digit mobile number"
+                      maxLength={10}
                       value={donor.phone}
                       onChange={(e) =>
                         setDonor({ ...donor, phone: e.target.value })
@@ -412,6 +566,7 @@ function DonateContent() {
                       id="city"
                       type="text"
                       autoComplete="address-level2"
+                      placeholder="Your city"
                       value={donor.city}
                       onChange={(e) =>
                         setDonor({ ...donor, city: e.target.value })
@@ -595,7 +750,7 @@ function DonateContent() {
                       <rect x="4" y="11" width="16" height="10" rx="2" />
                       <path d="M8 11V7a4 4 0 0 1 8 0v4" />
                     </svg>
-                    Pay {fmt(currentAmt)}
+                    Pay {fmt(grandTotal)}
                     {suffix}
                   </button>
                 </div>
@@ -606,8 +761,7 @@ function DonateContent() {
                     textAlign: 'center',
                   }}
                 >
-                  On the live site this opens the Razorpay window. Your 80G receipt
-                  is generated automatically.
+                  🔒 Secure payment via Razorpay · Instant 80G receipt generated automatically
                 </p>
               </>
             )}
@@ -661,7 +815,13 @@ function DonateContent() {
                 </div>
 
                 <div className="row">
-                  <Link className="btn btn-dark" href="/account#history">
+                  <button
+                    className="btn btn-dark"
+                    type="button"
+                    onClick={() => {
+                      if (typeof window !== 'undefined') window.print();
+                    }}
+                  >
                     <svg
                       width="16"
                       height="16"
@@ -676,7 +836,10 @@ function DonateContent() {
                     >
                       <path d="M12 3v12M7 10l5 5 5-5M5 21h14" />
                     </svg>
-                    Download 80G receipt
+                    Print / Download 80G receipt
+                  </button>
+                  <Link className="btn btn-line" href="/account#history">
+                    View in account
                   </Link>
                   <a
                     className="btn"
@@ -729,52 +892,18 @@ function DonateContent() {
                     <li>
                       <i>4</i>
                       <span>
-                        <b style={{ color: 'var(--ink)' }}>Every March:</b> one
-                        consolidated annual 80G statement
+                        <b style={{ color: 'var(--ink)' }}>March tax time:</b> a
+                        consolidated 80G certificate covering all your gifts
                       </span>
                     </li>
                   </ol>
                 </div>
 
-                {!isMonthly && (
-                  <div
-                    className="panel"
-                    style={{
-                      background: 'var(--saffron-soft)',
-                      border: '2px solid var(--saffron)',
-                      display: 'flex',
-                      flexWrap: 'wrap',
-                      gap: '16px',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                    }}
-                  >
-                    <span>
-                      <b style={{ color: 'var(--ink)', fontSize: '18px' }}>
-                        Make it monthly?
-                      </b>
-                      <br />
-                      <span style={{ color: 'var(--muted)' }}>
-                        {fmt(500)} a month keeps relief kits ready for the next
-                        emergency.
-                      </span>
-                    </span>
-                    <button
-                      className="btn btn-give"
-                      type="button"
-                      onClick={() => {
-                        setAmount(500);
-                        setCustomAmount('');
-                        setIsMonthly(true);
-                        setStep(3);
-                      }}
-                    >
-                      Start {fmt(500)}/month
-                    </button>
-                  </div>
-                )}
-
-                <Link className="more" href="/campaigns">
+                <Link
+                  className="btn btn-line"
+                  href="/campaigns"
+                  style={{ marginTop: '12px' }}
+                >
                   See other campaigns you can support →
                 </Link>
               </>
@@ -788,6 +917,8 @@ function DonateContent() {
                 background: 'var(--bg)',
                 borderRadius: '24px',
                 overflow: 'hidden',
+                boxShadow: '0 4px 20px rgba(18, 26, 74, 0.06)',
+                border: '1px solid var(--line)',
               }}
             >
               <div id="sumPhoto">
@@ -819,10 +950,12 @@ function DonateContent() {
                   <span>Platform fee</span>
                   <b style={{ color: 'var(--green)' }}>₹0</b>
                 </div>
-                <div className="line">
-                  <span>80G deduction (50%)</span>
-                  <b>{fmt(currentAmt / 2)}</b>
-                </div>
+                {tipAmt > 0 && (
+                  <div className="line">
+                    <span>Support SikhAid ({tipPct}%)</span>
+                    <b>{fmt(tipAmt)}</b>
+                  </div>
+                )}
                 <div
                   className="line"
                   style={{
@@ -838,9 +971,10 @@ function DonateContent() {
                     style={{
                       fontFamily: 'var(--display)',
                       fontSize: '28px',
+                      color: 'var(--ink)',
                     }}
                   >
-                    {fmt(currentAmt)}
+                    {fmt(grandTotal)}
                   </b>
                 </div>
                 <div className="note">{impactText()}</div>
@@ -851,23 +985,269 @@ function DonateContent() {
                 background: 'var(--bg)',
                 borderRadius: '24px',
                 padding: '22px',
+                border: '1px solid var(--line)',
               }}
             >
               <ul className="ticks">
                 <li>Registered under Section 80G</li>
-                <li>Receipt emailed instantly</li>
-                <li>Photo updates on what you funded</li>
+                <li>Instant receipt by email &amp; in your account</li>
+                <li>100% transparent ground reports</li>
                 <li>Pause or cancel monthly gifts anytime</li>
               </ul>
             </div>
           </aside>
+        </div>
+
+        {/* ========================================================
+            DONATION PAGE CONTEXT SECTIONS (From live https://www.sikhaid.ngo/donate)
+            ======================================================== */}
+        <div className="donate-extra-content">
+          {/* Section 1: Choose Your Impact */}
+          <section aria-labelledby="choose-impact-h">
+            <div className="extra-sec-head">
+              <h2 id="choose-impact-h">Choose Your Impact</h2>
+              <p>Every contribution funds verifiable, transparent grassroots relief</p>
+            </div>
+            <div className="impact-options-grid">
+              <div className="impact-fund-box">
+                <div className="impact-fund-head">
+                  <div className="impact-fund-icon" style={{ background: '#FFF4E5', color: '#D97706' }}>
+                    🧡
+                  </div>
+                  <div>
+                    <h3 style={{ fontSize: '22px', fontWeight: 800, color: 'var(--ink)' }}>General Relief Fund</h3>
+                    <span style={{ fontSize: '13px', color: 'var(--muted)' }}>Rapid Emergency Response</span>
+                  </div>
+                </div>
+                <p style={{ color: 'var(--text)', fontSize: '14.5px', lineHeight: 1.6 }}>
+                  Support our comprehensive humanitarian work across India. This fund allows us to respond quickly to emergencies and maintain ongoing community relief operations.
+                </p>
+                <div className="impact-fund-buttons">
+                  <button
+                    type="button"
+                    className="impact-btn"
+                    onClick={() => {
+                      setSelectedSlug('general');
+                      setAmount(1000);
+                      setCustomAmount('');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                  >
+                    <b>₹1,000</b>
+                    <span>Monthly impact donor</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="impact-btn"
+                    onClick={() => {
+                      setSelectedSlug('general');
+                      setAmount(5000);
+                      setCustomAmount('');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                  >
+                    <b>₹5,000</b>
+                    <span>Community supporter</span>
+                  </button>
+                </div>
+              </div>
+
+              <div className="impact-fund-box">
+                <div className="impact-fund-head">
+                  <div className="impact-fund-icon" style={{ background: '#EEF2FF', color: '#2563EB' }}>
+                    🛡️
+                  </div>
+                  <div>
+                    <h3 style={{ fontSize: '22px', fontWeight: 800, color: 'var(--ink)' }}>Campaign Support</h3>
+                    <span style={{ fontSize: '13px', color: 'var(--muted)' }}>Targeted Ground Missions</span>
+                  </div>
+                </div>
+                <p style={{ color: 'var(--text)', fontSize: '14.5px', lineHeight: 1.6 }}>
+                  Support specific campaigns like Langar Sewa, Health on Wheels, Blanket Distribution, and disaster flood relief across Odisha, Assam, Bihar, and Nepal.
+                </p>
+                <div className="impact-fund-buttons">
+                  <button
+                    type="button"
+                    className="impact-btn"
+                    onClick={() => {
+                      setAmount(2000);
+                      setCustomAmount('');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                  >
+                    <b>₹2,000</b>
+                    <span>Campaign contributor</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="impact-btn"
+                    onClick={() => {
+                      setAmount(10000);
+                      setCustomAmount('');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                  >
+                    <b>₹10,000</b>
+                    <span>Major sponsor</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Section 2: How to Donate (Simple Steps) */}
+          <section aria-labelledby="how-steps-h">
+            <div className="how-to-donate-card">
+              <h2 id="how-steps-h" style={{ fontSize: '28px', textAlign: 'center', fontWeight: 800 }}>
+                Simple Steps to Support
+              </h2>
+              <div className="how-steps-list">
+                <div className="how-step-item">
+                  <span className="how-step-num">1</span>
+                  <div>
+                    <h3 style={{ fontSize: '17px', fontWeight: 700, marginBottom: '2px' }}>Choose Your Amount</h3>
+                    <p style={{ fontSize: '14px', color: '#E0E7FF' }}>Select a predefined impact tier or enter any custom contribution.</p>
+                  </div>
+                </div>
+                <div className="how-step-item">
+                  <span className="how-step-num">2</span>
+                  <div>
+                    <h3 style={{ fontSize: '17px', fontWeight: 700, marginBottom: '2px' }}>Instant Online Payment</h3>
+                    <p style={{ fontSize: '14px', color: '#E0E7FF' }}>Pay securely via UPI (GPay, PhonePe, Paytm), Cards, Net Banking, or Wallets.</p>
+                  </div>
+                </div>
+                <div className="how-step-item">
+                  <span className="how-step-num">3</span>
+                  <div>
+                    <h3 style={{ fontSize: '17px', fontWeight: 700, marginBottom: '2px' }}>Instant 80G Tax Receipt</h3>
+                    <p style={{ fontSize: '14px', color: '#E0E7FF' }}>Your digital tax deduction certificate is generated and emailed immediately.</p>
+                  </div>
+                </div>
+                <div className="how-step-item">
+                  <span className="how-step-num">4</span>
+                  <div>
+                    <h3 style={{ fontSize: '17px', fontWeight: 700, marginBottom: '2px' }}>Track Your Impact</h3>
+                    <p style={{ fontSize: '14px', color: '#E0E7FF' }}>Receive photo updates and milestone reports showing exactly how your seva helped.</p>
+                  </div>
+                </div>
+              </div>
+              <div className="tax-deduct-badge">
+                <p style={{ fontWeight: 800, fontSize: '16px', marginBottom: '4px' }}>100% Tax Deductible</p>
+                <p style={{ fontSize: '13px', color: '#CBD5E1', margin: 0 }}>
+                  Donations qualify for 50% deduction under Section 80G of the Indian Income Tax Act.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          {/* Section 3: Your Impact in Action */}
+          <section aria-labelledby="action-h">
+            <div className="extra-sec-head">
+              <h2 id="action-h">Your Impact in Action</h2>
+              <p>Grassroots outcomes made possible by generous supporters like you</p>
+            </div>
+            <div className="hero-stats" style={{ margin: '0 auto 36px', maxWidth: '780px' }}>
+              <div>
+                <b>2,000+</b>
+                Families Supported
+              </div>
+              <div>
+                <b>50,000+</b>
+                Meals Distributed
+              </div>
+              <div>
+                <b>15</b>
+                Emergency Shelters
+              </div>
+            </div>
+
+            <div className="stories-cards-grid">
+              <div className="story-card-item">
+                <p>
+                  &ldquo;Thanks to the emergency food packets from Sikh Aid, my family survived the first week after our house was flooded. We had lost everything, but you gave us hope.&rdquo;
+                </p>
+                <cite>— Gurpreet Kaur, Flood Victim from Ludhiana</cite>
+              </div>
+              <div className="story-card-item">
+                <p>
+                  &ldquo;The mobile medical unit reached our village when no other help was available. They treated my elderly father&apos;s diabetes when we had no access to medicines.&rdquo;
+                </p>
+                <cite>— Harpreet Singh, Village Dhakoli</cite>
+              </div>
+            </div>
+          </section>
+
+          {/* Section 4: Complete Transparency & Why Trust Sikh Aid */}
+          <section aria-labelledby="transparency-h">
+            <div className="extra-sec-head">
+              <h2 id="transparency-h">Complete Transparency</h2>
+              <p>Why thousands of donors across India place their trust in SikhAid</p>
+            </div>
+            <div className="trust-points-grid">
+              <div className="trust-point-card">
+                <div className="trust-point-icon">🛡️</div>
+                <div>
+                  <h3 style={{ fontSize: '17px', fontWeight: 800, color: 'var(--ink)' }}>100% Direct Relief</h3>
+                  <p style={{ fontSize: '14px', color: 'var(--muted)', marginTop: '4px', lineHeight: 1.5 }}>
+                    Every single rupee goes directly into relief material, nutritious meals, and rescue kits on the ground.
+                  </p>
+                </div>
+              </div>
+
+              <div className="trust-point-card">
+                <div className="trust-point-icon">📜</div>
+                <div>
+                  <h3 style={{ fontSize: '17px', fontWeight: 800, color: 'var(--ink)' }}>80G Tax Benefits</h3>
+                  <p style={{ fontSize: '14px', color: 'var(--muted)', marginTop: '4px', lineHeight: 1.5 }}>
+                    All donations qualify for 50% tax deductions under Section 80G with instant receipt generation.
+                  </p>
+                </div>
+              </div>
+
+              <div className="trust-point-card">
+                <div className="trust-point-icon">📸</div>
+                <div>
+                  <h3 style={{ fontSize: '17px', fontWeight: 800, color: 'var(--ink)' }}>Regular Photo Updates</h3>
+                  <p style={{ fontSize: '14px', color: 'var(--muted)', marginTop: '4px', lineHeight: 1.5 }}>
+                    Receive verified on-ground photos and utilisation statements for each response you back.
+                  </p>
+                </div>
+              </div>
+
+              <div className="trust-point-card">
+                <div className="trust-point-icon">🤝</div>
+                <div>
+                  <h3 style={{ fontSize: '17px', fontWeight: 800, color: 'var(--ink)' }}>Established Trust</h3>
+                  <p style={{ fontSize: '14px', color: 'var(--muted)', marginTop: '4px', lineHeight: 1.5 }}>
+                    Serving communities across India since 2020 with audited financials and 100% compliance.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Section 5: Need Help with Your Donation? */}
+          <section className="help-donate-banner" aria-label="Donation assistance">
+            <h2 style={{ fontSize: '28px', fontWeight: 800, margin: 0 }}>Need Help with Your Donation?</h2>
+            <p style={{ fontSize: '16px', color: '#D5DBEE', maxWidth: '58ch', margin: 0 }}>
+              Our donor care team is available to assist you with UPI, wire transfers, 80G receipts, or CSR partnerships.
+            </p>
+            <div className="help-donate-btns">
+              <Link className="btn btn-light" href="/get-involved">
+                Contact Support Team
+              </Link>
+              <a className="btn btn-line" style={{ color: '#fff', borderColor: 'rgba(255,255,255,0.4)' }} href="tel:+919851341234">
+                Call +91 98513 41234
+              </a>
+            </div>
+          </section>
         </div>
       </main>
     </>
   );
 }
 
-export default function DonatePage() {
+export default function DonatePage({ initialSlug }) {
   return (
     <Suspense
       fallback={
@@ -876,7 +1256,7 @@ export default function DonatePage() {
         </div>
       }
     >
-      <DonateContent />
+      <DonateContent initialSlug={initialSlug} />
     </Suspense>
   );
 }

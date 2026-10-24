@@ -36,7 +36,7 @@ export default function CampaignCard({ campaign }) {
       <div className="body">
         <span className="cat">{campaign.category}</span>
         <h3>
-          <Link href={`/campaign#${campaign.slug}`}>{campaign.title}</Link>
+          <Link href={`/campaigns/${campaign.slug}`}>{campaign.title}</Link>
         </h3>
 
         <div className="ccard-stats">
@@ -71,10 +71,10 @@ export default function CampaignCard({ campaign }) {
         </div>
 
         <div className="acts">
-          <Link className="btn btn-line" href={`/campaign#${campaign.slug}`}>
+          <Link className="btn btn-line" href={`/campaigns/${campaign.slug}`}>
             Know more
           </Link>
-          <Link className="btn btn-give" href={`/donate#${campaign.slug}`}>
+          <Link className="btn btn-give" href={`/donate/${campaign.slug}`}>
             Donate
           </Link>
         </div>

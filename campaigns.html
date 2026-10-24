@@ -13,9 +13,9 @@
 .search { flex: 1 1 260px; display: flex; align-items: center; gap: 10px; border: 1.5px solid #D3D7E6; border-radius: 12px; padding: 0 14px; min-height: 48px; }
 .search input { border: 0; outline: none; flex: 1; min-width: 0; font: inherit; font-size: 15px; background: transparent; color: var(--ink); }
 .search:focus-within { border-color: var(--indigo); }
-.hero-stats { display: flex; flex-wrap: wrap; gap: 12px; }
-.hero-stats div { background: rgba(255,255,255,.08); border-radius: 16px; padding: 16px 22px; }
-.hero-stats b { display: block; font-family: var(--display); font-size: 32px; color: var(--saffron); font-variant-numeric: tabular-nums; }
+.hero-stats { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 14px; margin: 16px auto 0; width: 100%; max-width: 900px; }
+.hero-stats div { background: rgba(255,255,255,.08); border: 1.5px solid rgba(255,255,255,.14); border-radius: 16px; padding: 16px 24px; text-align: center; min-width: 145px; flex: 1 1 140px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
+.hero-stats b { display: block; font-family: var(--display); font-size: 32px; color: var(--saffron); font-variant-numeric: tabular-nums; font-weight: 700; margin-bottom: 2px; }
 .done-card { display: flex; gap: 16px; background: var(--bg); border-radius: 18px; padding: 14px; text-decoration: none; color: var(--text); border: 1px solid var(--line); }
 .done-card .ph { width: 110px; flex: none; border-radius: 12px; min-height: 110px; }
 .done-card .ph::after { display: none; }
@@ -29,19 +29,57 @@
 <main>
   <section class="page-hero">
     <div class="wrap">
+      <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;background:rgba(239,68,68,0.16);border:1px solid rgba(239,68,68,0.4);color:#FCA5A5;font-size:13px;font-weight:700;margin-bottom:6px">
+        <span style="width:8px;height:8px;border-radius:50%;background:#EF4444;box-shadow:0 0 8px #EF4444"></span>
+        Active Emergency Relief Operations On Ground
+      </div>
       <nav class="crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a> / Campaigns</nav>
-      <h1>Every cause, one place</h1>
-      <p class="lead">Emergency relief, hunger, healthcare and youth programs. See progress live, give to the one that moves you, and follow what your gift does.</p>
-      <div class="hero-stats" id="heroStats" style="margin-top:12px"></div>
+      <h1>Every cause a life. Every rupee a lifeline.</h1>
+      <p class="lead">When disaster strikes or a child goes to sleep hungry, every second counts. SikhAid is on the ground within 24 hours providing meals, clean water, healthcare, and shelter. Choose a cause close to your heart and follow your impact with 100% transparent proof.</p>
+      <div class="hero-stats" id="heroStats" style="margin-top:14px"></div>
     </div>
   </section>
 
-  <div class="toolbar"><div class="wrap">
-    <label class="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+  <!-- Impact Tiers -->
+  <section class="band alt tight" style="padding-block:36px;border-bottom:1px solid var(--line)">
+    <div class="wrap">
+      <div style="text-align:center;margin-bottom:22px">
+        <span class="eyebrow">Direct Impact</span>
+        <h2 class="h-sec" style="font-size:26px;margin-top:4px">See what your contribution achieves on the ground</h2>
+      </div>
+      <div class="camp-impact-grid">
+        <a href="donate.html?amount=500" class="camp-impact-card">
+          <span class="camp-impact-icon">🍲</span>
+          <b class="camp-impact-amt">₹500</b>
+          <span class="camp-impact-title">5 Warm Meals</span>
+          <span class="camp-impact-desc">Freshly cooked hot langar for families stranded in relief camps.</span>
+        </a>
+        <a href="donate.html?amount=1200" class="camp-impact-card">
+          <span class="camp-impact-icon">📦</span>
+          <b class="camp-impact-amt">₹1,200</b>
+          <span class="camp-impact-title">2-Week Ration Kit</span>
+          <span class="camp-impact-desc">Atta, rice, dal, oil, and salt to sustain a family of 4 through crisis.</span>
+        </a>
+        <a href="donate.html?amount=2500" class="camp-impact-card active">
+          <span class="camp-impact-icon">🩺</span>
+          <b class="camp-impact-amt">₹2,500</b>
+          <span class="camp-impact-title">Emergency Medical Kit</span>
+          <span class="camp-impact-desc">ORS packets, water purification tablets, fever & antiseptic medicines.</span>
+        </a>
+        <a href="donate.html?amount=5000" class="camp-impact-card">
+          <span class="camp-impact-icon">🏠</span>
+          <b class="camp-impact-amt">₹5,000</b>
+          <span class="camp-impact-title">Family Shelter Kit</span>
+          <span class="camp-impact-desc">Heavy-duty tarpaulin, ground mats, warm blankets, and mosquito nets.</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <div class="toolbar"><div class="wrap" style="justify-content:center">
+    <label class="search" style="max-width:380px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
       <span class="sr-only">Search campaigns</span><input id="q" type="search" placeholder="Search by cause or place, e.g. flood, Odisha"></label>
-    <div class="chips" role="group" aria-label="Filter by cause" id="filters"></div>
-    <label class="field" style="flex-direction:row;align-items:center;gap:8px">Sort
-      <select id="sort" style="min-height:46px"><option value="urgent">Most urgent</option><option value="close">Closest to goal</option><option value="support">Most supported</option></select></label>
+    <div class="chips" role="group" aria-label="Filter by cause" id="filters" style="justify-content:center"></div>
   </div></div>
 
   <section class="band tight" aria-labelledby="res-h">
@@ -90,22 +128,21 @@
   const total = campaigns.reduce((s, c) => s + c.raised, 0), donors = campaigns.reduce((s, c) => s + c.donors, 0);
   $('heroStats').innerHTML = '<div><b>' + campaigns.length + '</b>Active campaigns</div><div><b>' + campaigns.filter((c) => c.urgent).length + '</b>Live emergencies</div>' +
     '<div><b>' + fmt(total) + '</b>Raised this season</div><div><b>' + donors.toLocaleString('en-IN') + '</b>Donors</div>';
-  const groups = ['All', 'Emergency', 'Hunger', 'Healthcare', 'Youth'];
+  const groups = ['All', 'Emergency', 'Hunger', 'Healthcare', 'Youth', 'Community'];
   let f = 'All';
   try { const h = location.hash.slice(1); const g = groups.find((x) => x.toLowerCase() === h); if (g) f = g; } catch (e) {}
   function render() {
     $('filters').innerHTML = groups.map((g) => '<button class="chip" type="button" aria-pressed="' + (g === f) + '" data-g="' + g + '">' + g + '</button>').join('');
     const q = $('q').value.trim().toLowerCase();
     let list = campaigns.filter((c) => (f === 'All' || c.group === f) && (!q || (c.title + ' ' + c.location + ' ' + c.category + ' ' + c.blurb).toLowerCase().includes(q)));
-    const s = $('sort').value;
-    list = list.slice().sort((a, b) => s === 'close' ? pct(b) - pct(a) : s === 'support' ? b.donors - a.donors : (b.urgent - a.urgent) || (a.days || 99) - (b.days || 99));
+    list = list.slice().sort((a, b) => (b.urgent - a.urgent) || (a.days || 99) - (b.days || 99));
     $('list').innerHTML = list.map(card).join('');
     $('count').textContent = list.length + ' campaign' + (list.length === 1 ? '' : 's');
     $('empty').hidden = list.length > 0;
     fallbackImages($('list'));
   }
   $('filters').addEventListener('click', (e) => { const b = e.target.closest('[data-g]'); if (b) { f = b.dataset.g; render(); } });
-  $('q').addEventListener('input', render); $('sort').addEventListener('change', render);
+  $('q').addEventListener('input', render);
   render();
   $('done').innerHTML = completed.map((d) => '<a class="done-card" href="blog.html">' + photo(d.img, '', d.tone, '', d.title) +
     '<span class="stack" style="gap:6px"><span class="badge done" style="align-self:flex-start">Completed</span><b style="color:var(--ink);font-size:17px">' + esc(d.title) + '</b><span style="font-size:14px;color:var(--muted)">' + esc(d.sub) + '</span><span style="font-weight:800;color:var(--indigo);font-size:14px">Read impact report →</span></span></a>').join('');

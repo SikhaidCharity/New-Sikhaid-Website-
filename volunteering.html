@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Volunteering · SikhAid</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Manrope:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-page="volunteering">
+<div id="site-header"></div>
+<main>
+  <section class="page-hero">
+    <div class="wrap">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a> / Volunteering Opportunities</nav>
+      <h1>Why Volunteer with SikhAid?</h1>
+      <p class="lead">Join a passionate community dedicated to serving humanity. Your skills, time, and compassion can create lasting change across families and crisis zones in India.</p>
+    </div>
+  </section>
+
+  <section class="band tight">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="stack">
+          <span class="eyebrow">Ways to Serve</span>
+          <h2 class="h-sec">Volunteer Opportunities</h2>
+          <p class="lead">Choose an area that matches your skills and passion. Every contribution makes a real difference.</p>
+        </div>
+      </div>
+
+      <div class="grid g4" style="margin-top:16px">
+        <div class="panel stack" style="gap:14px;border-radius:20px;padding:26px">
+          <div style="font-size:32px">💻</div>
+          <h3 style="font-size:20px;font-weight:700;color:var(--ink)">Online Volunteering</h3>
+          <p style="font-size:14.5px;color:var(--muted);line-height:1.5;flex:1">Support remotely through virtual coordination, helpline assistance, and administrative tasks.</p>
+          <a class="btn btn-line" href="#volunteer-form" onclick="selectArea('Online Volunteering')">Register Now ↓</a>
+        </div>
+
+        <div class="panel stack" style="gap:14px;border-radius:20px;padding:26px">
+          <div style="font-size:32px">✍️</div>
+          <h3 style="font-size:20px;font-weight:700;color:var(--ink)">Blogging &amp; Stories</h3>
+          <p style="font-size:14.5px;color:var(--muted);line-height:1.5;flex:1">Share impactful stories, document relief efforts, and create compelling content that inspires action.</p>
+          <a class="btn btn-line" href="#volunteer-form" onclick="selectArea('Blogging')">Register Now ↓</a>
+        </div>
+
+        <div class="panel stack" style="gap:14px;border-radius:20px;padding:26px">
+          <div style="font-size:32px">📱</div>
+          <h3 style="font-size:20px;font-weight:700;color:var(--ink)">Social Media</h3>
+          <p style="font-size:14.5px;color:var(--muted);line-height:1.5;flex:1">Manage digital presence, engage communities, design graphics, and amplify urgent relief alerts.</p>
+          <a class="btn btn-line" href="#volunteer-form" onclick="selectArea('Social Media')">Register Now ↓</a>
+        </div>
+
+        <div class="panel stack" style="gap:14px;border-radius:20px;padding:26px">
+          <div style="font-size:32px">🤝</div>
+          <h3 style="font-size:20px;font-weight:700;color:var(--ink)">Online Fundraising</h3>
+          <p style="font-size:14.5px;color:var(--muted);line-height:1.5;flex:1">Drive emergency donation drives, connect communities, and help expand our immediate field relief reach.</p>
+          <a class="btn btn-line" href="#volunteer-form" onclick="selectArea('Online Fundraising')">Register Now ↓</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band alt" id="volunteer-form">
+    <div class="wrap" style="max-width:820px">
+      <div class="sec-head">
+        <div class="stack">
+          <span class="eyebrow">Join the Movement</span>
+          <h2 class="h-sec">Volunteer Registration</h2>
+          <p class="lead">Fill out the form below and our team will get in touch with you shortly.</p>
+        </div>
+      </div>
+
+      <div class="panel" style="background:var(--bg);border:1.5px solid var(--line);border-radius:24px;padding:clamp(24px,4vw,40px)">
+        <form id="vForm" onsubmit="event.preventDefault(); document.getElementById('vSuccess').hidden = false; this.hidden = true;">
+          <h3 style="font-size:18px;font-weight:800;color:var(--ink);border-bottom:1.5px solid var(--line);padding-bottom:10px;margin-bottom:16px">1. Personal Details</h3>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;margin-bottom:16px">
+            <label class="field"><span>Full Name *</span><input type="text" required placeholder="e.g. Jaspreet Singh"></label>
+            <label class="field"><span>Email Address *</span><input type="email" required placeholder="e.g. jaspreet@example.com"></label>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;margin-bottom:16px">
+            <label class="field"><span>Mobile Number (10 digits) *</span><input type="tel" pattern="[0-9]{10}" required placeholder="e.g. 9851341234"></label>
+            <label class="field"><span>Gender *</span><select><option>Male</option><option>Female</option><option>Other</option></select></label>
+          </div>
+          <label class="field" style="margin-bottom:24px"><span>Address &amp; City *</span><input type="text" required placeholder="e.g. Cuttack, Odisha"></label>
+
+          <h3 style="font-size:18px;font-weight:800;color:var(--ink);border-bottom:1.5px solid var(--line);padding-bottom:10px;margin-bottom:16px">2. Volunteering Details</h3>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;margin-bottom:16px">
+            <label class="field"><span>Selected Area of Interest *</span>
+              <select id="vArea"><option>Online Volunteering</option><option>Blogging</option><option>Social Media</option><option>Online Fundraising</option><option>Field Relief</option></select>
+            </label>
+            <label class="field"><span>Duration *</span>
+              <select><option>1-3 months</option><option selected>3-6 months</option><option>6-12 months</option><option>12+ months</option></select>
+            </label>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;margin-bottom:16px">
+            <label class="field"><span>Experience *</span>
+              <select><option>First time</option><option>1 year</option><option>2 years</option><option>3+ years</option></select>
+            </label>
+            <label class="field"><span>Available Start Date *</span><input type="date" required></label>
+          </div>
+          <label class="field" style="margin-bottom:24px"><span>About Yourself *</span>
+            <textarea rows="4" required placeholder="Tell us briefly about your skills and motivation..."></textarea>
+          </label>
+          <button class="btn btn-give btn-lg" type="submit" style="width:100%">Submit Volunteer Application →</button>
+        </form>
+        <div id="vSuccess" hidden style="text-align:center;padding:36px 16px">
+          <span style="font-size:48px">🎉</span>
+          <h3 style="font-size:24px;font-weight:700;color:var(--ink);margin:12px 0">Application Submitted!</h3>
+          <p style="color:var(--muted)">The SikhAid volunteer team will reach out to you within 48 hours.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script src="assets/site.js"></script>
+<script>
+function selectArea(area) {
+  const el = document.getElementById('vArea');
+  if (el) el.value = area;
+}
+</script>
+</body>
+</html>

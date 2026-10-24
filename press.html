@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Press Coverage · SikhAid</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Manrope:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="assets/styles.css">
+<style>
+.press-card {
+  background: #FFFFFF;
+  border: 1.5px solid var(--line);
+  border-radius: 22px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 24px rgba(18,26,74,0.05);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.press-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--indigo);
+  box-shadow: 0 14px 34px rgba(26,35,126,0.08);
+}
+.press-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: #0E1B38;
+}
+.press-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.35s ease;
+}
+.press-card:hover .press-media img {
+  transform: scale(1.03);
+}
+.press-badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: #DC2626;
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 5px 14px;
+  border-radius: 999px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  z-index: 2;
+  letter-spacing: .01em;
+}
+.press-body {
+  padding: 24px 22px 24px 22px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.press-title {
+  font-size: 21px;
+  font-weight: 700;
+  color: #101B37;
+  line-height: 1.35;
+  margin: 0 0 12px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.press-snippet {
+  font-size: 15px;
+  color: #4B5563;
+  line-height: 1.55;
+  margin: 0 0 16px 0;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.press-date {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #64748B;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+.press-btn {
+  width: 100%;
+  background: #DE6B16;
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 13px 20px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(222, 107, 22, 0.22);
+  transition: all 0.2s ease;
+}
+.press-btn:hover {
+  background: #C85D0E;
+  box-shadow: 0 6px 18px rgba(222, 107, 22, 0.38);
+  transform: translateY(-1px);
+}
+</style>
+</head>
+<body data-page="press">
+<div id="site-header"></div>
+<main>
+  <section class="page-hero">
+    <div class="wrap">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a> / Press Coverage</nav>
+      <h1>Press Coverage</h1>
+      <p class="lead">See how SikhAid's humanitarian work is recognized across national media — from grassroots emergency mobilization to 100% transparent public service.</p>
+    </div>
+  </section>
+
+  <section style="background:var(--bg-alt);border-bottom:1px solid var(--line);padding:16px 0">
+    <div class="wrap" style="display:flex;justify-content:center">
+      <div class="chips" role="group" aria-label="Filter media" id="pFilter">
+        <button class="chip active" type="button" data-type="all">All Media (8)</button>
+        <button class="chip" type="button" data-type="article">Articles (5)</button>
+        <button class="chip" type="button" data-type="video">Videos (3)</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="band tight">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="stack">
+          <span class="eyebrow">National Recognition</span>
+          <h2 class="h-sec">Media mentions &amp; field reports</h2>
+          <p class="lead">Documenting SikhAid's journey of selfless service across television, print, and digital journalism.</p>
+        </div>
+      </div>
+      <div class="grid g3" id="pressGrid" style="margin-top:16px"></div>
+    </div>
+  </section>
+
+  <section class="band alt">
+    <div class="wrap">
+      <div class="panel" style="background:var(--bg);border:1.5px solid var(--line);border-radius:24px;padding:36px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:32px;align-items:center">
+        <div class="stack" style="gap:12px">
+          <span class="eyebrow" style="text-align:left">Media Inquiries</span>
+          <h2 style="font-size:28px;font-weight:700;color:var(--ink)">Journalists &amp; Content Creators</h2>
+          <p style="color:var(--muted);font-size:15.5px;line-height:1.5">Covering humanitarian emergencies, ground langar logistics, or rural health drives? Reach out to our press desk for on-ground interviews, verified data, and high-res photography.</p>
+          <div style="font-size:14.5px;color:var(--ink);display:flex;flex-direction:column;gap:6px">
+            <span><b>Press desk:</b> <a href="mailto:help@sikhaid.ngo" style="color:var(--indigo)">help@sikhaid.ngo</a></span>
+            <span><b>Hotline:</b> <a href="tel:+919851341234" style="color:var(--indigo)">+91 98513 41234</a></span>
+          </div>
+        </div>
+        <div style="background:var(--bg-alt);border:1.5px solid var(--line);border-radius:18px;padding:24px;text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center">
+          <span style="font-size:32px">📁</span>
+          <b style="font-size:18px;color:var(--ink)">Official Press Kit &amp; Logos</b>
+          <p style="font-size:14px;color:var(--muted);margin:0">High-resolution logos, fact sheets, brand guidelines, and relief photos.</p>
+          <a class="btn btn-dark" href="about.html#compliance" style="width:100%">Download press assets</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band tight" style="text-align:center">
+    <div class="wrap stack" style="align-items:center;gap:16px">
+      <h2 class="h-sec">Want to feature our story or collaborate?</h2>
+      <p class="lead" style="max-width:560px">Reach out to our media relations team for quotes, ground interviews, or collaborative documentary projects.</p>
+      <div class="row" style="justify-content:center">
+        <a class="btn btn-give btn-lg" href="contact.html">Contact our team</a>
+        <a class="btn btn-line btn-lg" href="about.html">Learn about SikhAid</a>
+      </div>
+    </div>
+  </section>
+</main>
+<div id="site-footer"></div>
+<script src="assets/site.js"></script>
+<script>
+(function() {
+  const items = [
+    { type: 'article', pub: 'Khalsa Help International / TOI', date: '25 Apr 2021', title: 'Sikh Aid Group Offers Oxygen to COVID...', snippet: 'As COVID-19 cases surged and overwhelmed Indian hospitals, Khalsa Help International offered free oxygen concentrators and cylinders to families in distress.', link: 'https://timesofindia.indiatimes.com', tag: 'COVID Relief', img: 'assets/press/covid-oxygen.webp' },
+    { type: 'video', pub: 'NDTV India', date: '18 Jul 2024', title: 'Ground Zero: Volunteers Mobilize Within Hours for Assam Flood Victims', snippet: 'Special ground report on emergency relief boats navigating submerged villages in Assam to deliver warm meals, dry rations, and baby food to marooned families.', link: 'https://www.ndtv.com', tag: 'Disaster Relief', img: 'https://www.sikhaid.ngo/api/img?src=https%3A%2F%2Fi.ibb.co%2FzWXc5WPS%2FIMG-1877.webp' },
+    { type: 'article', pub: 'Hindustan Times', date: '12 May 2021', title: 'From Cuttack to Kathmandu: Dispatches Free Oxygen Cylinders and Drugs', snippet: 'When oxygen plants ran dry, volunteers coordinated non-stop logistics across state borders, ensuring critical patient distress calls were answered within hours.', link: 'https://www.hindustantimes.com', tag: 'Healthcare', img: 'https://www.sikhaid.ngo/campaigns-bg/impact-healthcare.webp' },
+    { type: 'video', pub: 'Odisha TV (OTV)', date: '08 Jul 2025', title: 'Special Broadcast: Serving 500,000+ Hot Meals at Puri Ratha Yatra', snippet: 'On the sweltering Grand Road of Puri, 24-hour hydration camps, ORS distribution kiosks, and fresh langar served hundreds of thousands of pilgrims.', link: 'https://odishatv.in', tag: 'Langar Seva', img: 'https://www.sikhaid.ngo/annapurna-seva/ratha-yatra-hero-4.webp' },
+    { type: 'article', pub: 'ANI News', date: '14 Oct 2025', title: "SikhAid Launches 'No Spot' Women's Health & Menstrual Dignity Campaign", snippet: 'Targeting remote rural panchayats, teams distributed biodegradable sanitary pads, iron supplements, and conducted vital female health hygiene workshops.', link: 'https://www.aninews.in', tag: "Women's Health", img: 'https://www.sikhaid.ngo/gallery/gallery-153-sanitary-pads.webp' },
+    { type: 'article', pub: 'The Tribune', date: '04 Feb 2026', title: 'Honest Seva & Transparent Books: Setting New Benchmarks in Accountability', snippet: 'In an era where non-profit credibility is paramount, publishing dated photo proof and line-by-line fund utilisation reports for every single rupee raised.', link: 'https://www.tribuneindia.com', tag: 'Transparency', img: 'https://www.sikhaid.ngo/gallery/gallery-164-ration-kits.webp' },
+    { type: 'article', pub: 'India Today', date: '29 Sep 2026', title: 'Nepal Flash Floods: Establishing 24-Hour Community Kitchens in Border', snippet: 'Rushing beyond borders, volunteer relief convoys crossed into flood-ravaged regions of Nepal, distributing emergency ration kits and water purification tablets.', link: 'https://www.indiatoday.in', tag: 'Disaster Relief', img: 'https://www.sikhaid.ngo/api/img?src=https%3A%2F%2Fi.ibb.co%2FtwFzLXhg%2FDSC-3910.webp' },
+    { type: 'video', pub: 'Kalinga TV', date: '19 Dec 2025', title: 'Winter Warmth Drive: Over 10,000 Heavy Quilts Distributed in Tribal Belts', snippet: 'Braving sub-zero temperatures, volunteer teams reached deep forest settlements in Odisha to provide thermal blankets and winter wear to elderlies and children.', link: 'https://kalingatv.com', tag: 'Winter Relief', img: 'https://www.sikhaid.ngo/campaigns-bg/mission-blanket.webp' }
+  ];
+
+  let curType = 'all';
+  function render() {
+    const list = items.filter(x => curType === 'all' || x.type === curType);
+    document.getElementById('pressGrid').innerHTML = list.map(item => `
+      <article class="press-card">
+        <div class="press-media">
+          <img src="${item.img}" alt="${item.title}" loading="lazy">
+          <span class="press-badge">${item.tag}</span>
+        </div>
+        <div class="press-body">
+          <h3 class="press-title">${item.title}</h3>
+          <p class="press-snippet">${item.snippet}</p>
+          <div class="press-date">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span>${item.date}</span>
+            <span style="opacity:.35">•</span>
+            <span style="font-size:13px;font-weight:600;color:var(--muted)">${item.pub}</span>
+          </div>
+          <a class="press-btn" href="${item.link}" target="_blank" rel="noopener noreferrer">Read More →</a>
+        </div>
+      </article>
+    `).join('');
+  }
+
+  document.getElementById('pFilter').addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-type]');
+    if (!btn) return;
+    document.querySelectorAll('#pFilter button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    curType = btn.dataset.type;
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

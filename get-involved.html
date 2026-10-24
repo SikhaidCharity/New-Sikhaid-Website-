@@ -4,113 +4,181 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Get Involved · SikhAid</title>
-<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Manrope:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="assets/styles.css">
 <style>
-.paths { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 14px; margin-top: 18px; }
-.paths a { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.16); border-radius: 18px; padding: 20px; text-decoration: none; color: #fff; display: flex; flex-direction: column; gap: 6px; }
-.paths a:hover { background: rgba(255,255,255,.14); color: #fff; }
-.paths b { font-family: var(--display); font-size: 22px; }
-.paths span { color: var(--on-dark); font-size: 14.5px; }
-section[id] { scroll-margin-top: 90px; }
-.role { border: 1px solid var(--line); border-radius: 18px; padding: 22px; display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; background: var(--bg); }
-.role .tags { display: flex; gap: 8px; flex-wrap: wrap; }
-.role .tags span { font-size: 12.5px; font-weight: 700; background: var(--bg-alt); padding: 5px 10px; border-radius: 999px; }
-.vol-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 32px; align-items: start; }
-@media (max-width: 960px) { .vol-grid { grid-template-columns: 1fr; } }
-.form-card { background: var(--bg-alt); border-radius: 24px; padding: 28px; display: flex; flex-direction: column; gap: 14px; position: sticky; top: 96px; }
-@media (max-width: 960px) { .form-card { position: static; } }
-.area { border-radius: 20px; overflow: hidden; background: var(--bg); display: flex; flex-direction: column; }
-.area .ph { aspect-ratio: 16/10; max-width: 100%; }
-.tier { border: 1px solid var(--line); border-radius: 22px; padding: 28px; display: flex; flex-direction: column; gap: 12px; background: var(--bg); }
-.tier.hi { border: 2px solid var(--saffron); background: var(--saffron-soft); }
-.tier .price { font-family: var(--display); font-size: 32px; font-weight: 800; color: var(--ink); }
-.ok { background: var(--green-soft); color: var(--green); border-radius: 14px; padding: 16px; font-weight: 700; }
+.gateway-card {
+  background: var(--bg);
+  border: 1.5px solid var(--line);
+  border-radius: 24px;
+  padding: 36px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  box-shadow: 0 8px 30px rgba(18, 26, 74, 0.04);
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.gateway-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--indigo);
+  box-shadow: 0 14px 36px rgba(26, 35, 126, 0.08);
+}
+.gateway-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  font-size: 26px;
+}
+.gateway-pill {
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
 </style>
 </head>
 <body data-page="involved">
 <div id="site-header"></div>
 <main>
-  <section class="page-hero"><div class="wrap">
-    <nav class="crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a> / Get involved</nav>
-    <h1>Give your time, your skills, or your company's reach</h1>
-    <p class="lead">Seva isn't only money. Join 300+ volunteers in the field, partner with us for CSR, or sponsor a whole program in someone's name.</p>
-    <div class="paths">
-      <a href="#volunteer"><b>Volunteer</b><span>Relief, langar, medical, logistics and media roles</span></a>
-      <a href="#csr"><b>CSR partnership</b><span>Custom programs with board-ready impact reports</span></a>
-      <a href="#sponsor"><b>Sponsor a program</b><span>Fund a day of langar, a camp, or 100 relief kits</span></a>
+  <!-- HERO ENTRY GATE -->
+  <section class="page-hero">
+    <div class="wrap">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="index.html">Home</a> / Get Involved</nav>
+      <h1>Give your time, your skills, or your company's reach</h1>
+      <p class="lead">Seva isn't only money. Whether you wish to serve on the ground, offer your professional skills remotely, or partner through Corporate Social Responsibility, there is an impactful pathway for you to change lives with SikhAid.</p>
     </div>
-  </div></section>
+  </section>
 
-  <section class="band" id="volunteer" aria-labelledby="vol-h"><div class="wrap">
-    <div class="sec-head"><div class="stack"><span class="eyebrow">Volunteering</span><h2 class="h-sec" id="vol-h">Open volunteer roles</h2><p class="lead">No experience needed for most roles. We train you, pair you with a team lead, and send you where you can help most.</p></div></div>
-    <div class="vol-grid">
-      <div class="stack" style="gap:12px" id="roles"></div>
-      <form class="form-card" id="volForm" novalidate>
-        <h3 style="font-size:24px">Volunteer application</h3>
-        <label class="field" for="vName">Full name<input id="vName" type="text" required autocomplete="name"></label>
-        <label class="field" for="vPhone">Phone (WhatsApp)<input id="vPhone" type="tel" required autocomplete="tel"></label>
-        <label class="field" for="vEmail">Email<input id="vEmail" type="email" required autocomplete="email"></label>
-        <label class="field" for="vCity">City<input id="vCity" type="text" autocomplete="address-level2"></label>
-        <label class="field" for="vRole">Role you're interested in<select id="vRole"></select></label>
-        <label class="field" for="vWhy">Skills, or why you'd like to join<textarea id="vWhy" rows="3"></textarea></label>
-        <p class="err" id="vErr" hidden style="color:var(--red);font-weight:700;font-size:14px">Please fill in your name, phone and email.</p>
-        <button class="btn btn-give btn-lg" type="submit">Submit application</button>
-        <div class="ok" id="vOk" hidden>Thank you! Our volunteer team will contact you within a few working days.</div>
-      </form>
-    </div>
-  </div></section>
+  <!-- 3 CORE ENTRY PATHWAYS -->
+  <section class="band tight">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="stack">
+          <span class="eyebrow">Choose Your Pathway</span>
+          <h2 class="h-sec">How would you like to get involved?</h2>
+          <p class="lead">Select an option below to enter our dedicated programs and start your journey of selfless service.</p>
+        </div>
+      </div>
 
-  <section class="band alt" id="csr" aria-labelledby="csr-h"><div class="wrap">
-    <div class="sec-head"><div class="stack"><span class="eyebrow">CSR partnerships</span><h2 class="h-sec" id="csr-h">Programs your company can stand behind</h2><p class="lead">Custom programs with measurable outcomes, quarterly impact reporting and co-branding, trusted by Axis Bank, Domino's, Hero MotoCorp, TCS, realme and Duramix.</p></div></div>
-    <div class="grid g4" id="areas" style="margin-bottom:28px"></div>
-    <div class="grid g3" style="margin-bottom:28px">
-      <div class="panel stack" style="gap:8px"><b style="color:var(--ink);font-size:18px">Impact reporting</b><span style="color:var(--muted)">Quarterly reports with outcomes, photos and fund use, ready for your board and CSR committee.</span></div>
-      <div class="panel stack" style="gap:8px"><b style="color:var(--ink);font-size:18px">Employee volunteering</b><span style="color:var(--muted)">Langar service and relief-kit packing days for your teams.</span></div>
-      <div class="panel stack" style="gap:8px"><b style="color:var(--ink);font-size:18px">Compliance-ready</b><span style="color:var(--muted)">80G, 12A and CSR-1 documents shared on request.</span></div>
-    </div>
-    <div class="panel" style="background:var(--ink);color:var(--on-dark);display:flex;flex-wrap:wrap;gap:20px;justify-content:space-between;align-items:center">
-      <div class="stack" style="gap:6px"><b style="font-family:var(--display);font-size:26px;color:#fff">Let's build a program together</b><span>Write to <b style="color:#fff">help@sikhaid.ngo</b>. Our partnerships team replies within 2 business days.</span></div>
-      <div class="row"><button class="btn btn-give" type="button" data-copy="help@sikhaid.ngo">Copy email address</button><a class="btn btn-light" href="contact.html">Send a message</a></div>
-    </div>
-  </div></section>
+      <div class="grid g3" style="margin-top:16px">
+        <!-- 1. Volunteering -->
+        <div class="gateway-card">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="gateway-icon" style="background:var(--saffron-soft);color:var(--saffron-deep)">🤝</div>
+            <span class="gateway-pill" style="background:var(--saffron-soft);color:var(--saffron-deep)">Individual Seva</span>
+          </div>
+          <h3 style="font-size:24px;font-weight:700;color:var(--ink);margin:0">Volunteer Opportunities</h3>
+          <p style="font-size:15px;color:var(--muted);line-height:1.55;margin:0;flex:1">
+            Join our nationwide network of 300+ volunteers. Coordinate disaster relief, write stories, manage digital media, or run fundraisers to directly help families in crisis.
+          </p>
+          <ul style="list-style:none;padding:0;margin:8px 0;display:flex;flex-direction:column;gap:8px;font-size:14px;color:var(--ink)">
+            <li><b style="color:var(--saffron-deep)">✓</b> Online Volunteering &amp; Coordination</li>
+            <li><b style="color:var(--saffron-deep)">✓</b> Storytelling, Content &amp; Blogging</li>
+            <li><b style="color:var(--saffron-deep)">✓</b> Social Media Amplification</li>
+            <li><b style="color:var(--saffron-deep)">✓</b> Online Community Fundraising</li>
+          </ul>
+          <div style="margin-top:auto;padding-top:14px">
+            <a class="btn btn-give btn-lg" href="volunteering.html" style="width:100%;text-decoration:none">Enter Volunteering Portal →</a>
+          </div>
+        </div>
 
-  <section class="band" id="sponsor" aria-labelledby="sp-h"><div class="wrap">
-    <div class="sec-head"><div class="stack"><span class="eyebrow">Sponsor</span><h2 class="h-sec" id="sp-h">Sponsor a whole unit of seva</h2><p class="lead">For a birthday, an anniversary, in memory of a loved one, or as a family or company. You receive photos and a personal report.</p></div></div>
-    <div class="grid g3">
-      <div class="tier"><b style="font-family:var(--display);font-size:24px;color:var(--ink)">A day of langar</b><span class="price">[₹ AMOUNT]</span><p style="color:var(--muted)">Fresh, hot meals for everyone at one community kitchen for a full day.</p><ul class="ticks"><li>Your name or dedication displayed</li><li>Photos from the day</li></ul><a class="btn btn-dark" href="donate.html#langar-sewa" style="margin-top:auto">Sponsor this</a></div>
-      <div class="tier hi"><span class="badge" style="background:var(--saffron);color:var(--ink);align-self:flex-start">Most loved</span><b style="font-family:var(--display);font-size:24px;color:var(--ink)">A Health on Wheels camp</b><span class="price">[₹ AMOUNT]</span><p style="color:var(--muted)">One full medical camp in a remote village: doctor, medicines and transport.</p><ul class="ticks"><li>Patient count and outcomes report</li><li>Photos from the camp</li></ul><a class="btn btn-give" href="donate.html#sikh-aid-health-on-wheels" style="margin-top:auto">Sponsor this</a></div>
-      <div class="tier"><b style="font-family:var(--display);font-size:24px;color:var(--ink)">100 family relief kits</b><span class="price">[₹ AMOUNT]</span><p style="color:var(--muted)">Rations, water, tarpaulin and hygiene items for 100 flood-hit families.</p><ul class="ticks"><li>Distribution report with locations</li><li>Photos and family stories</li></ul><a class="btn btn-dark" href="donate.html#bihar-flood-relief-2026" style="margin-top:auto">Sponsor this</a></div>
+        <!-- 2. CSR Partnerships -->
+        <div class="gateway-card">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="gateway-icon" style="background:var(--indigo-soft);color:var(--indigo)">🏛️</div>
+            <span class="gateway-pill" style="background:var(--indigo-soft);color:var(--indigo)">Corporate &amp; CSR</span>
+          </div>
+          <h3 style="font-size:24px;font-weight:700;color:var(--ink);margin:0">CSR Partnerships</h3>
+          <p style="font-size:15px;color:var(--muted);line-height:1.55;margin:0;flex:1">
+            Fulfill your CSR mandate with verified grassroots execution. 100% compliant under MCA CSR-1, with 80G tax benefits, board-ready impact reports, and geo-tagged proof.
+          </p>
+          <ul style="list-style:none;padding:0;margin:8px 0;display:flex;flex-direction:column;gap:8px;font-size:14px;color:var(--ink)">
+            <li><b style="color:var(--indigo)">✓</b> Strategic Philanthropy &amp; Emergency Reserves</li>
+            <li><b style="color:var(--indigo)">✓</b> Cause Marketing &amp; Co-Branded Drives</li>
+            <li><b style="color:var(--indigo)">✓</b> Events &amp; Mass Hydration Sponsorship</li>
+            <li><b style="color:var(--indigo)">✓</b> Health on Wheels &amp; Women's Health Pods</li>
+          </ul>
+          <div style="margin-top:auto;padding-top:14px">
+            <a class="btn btn-dark btn-lg" href="csr.html" style="width:100%;text-decoration:none">Enter CSR Partnership Portal →</a>
+          </div>
+        </div>
+
+        <!-- 3. Sponsor Seva -->
+        <div class="gateway-card">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="gateway-icon" style="background:#ECFDF5;color:#059669">🍱</div>
+            <span class="gateway-pill" style="background:#ECFDF5;color:#059669">Sponsor Seva</span>
+          </div>
+          <h3 style="font-size:24px;font-weight:700;color:var(--ink);margin:0">Sponsor a Program</h3>
+          <p style="font-size:15px;color:var(--muted);line-height:1.55;margin:0;flex:1">
+            Dedicate a full day of langar meals, sponsor a mobile medical camp route, or fund disaster relief kits in honor or memory of a loved one. Complete with custom dedication report.
+          </p>
+          <ul style="list-style:none;padding:0;margin:8px 0;display:flex;flex-direction:column;gap:8px;font-size:14px;color:var(--ink)">
+            <li><b style="color:#059669">✓</b> Day of Langar in Memory / Birthday</li>
+            <li><b style="color:#059669">✓</b> Mobile Health on Wheels Village Camp</li>
+            <li><b style="color:#059669">✓</b> No Spot: 500 Women's Dignity Kits</li>
+            <li><b style="color:#059669">✓</b> Emergency Relief Boat Mobilization</li>
+          </ul>
+          <div style="margin-top:auto;padding-top:14px">
+            <a class="btn btn-line btn-lg" href="donate.html" style="width:100%;text-decoration:none">Sponsor Seva Now →</a>
+          </div>
+        </div>
+      </div>
     </div>
-  </div></section>
+  </section>
+
+  <!-- TRUST STRIP -->
+  <section class="band alt tight">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="stack">
+          <span class="eyebrow">Our Commitment</span>
+          <h2 class="h-sec">Why Collaborate with SikhAid?</h2>
+          <p class="lead">Built on the core Sikh tenets of Naam Japo, Kirt Karo, and Vand Chakho — serving with total integrity.</p>
+        </div>
+      </div>
+      <div class="grid g4" style="margin-top:12px">
+        <div class="panel stack" style="text-align:center;align-items:center;padding:24px">
+          <span style="font-size:32px">⏱️</span>
+          <h4 style="font-size:17px;font-weight:700;color:var(--ink);margin:6px 0">24-Hour Deployment</h4>
+          <p style="font-size:14px;color:var(--muted);margin:0;line-height:1.45">Immediate emergency response on ground before crisis deepens.</p>
+        </div>
+        <div class="panel stack" style="text-align:center;align-items:center;padding:24px">
+          <span style="font-size:32px">📋</span>
+          <h4 style="font-size:17px;font-weight:700;color:var(--ink);margin:6px 0">Full Regulatory Compliance</h4>
+          <p style="font-size:14px;color:var(--muted);margin:0;line-height:1.45">80G, 12A, and MCA CSR-1 registered non-profit trust.</p>
+        </div>
+        <div class="panel stack" style="text-align:center;align-items:center;padding:24px">
+          <span style="font-size:32px">📸</span>
+          <h4 style="font-size:17px;font-weight:700;color:var(--ink);margin:6px 0">Verified Photo Proof</h4>
+          <p style="font-size:14px;color:var(--muted);margin:0;line-height:1.45">Every distribution documented with dated photos and transparent logs.</p>
+        </div>
+        <div class="panel stack" style="text-align:center;align-items:center;padding:24px">
+          <span style="font-size:32px">💖</span>
+          <h4 style="font-size:17px;font-weight:700;color:var(--ink);margin:6px 0">Dignity Above All</h4>
+          <p style="font-size:14px;color:var(--muted);margin:0;line-height:1.45">Unconditional service without discrimination of faith, caste, or background.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DIRECT CONTACT -->
+  <section class="band tight" style="text-align:center">
+    <div class="wrap stack" style="align-items:center;gap:14px">
+      <h2 class="h-sec">Have questions or custom ideas?</h2>
+      <p class="lead" style="max-width:600px">We welcome university clubs, community groups, and compassionate individuals. Reach out directly.</p>
+      <div class="row" style="justify-content:center;gap:14px;margin-top:6px">
+        <a class="btn btn-dark btn-lg" href="mailto:help@sikhaid.ngo">Write to: help@sikhaid.ngo</a>
+        <a class="btn btn-line btn-lg" href="tel:+919851341234">Call: +91 98513 41234</a>
+      </div>
+    </div>
+  </section>
 </main>
 <div id="site-footer"></div>
 <script src="assets/site.js"></script>
-<script>
-(function () {
-  const { IMG, photo, fallbackImages } = SA;
-  const $ = (id) => document.getElementById(id);
-  const roles = [
-    ['Field relief volunteer', 'Pack and distribute relief kits and support camps during floods and emergencies.', ['Bihar · Assam · Odisha', 'On deployment']],
-    ['Langar sewa', 'Help prepare and serve fresh meals in our community kitchens.', ['Cuttack & partner cities', 'Weekends']],
-    ['Medical volunteer', 'Doctors, nurses and pharmacists for Health on Wheels camps.', ['Rural Odisha', 'Monthly camps']],
-    ['Logistics & warehouse', 'Coordinate supplies, vehicles and inventory during responses.', ['Hybrid', 'Flexible']],
-    ['Content & social media', 'Photograph, film and tell the stories of our ground work.', ['Remote or field', 'Flexible']]
-  ];
-  $('roles').innerHTML = roles.map((r) => '<div class="role"><div class="stack" style="gap:8px;flex:1 1 300px"><b style="font-size:19px;color:var(--ink)">' + r[0] + '</b><span style="color:var(--muted)">' + r[1] + '</span><div class="tags">' + r[2].map((t) => '<span>' + t + '</span>').join('') + '</div></div><button class="btn btn-line" type="button" data-role="' + r[0] + '">Apply</button></div>').join('');
-  $('vRole').innerHTML = roles.map((r) => '<option>' + r[0] + '</option>').join('');
-  $('roles').addEventListener('click', (e) => { const b = e.target.closest('[data-role]'); if (b) { $('vRole').value = b.dataset.role; $('vName').focus(); } });
-  $('volForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const ok = $('vName').value.trim() && $('vPhone').value.trim() && /\S+@\S+\.\S+/.test($('vEmail').value);
-    $('vErr').hidden = !!ok; if (!ok) return;
-    $('vOk').hidden = false; e.target.querySelector('button[type=submit]').disabled = true;
-  });
-  $('areas').innerHTML = [[IMG.assam5, 'Disaster relief', 'Pre-positioned relief kits and rapid-response funds.', '#3E5872'], [IMG.langar, 'Langar & food security', 'Community kitchens serving fresh meals daily.', '#7A4E26'], [IMG.hygiene, 'Sanitation & women’s health', 'No Spot drives, hygiene workshops, sanitary kits.', '#6B3A4E'], [IMG.health, 'Rural healthcare', 'Sponsor Health on Wheels routes and camps.', '#2E6B68']]
-    .map((a) => '<div class="area">' + photo(a[0], a[1], a[3], '', a[1]) + '<div class="stack" style="padding:18px;gap:6px"><b style="color:var(--ink);font-size:18px">' + a[1] + '</b><span style="color:var(--muted);font-size:14.5px">' + a[2] + '</span></div></div>').join('');
-  fallbackImages();
-})();
-</script>
 </body>
 </html>
