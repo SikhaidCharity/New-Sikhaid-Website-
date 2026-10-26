@@ -7,6 +7,7 @@ import CampaignCard from '@/components/CampaignCard';
 import Lightbox from '@/components/Lightbox';
 import IndiaMap from '@/components/IndiaMap';
 import ImpactDashboard from '@/components/ImpactDashboard';
+import CelebritySupportSection from '@/components/CelebritySupportSection';
 import { IMG, campaigns, fmt, pct } from '@/lib/data';
 
 export default function HomePage() {
@@ -280,8 +281,9 @@ export default function HomePage() {
             </span>
           </div>
           <div className="grid g3">
-            {campaigns
-              .filter((c) => c.group === 'Emergency')
+            {['assam-flood-relief-2026', 'nepal-flood-relief-2026', 'punjab-floods-2025']
+              .map((slug) => campaigns.find((c) => c.slug === slug))
+              .filter(Boolean)
               .map((c) => (
                 <Link key={c.slug} className="ecard" href={`/campaign#${c.slug}`}>
                   <Photo src={c.img} tone={c.tone} label={c.title} style={{ width: '108px', flex: 'none', borderRadius: '12px', minHeight: '108px' }} />
@@ -458,6 +460,9 @@ export default function HomePage() {
 
       {/* TOTAL LIVES IMPACTED - Interactive Dashboard */}
       <ImpactDashboard />
+
+      {/* SUPPORT FROM - RENOWNED PERSONALITIES (SIDE-BY-SIDE 3X3 GRID & SLIDABLE STORY CARD) */}
+      <CelebritySupportSection />
 
       {/* HOW CAN YOU HELP */}
       <section className="band" aria-labelledby="help-h">
@@ -797,36 +802,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CELEBRITY SUPPORT */}
-      <section className="band celeb-section" aria-labelledby="cel-h">
-        <div className="wrap">
-          <div className="sec-head" style={{ marginBottom: '18px' }}>
-            <div className="stack">
-              <span className="eyebrow">Support from</span>
-              <h2 className="h-sec celeb-headline" id="cel-h">Renowned personalities who lend their voice</h2>
-              <p className="lead" style={{ fontSize: '14.5px', margin: 0 }}>Artists and public figures who have stood with SikhAid&apos;s seva and helped more people hear about it.</p>
-            </div>
-          </div>
-          <div className="celeb-grid">
-            {[
-              [IMG.badshah, 'Badshah', 'Rapper & music artist', '#2D3354'],
-              [IMG.jaspreet, 'Jaspreet Singh', 'Stand-up comedian', '#4C3A2E'],
-              [IMG.banita, 'Banita Sandhu', 'Actress', '#5A3442'],
-              [IMG.badshah, 'Diljit Dosanjh', 'Singer & actor', '#1E293B'],
-              [IMG.jaspreet, 'Sonu Sood', 'Actor & humanitarian', '#334155'],
-              [IMG.banita, 'Harbhajan Singh', 'Cricketer & MP', '#475569'],
-            ].map(([src, name, role, tone], idx) => (
-              <div key={`${name}-${idx}`} className="celeb">
-                <Photo src={src} label={name} tone={tone} alt={name} />
-                <div>
-                  <h3>{name}</h3>
-                  <span>{role}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* SEWA ACROSS INDIA MAP */}
       <section className="band sewa-presence-section" aria-labelledby="map-h" id="map">

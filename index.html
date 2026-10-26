@@ -107,6 +107,193 @@
 .post h3 a { color: inherit; text-decoration: none; }
 .faq-layout { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.6fr); gap: 48px; }
 @media (max-width: 900px) { .faq-layout { grid-template-columns: 1fr; } }
+
+/* Support from Section - Side-by-side 3x3 square cards & Big slidable story card */
+.celeb-support-band {
+  background: #FAF8F5 !important;
+  padding-top: clamp(36px, 5vw, 60px) !important;
+  padding-bottom: clamp(36px, 5vw, 60px) !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.celeb-main-heading {
+  font-size: clamp(22px, 3vw, 36px);
+  margin: 0;
+  color: var(--ink);
+}
+
+.support-side-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 32px;
+  align-items: stretch;
+}
+
+@media (max-width: 980px) {
+  .support-side-layout {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+}
+
+.support-grid-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.support-3x3-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+@media (max-width: 540px) {
+  .support-3x3-grid {
+    gap: 8px;
+  }
+}
+
+.support-square-card {
+  aspect-ratio: 1 / 1;
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+  background: #0f172a;
+  border: 2.5px solid transparent;
+  cursor: pointer;
+  transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.28s ease, border-color 0.28s ease;
+  outline: none;
+}
+
+.support-square-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 12px 24px rgba(18, 26, 74, 0.2);
+}
+
+.support-square-card.active-card {
+  border-color: #F6A21A;
+  box-shadow: 0 0 0 3px rgba(246, 162, 26, 0.4), 0 12px 28px rgba(0, 0, 0, 0.25);
+  transform: scale(1.03);
+}
+
+.square-edge-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.support-square-card:hover .square-edge-img {
+  transform: scale(1.08);
+}
+
+/* Big Slidable Story Frame (100% Edge-to-Edge Image, Zero Text Inside) */
+.support-story-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+.support-story-frame {
+  width: 100%;
+  max-width: 420px;
+  aspect-ratio: 9 / 16;
+  min-height: 520px;
+  border-radius: 24px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 20px 48px rgba(15, 23, 42, 0.25);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 600px) {
+  .support-story-frame {
+    max-width: 100%;
+    min-height: 460px;
+    border-radius: 20px;
+  }
+}
+
+.story-main-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+  transition: opacity 0.28s ease, transform 0.4s ease;
+}
+
+/* Slide Navigation Controls Row below the Frame */
+.story-nav-controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 420px;
+}
+
+.story-nav-circle-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #1e293b;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: none;
+}
+
+.story-nav-circle-btn:hover {
+  background: #F6A21A;
+  color: #111111;
+  border-color: #F6A21A;
+  transform: scale(1.08);
+}
+
+.story-bottom-dots {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+.story-bottom-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.2);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.story-bottom-dot.dot-active {
+  width: 24px;
+  border-radius: 999px;
+  background: #F6A21A;
+}
 </style>
 </head>
 <body data-page="home">
@@ -217,6 +404,27 @@
     </div>
   </section>
 
+  <!-- SUPPORT FROM - CELEBRITY VOICES (SIDE-BY-SIDE 3X3 GRID & STORY CARD) -->
+  <section class="band celeb-support-band" aria-labelledby="cel-h" id="support-from">
+    <div class="wrap">
+      <div class="sec-head" style="margin-bottom:28px">
+        <div class="stack">
+          <span class="eyebrow">Support from</span>
+          <h2 class="h-sec celeb-main-heading" id="cel-h">Renowned personalities who lend their voice</h2>
+          <p class="lead" style="max-width:780px">Artists, sports icons, and humanitarian champions who stand beside SikhAid's on-ground seva and amplify our mission across India and beyond.</p>
+        </div>
+      </div>
+      <div class="support-side-layout">
+        <!-- Sub-section 1: 3x3 Square Cards Grid (100% Edge-to-Edge Image, Zero Text) -->
+        <div class="support-grid-col">
+          <div class="support-3x3-grid" id="celebsGrid"></div>
+        </div>
+        <!-- Sub-section 2: Big Slidable Story Card (100% Edge-to-Edge Image, Zero Text) -->
+        <div class="support-story-col" id="celebStoryContainer"></div>
+      </div>
+    </div>
+  </section>
+
   <!-- HOW CAN YOU HELP -->
   <section class="band" aria-labelledby="help-h">
     <div class="wrap">
@@ -302,14 +510,6 @@
     </div>
   </section>
 
-  <!-- CELEBRITY SUPPORT -->
-  <section class="band" aria-labelledby="cel-h">
-    <div class="wrap">
-      <div class="sec-head"><div class="stack"><span class="eyebrow">Support from</span><h2 class="h-sec" id="cel-h">Renowned personalities who lend their voice</h2>
-        <p class="lead">Artists and public figures who have stood with SikhAid's seva and helped more people hear about it.</p></div></div>
-      <div class="grid g3" id="celebs"></div>
-    </div>
-  </section>
 
   <!-- SEWA ACROSS INDIA MAP -->
   <section class="band warm" aria-labelledby="map-h" id="map">
@@ -380,12 +580,16 @@
   $('ticker').innerHTML = items + items.replace(/<span>/g, '<span aria-hidden="true">');
 
   /* emergencies */
-  $('emergList').innerHTML = campaigns.filter((c) => c.group === 'Emergency').map((c) =>
-    '<a class="ecard" href="campaign.html#' + c.slug + '">' + photo(c.img, '', c.tone, '', '') +
-    '<span class="stack" style="gap:5px;min-width:0"><span style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--red)">' + esc(c.location) + ' · ' + esc(c.status) + '</span>' +
-    '<b style="color:var(--ink);font-size:16px;line-height:1.3">' + esc(c.title) + '</b>' +
-    '<span style="font-size:13.5px;color:var(--muted)">' + fmt(c.raised) + ' of ' + fmt(c.goal) + ' · ' + pct(c) + '%</span>' +
-    '<span style="font-size:14px;font-weight:800;color:var(--red)">Donate &amp; know more →</span></span></a>').join('');
+  const activeEmergSlugs = ['assam-flood-relief-2026', 'nepal-flood-relief-2026', 'punjab-floods-2025'];
+  $('emergList').innerHTML = activeEmergSlugs
+    .map((slug) => campaigns.find((c) => c.slug === slug))
+    .filter(Boolean)
+    .map((c) =>
+      '<a class="ecard" href="campaign.html#' + c.slug + '">' + photo(c.img, '', c.tone, '', '') +
+      '<span class="stack" style="gap:5px;min-width:0"><span style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--red)">' + esc(c.location) + ' · ' + esc(c.status) + '</span>' +
+      '<b style="color:var(--ink);font-size:16px;line-height:1.3">' + esc(c.title) + '</b>' +
+      '<span style="font-size:13.5px;color:var(--muted)">' + fmt(c.raised) + ' of ' + fmt(c.goal) + ' · ' + pct(c) + '%</span>' +
+      '<span style="font-size:14px;font-weight:800;color:var(--red)">Donate &amp; know more →</span></span></a>').join('');
 
   /* campaigns with filter */
   const groups = ['All', 'Emergency', 'Hunger', 'Healthcare', 'Youth'];
@@ -460,9 +664,42 @@
     '<blockquote>' + q[3] + '</blockquote><figcaption class="who"><span class="av">' + q[0].replace('Dr. ', '')[0] + '</span><span><b style="color:var(--ink)">' + q[0] + '</b><br><span style="font-size:14px;color:var(--muted)">' + q[1] + '</span></span></figcaption></figure>').join('');
   wireScroller($('quotes'), $('tPrev'), $('tNext'));
 
-  /* celebrities */
-  $('celebs').innerHTML = [[IMG.badshah, 'Badshah', 'Rapper & music artist', '#2D3354'], [IMG.jaspreet, 'Jaspreet Singh', 'Stand-up comedian', '#4C3A2E'], [IMG.banita, 'Banita Sandhu', 'Actress', '#5A3442']]
-    .map((p) => '<div class="celeb">' + photo(p[0], p[1], p[3], '', p[1]) + '<div><h3 style="font-size:24px">' + p[1] + '</h3><span style="color:var(--muted)">' + p[2] + '</span></div></div>').join('');
+  /* celebrities side-by-side: 3x3 square grid & story card */
+  const celebData = [
+    { name: 'Badshah', role: 'Music Artist & Philanthropist', img: '/personalities/badshah.webp', tag: 'Home Reconstruction Partner', quote: "SikhAid's ground response during the Punjab floods showed what genuine selfless seva looks like. Rebuilding homes together gave families their safety and dignity back.", statNum: '100+', statLabel: 'Homes Rebuilt' },
+    { name: 'Harbhajan Singh', role: 'Cricket Legend & MP', img: '/personalities/harbhajan-singh.webp', tag: 'Farmer Relief & Diesel Seva', quote: "Through our Tera Tera Foundation, partnering with SikhAid to provide diesel and seed aid to Punjab's flood-affected farmers restored their bread and hope.", statNum: '5,000+', statLabel: 'Acres Sown' },
+    { name: 'Banita Sandhu', role: 'International Actress', img: '/personalities/banita-sandhu.webp', tag: 'Women Hygiene & Flood Relief', quote: "From menstrual hygiene workshops in rural hamlets to urgent flood aid, SikhAid breaks taboos and serves with immense empathy and compassion.", statNum: '50,000+', statLabel: 'Sanitary Packs' },
+    { name: 'Jaspreet Singh', role: 'Stand-up Comedian & Creator', img: '/personalities/jaspreet-singh.webp', tag: 'Emergency Response Advocate', quote: "Laughter heals the mind, but warm langar and medical camps heal lives on the ground. SikhAid's transparency and frontline speed are unmatched.", statNum: '24/7', statLabel: 'Relief Helpline' },
+    { name: 'Rohanpreet Singh', role: 'Singer & Performer', img: '/personalities/rohanpreet-singh.webp', tag: 'Langar & Winter Mission', quote: "Every meal served and every heavy wool blanket handed out in the freezing winter is a silent prayer answered. Stand with SikhAid with all your heart.", statNum: '25,000+', statLabel: 'Winter Blankets' },
+    { name: 'The PropheC', role: 'Global Singer & Producer', img: '/personalities/prophc.webp', tag: 'Global Youth Ambassador', quote: "Music connects hearts across borders, but humanitarian seva unites our shared humanity. Deeply honored to amplify SikhAid's global mission.", statNum: '7+', statLabel: 'Active Hubs' },
+    { name: 'Diljit Dosanjh', role: 'Global Artist & Actor', img: '/personalities/badshah.webp', tag: 'Pan-India Seva Supporter', quote: "Sewa is the highest duty of our heritage. What the volunteer teams do across flood zones, night shelters, and mobile clinics inspires the entire nation.", statNum: '10,000+', statLabel: 'Meals Daily' },
+    { name: 'Sonu Sood', role: 'Actor & Humanitarian', img: '/personalities/jaspreet-singh.webp', tag: 'Crisis Relief Ally', quote: "In moments of sudden natural disaster, true heroes don't hesitate—they reach the stranded immediately. SikhAid is that emergency lifeline on the ground.", statNum: '15+', statLabel: 'Disaster Responses' },
+    { name: 'Raunak Singh', role: 'Founder & Visionary', img: '/PressImages/Article7.webp', tag: 'SikhAid Trust Founder', quote: "We began with a humble desire to serve and a promise that no one in crisis would be left behind. Today, with your blessings, our seva reaches millions.", statNum: '3M+', statLabel: 'Lives Impacted' }
+  ];
+  let activeCelebIdx = 0;
+  function renderCelebs() {
+    if (!$('celebsGrid') || !$('celebStoryContainer')) return;
+    $('celebsGrid').innerHTML = celebData.map((c, i) =>
+      '<button type="button" class="support-square-card ' + (i === activeCelebIdx ? 'active-card' : '') + '" onclick="window.selectCeleb(' + i + ')" aria-label="' + esc(c.name) + '">' +
+      '<img src="' + c.img + '" alt="' + esc(c.name) + '" class="square-edge-img"/>' +
+      '</button>').join('');
+
+    const cur = celebData[activeCelebIdx];
+    $('celebStoryContainer').innerHTML =
+      '<div class="support-story-frame" onmouseenter="window.celebPaused=true" onmouseleave="window.celebPaused=false">' +
+      '<img src="' + cur.img + '" alt="' + esc(cur.name) + '" class="story-main-img"/>' +
+      '</div>' +
+      '<div class="story-nav-controls-row">' +
+      '<button type="button" class="story-nav-circle-btn" onclick="window.prevCeleb()" aria-label="Previous story">‹</button>' +
+      '<div class="story-bottom-dots">' + celebData.map((_, i) => '<button type="button" class="story-bottom-dot ' + (i === activeCelebIdx ? 'dot-active' : '') + '" onclick="window.selectCeleb(' + i + ')" aria-label="Slide ' + (i + 1) + '"></button>').join('') + '</div>' +
+      '<button type="button" class="story-nav-circle-btn" onclick="window.nextCeleb()" aria-label="Next story">›</button>' +
+      '</div>';
+  }
+  window.selectCeleb = function(idx) { activeCelebIdx = idx; renderCelebs(); };
+  window.nextCeleb = function() { activeCelebIdx = (activeCelebIdx + 1) % celebData.length; renderCelebs(); };
+  window.prevCeleb = function() { activeCelebIdx = (activeCelebIdx === 0 ? celebData.length - 1 : activeCelebIdx - 1); renderCelebs(); };
+  renderCelebs();
+  setInterval(() => { if (!window.celebPaused) window.nextCeleb(); }, 5000);
 
   /* map regions */
   const regions = [
