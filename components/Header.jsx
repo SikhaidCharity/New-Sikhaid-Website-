@@ -83,26 +83,6 @@ export default function Header() {
 
   return (
     <div ref={headerGroupRef} className="site-header-group">
-      {alertOpen && (
-        <div className="alert-bar" id="alertBar">
-          <div className="alert-ticker-container">
-            <div className="alert-ticker-track">
-              {EMERGENCY_ALERTS.concat(EMERGENCY_ALERTS).map((alert, idx) => (
-                <div key={idx} className="alert-ticker-item">
-                  <strong>
-                    <span className="dot pulse"></span>
-                    {alert.tag}
-                  </strong>
-                  <span className="alert-text">{alert.text}</span>
-                  <Link href={alert.linkUrl}>{alert.linkText}</Link>
-                  <span className="alert-ticker-dot" aria-hidden="true">•</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
       <header className="site-header">
         <div className="wrap">
           <Link href="/" className="brand" aria-label="SikhAid Charitable Trust, home">

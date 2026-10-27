@@ -9,6 +9,8 @@ const nextConfig = {
   },
   async rewrites() {
     return [
+      { source: '/donate/:slug/Checkout', destination: '/donate/:slug/checkout' },
+      { source: '/donate/Checkout', destination: '/donate/checkout' },
       { source: '/about.html', destination: '/about' },
       { source: '/campaigns.html', destination: '/campaigns' },
       { source: '/campaign.html', destination: '/campaign' },

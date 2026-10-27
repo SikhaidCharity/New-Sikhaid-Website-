@@ -224,57 +224,22 @@ export default function HomePage() {
           </h1>
 
           {/* Scroll Down Indicator */}
-          <a href="#emergencies" className="hero-scroll-down" aria-label="Scroll down to active emergencies">
+          <a href="#emergencies" className="hero-scroll-down" aria-label="Scroll down to Relief in action">
             <span>Scroll down</span>
             <svg className="hero-scroll-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M6 9l6 6 6-6" />
             </svg>
           </a>
         </div>
-
-        {/* Live Donor Names & Amounts touching the bottom bezels of the hero screen */}
-        <div className="hero-donor-ticker" aria-label="Recent donor contributions">
-          <div className="hero-donor-tag">
-            <span className="dot pulse" style={{ width: '8px', height: '8px', background: 'var(--ink)' }}></span>
-            <span>Live Donors</span>
-          </div>
-          <div className="hero-donor-track">
-            <span><b>Arjun</b> <em className="donor-val">₹2,100</em></span>
-            <span><b>Simran</b> <em className="donor-val">₹501</em></span>
-            <span><b>Rohit</b> <em className="donor-val">₹5,000</em></span>
-            <span><b>Kavya</b> <em className="donor-val">₹1,000</em></span>
-            <span><b>Gurpreet</b> <em className="donor-val">₹11,000</em></span>
-            <span><b>Neha</b> <em className="donor-val">₹1,000</em></span>
-            <span><b>Harjeet</b> <em className="donor-val">₹2,500</em></span>
-            <span><b>Jaswinder</b> <em className="donor-val">₹10,000</em></span>
-            <span><b>Manpreet</b> <em className="donor-val">₹5,000</em></span>
-            <span><b>Aman</b> <em className="donor-val">₹1,500</em></span>
-            <span><b>Tanya</b> <em className="donor-val">₹2,000</em></span>
-            <span><b>Vikram</b> <em className="donor-val">₹3,500</em></span>
-            {/* Seamless loop duplicates */}
-            <span aria-hidden="true"><b>Arjun</b> <em className="donor-val">₹2,100</em></span>
-            <span aria-hidden="true"><b>Simran</b> <em className="donor-val">₹501</em></span>
-            <span aria-hidden="true"><b>Rohit</b> <em className="donor-val">₹5,000</em></span>
-            <span aria-hidden="true"><b>Kavya</b> <em className="donor-val">₹1,000</em></span>
-            <span aria-hidden="true"><b>Gurpreet</b> <em className="donor-val">₹11,000</em></span>
-            <span aria-hidden="true"><b>Neha</b> <em className="donor-val">₹1,000</em></span>
-            <span aria-hidden="true"><b>Harjeet</b> <em className="donor-val">₹2,500</em></span>
-            <span aria-hidden="true"><b>Jaswinder</b> <em className="donor-val">₹10,000</em></span>
-            <span aria-hidden="true"><b>Manpreet</b> <em className="donor-val">₹5,000</em></span>
-            <span aria-hidden="true"><b>Aman</b> <em className="donor-val">₹1,500</em></span>
-            <span aria-hidden="true"><b>Tanya</b> <em className="donor-val">₹2,000</em></span>
-            <span aria-hidden="true"><b>Vikram</b> <em className="donor-val">₹3,500</em></span>
-          </div>
-        </div>
       </section>
 
-      {/* Active emergencies */}
+      {/* Relief in action */}
       <section className="emerg" id="emergencies" aria-labelledby="em-h">
         <div className="wrap stack" style={{ paddingBlock: '36px 40px', gap: '18px' }}>
           <div className="row between">
             <h2 id="em-h" style={{ fontSize: '26px', display: 'flex', gap: '12px', alignItems: 'center' }}>
               <span className="dot pulse" style={{ color: 'var(--red)', width: '12px', height: '12px' }}></span>
-              Active emergencies
+              Relief in action
             </h2>
             <span style={{ fontSize: '14px', fontWeight: 700, color: '#7A2F28' }}>
               3 live responses · updated 2 hours ago
@@ -617,63 +582,48 @@ export default function HomePage() {
               <p className="lead">Every method qualifies for an 80G receipt. Online gifts receive their certificate instantly; for direct bank wire transfers, share your details and we email your 80G statement within 48 hours.</p>
             </div>
           </div>
-          <div className="grid g2" style={{ maxWidth: '1080px', margin: '0 auto', gap: '28px' }}>
-            <div className="pay-tile" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
-                <h3 style={{ fontSize: '24px', fontWeight: 700 }}>Donate online</h3>
-                <span className="help-card-badge" style={{ background: 'var(--green-soft)', color: 'var(--green)' }}>Instant 80G</span>
+          <div style={{ maxWidth: '840px', margin: '0 auto', width: '100%' }}>
+            <div className="pay-tile" style={{ display: 'flex', flexDirection: 'column', gap: '22px', padding: '36px', border: '1.5px solid var(--line)', boxShadow: '0 10px 32px rgba(18,26,74,0.06)', borderRadius: '24px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '14px', flexWrap: 'wrap' }}>
+                <h3 style={{ fontSize: '26px', fontWeight: 800, margin: 0, color: 'var(--ink)' }}>Donate online &amp; claim instant 80G tax benefit</h3>
+                <span className="help-card-badge" style={{ background: 'var(--green-soft)', color: 'var(--green)', fontWeight: 800, fontSize: '13px', padding: '6px 14px', borderRadius: '999px' }}>
+                  Instant 80G Certificate
+                </span>
               </div>
-              <p style={{ color: 'var(--muted)', fontSize: '15px' }}>The fastest, most secure method. Complete your contribution with UPI, credit/debit cards, RuPay, or net banking through Razorpay&apos;s encrypted checkout.</p>
-              <div className="logo-row">
-                {payLogos.map(([name, url]) => (
-                  <span key={name} className="lg">
-                    {name}
-                    <img src={url} alt={name} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-                  </span>
-                ))}
-              </div>
-              <ul className="ticks" style={{ marginBlock: '8px 16px' }}>
-                <li>Instant 80G tax receipt generated and emailed immediately</li>
-                <li>Automatically recorded and saved to your donor profile</li>
-                <li>One-time donation and recurring monthly giving options</li>
-              </ul>
-              <Link className="btn btn-give" href="/donate" style={{ marginTop: 'auto', minHeight: '50px', fontSize: '16px', fontWeight: 800 }}>
-                Donate online now <span aria-hidden="true">→</span>
-              </Link>
-            </div>
-
-            <div className="pay-tile" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
-                <h3 style={{ fontSize: '24px', fontWeight: 700 }}>Bank transfer / NEFT / RTGS</h3>
-                <span className="help-card-badge" style={{ background: '#EEF2F6', color: '#2563EB' }}>Direct Transfer</span>
-              </div>
-              <p style={{ color: 'var(--muted)', fontSize: '15px' }}>For large contributions, family trusts, CSR disbursements, or direct institutional transfers:</p>
-              <dl className="kv" style={{ background: 'var(--bg-alt)', padding: '16px 18px', borderRadius: '16px', border: '1px solid var(--line)' }}>
-                <dt>Account name</dt>
-                <dd>SikhAid Charitable Trust</dd>
-                <button className="copy" type="button" onClick={() => copy('SikhAid Charitable Trust')}>
-                  {copiedText === 'SikhAid Charitable Trust' ? 'Copied!' : 'Copy'}
-                </button>
-
-                <dt>Account no.</dt>
-                <dd>[ACCOUNT NUMBER]</dd>
-                <button className="copy" type="button" onClick={() => copy('[ACCOUNT NUMBER]')}>
-                  {copiedText === '[ACCOUNT NUMBER]' ? 'Copied!' : 'Copy'}
-                </button>
-
-                <dt>IFSC Code</dt>
-                <dd>[IFSC CODE]</dd>
-                <button className="copy" type="button" onClick={() => copy('[IFSC CODE]')}>
-                  {copiedText === '[IFSC CODE]' ? 'Copied!' : 'Copy'}
-                </button>
-
-                <dt>Bank &amp; Branch</dt>
-                <dd>[BANK, BRANCH]</dd>
-                <span></span>
-              </dl>
-              <p style={{ fontSize: '13.5px', color: 'var(--muted)', lineHeight: 1.5 }}>
-                After initiating your wire transfer, email the transaction screenshot along with your PAN to <a href="mailto:help@sikhaid.ngo"><b>help@sikhaid.ngo</b></a> to receive your 80G certificate.
+              <p style={{ color: 'var(--muted)', fontSize: '15.5px', lineHeight: 1.6, margin: 0 }}>
+                The fastest and most secure method to support our emergency relief and langar operations across India. 100% of your contribution directly powers ground aid.
               </p>
+              
+              <div>
+                <span style={{ fontSize: '12.5px', fontWeight: 800, color: 'var(--ink)', textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: '12px' }}>
+                  Supported Payment Methods
+                </span>
+                <div className="logo-row" style={{ gap: '12px' }}>
+                  {payLogos.map(([name, url]) => (
+                    <span key={name} className="lg" title={name} style={{ height: '46px', minWidth: '84px', padding: '0 16px', background: '#FFFFFF', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+                      {name}
+                      <img src={url} alt={name} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <ul className="ticks" style={{ marginBlock: '4px 8px' }}>
+                <li>Instant 80G tax exemption receipt generated and emailed immediately</li>
+                <li>Automatically recorded and saved to your donor account profile</li>
+                <li>Supports UPI, Google Pay, PhonePe, Paytm, RuPay, Visa, Mastercard &amp; Netbanking</li>
+                <li>100% secure 256-bit SSL encrypted checkout powered by Razorpay</li>
+              </ul>
+
+              <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', alignItems: 'center', marginTop: '6px' }}>
+                <Link className="btn btn-give" href="/donate" style={{ minHeight: '52px', fontSize: '16.5px', fontWeight: 800, padding: '0 34px' }}>
+                  Donate online now <span aria-hidden="true">→</span>
+                </Link>
+                <span style={{ fontSize: '13.5px', color: 'var(--muted)', display: 'inline-flex', alignItems: 'center', gap: '6px', fontWeight: 600 }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--green)' }}><polyline points="20 6 9 17 4 12"/></svg>
+                  Eligible for 50% tax deduction under Section 80G
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -725,7 +675,7 @@ export default function HomePage() {
             </div>
 
             {/* Category chips centered in between */}
-            <div className="chips" role="group" aria-label="Filter gallery" style={{ justifyContent: 'center', margin: '6px 0 2px 0' }}>
+            <div className="chips gal-filter-chips" role="group" aria-label="Filter gallery" style={{ justifyContent: 'center', margin: '6px 0 2px 0' }}>
               {gcats.map((g) => (
                 <button
                   key={g}

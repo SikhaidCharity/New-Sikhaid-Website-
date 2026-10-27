@@ -1,12 +1,13 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Photo from '@/components/Photo';
 import { campaigns, TIERS, CAMPAIGN_IMPACT_TIERS, fmt, esc, getFeaturedCampaignStory } from '@/lib/data';
 
-function DonateContent({ initialSlug }) {
+function DonateContent({ initialSlug, isCheckoutPage = false }) {
+  const router = useRouter();
   const searchParams = useSearchParams();
 
   const options = [
@@ -35,12 +36,12 @@ function DonateContent({ initialSlug }) {
   const validInitial = options.some((o) => o.slug === targetSlug) ? targetSlug : 'general';
 
   const initialAmtParam = searchParams.get('amount') || searchParams.get('amt');
-  const validInitialAmt = initialAmtParam ? parseInt(initialAmtParam, 10) || 2500 : 2500;
+  const validInitialAmt = initialAmtParam ? parseInt(initialAmtParam, 10) || 500 : 500;
 
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(isCheckoutPage ? 2 : 1);
   const [selectedSlug, setSelectedSlug] = useState(validInitial);
   const [amount, setAmount] = useState(validInitialAmt);
-  const [customAmount, setCustomAmount] = useState('');
+  const [customAmount, setCustomAmount] = useState(String(validInitialAmt || 500));
   const [isMonthly, setIsMonthly] = useState(false);
   const [tipPct, setTipPct] = useState(12); // Default to 12% matching SikhAid live flow
 
@@ -70,14 +71,43 @@ function DonateContent({ initialSlug }) {
   const [error2, setError2] = useState('');
 
   useEffect(() => {
+    if (isCheckoutPage) {
+      setStep(2);
+    } else {
+      setStep(1);
+    }
+  }, [isCheckoutPage]);
+
+  useEffect(() => {
     const qAmt = searchParams.get('amount') || searchParams.get('amt');
     if (qAmt) {
       const parsed = parseInt(qAmt, 10);
       if (parsed > 0) {
         setAmount(parsed);
-        setCustomAmount('');
+        setCustomAmount(String(parsed));
       }
     }
+    const qMonthly = searchParams.get('monthly');
+    if (qMonthly !== null) {
+      setIsMonthly(qMonthly === '1' || qMonthly === 'true');
+    }
+    const qTip = searchParams.get('tip');
+    if (qTip !== null) {
+      setTipPct(parseInt(qTip, 10) || 0);
+    }
+
+    try {
+      const pref = JSON.parse(sessionStorage.getItem('sa-checkout-pref') || 'null');
+      if (pref) {
+        if (!qAmt && pref.amount) {
+          setAmount(pref.amount);
+          setCustomAmount(String(pref.amount));
+        }
+        if (qMonthly === null && pref.isMonthly !== undefined) setIsMonthly(pref.isMonthly);
+        if (qTip === null && pref.tipPct !== undefined) setTipPct(pref.tipPct);
+        if (pref.customAmount) setCustomAmount(pref.customAmount);
+      }
+    } catch (e) {}
 
     if (initialSlug && options.some((o) => o.slug === initialSlug)) {
       setSelectedSlug(initialSlug);
@@ -112,7 +142,7 @@ function DonateContent({ initialSlug }) {
     syncFromHash();
     window.addEventListener('hashchange', syncFromHash);
     return () => window.removeEventListener('hashchange', syncFromHash);
-  }, [initialSlug, searchParams]);
+  }, [initialSlug, searchParams, isCheckoutPage]);
 
   const camp = options.find((o) => o.slug === selectedSlug) || options[0];
   const tiers = TIERS[camp.slug] || TIERS[camp.type] || TIERS.flood;
@@ -139,13 +169,53 @@ function DonateContent({ initialSlug }) {
       return;
     }
     setError1(false);
-    setStep(2);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const campSlug = camp.slug || 'general';
+    const checkoutPref = {
+      amount: currentAmt,
+      isMonthly,
+      tipPct,
+      customAmount,
+      selectedSlug: campSlug,
+    };
+    if (typeof window !== 'undefined') {
+      try {
+        sessionStorage.setItem('sa-checkout-pref', JSON.stringify(checkoutPref));
+      } catch (e) {}
+    }
+    router.push(`/donate/${campSlug}/checkout`);
+  };
+
+  const handleBackToDonate = () => {
+    const campSlug = camp.slug || 'general';
+    router.push(`/donate/${campSlug}`);
+  };
+
+  const handleBackToCampaign = () => {
+    if (camp.slug && camp.slug !== 'general') {
+      router.push(`/campaign/${camp.slug}`);
+    } else {
+      router.push('/campaigns');
+    }
   };
 
   const handleNext2 = () => {
     if (!donor.name.trim() || !donor.phone.trim() || !/\S+@\S+\.\S+/.test(donor.email)) {
       setError2('Please enter your full name, a valid email, and your mobile number.');
+      return;
+    }
+    const panClean = donor.pan.trim().toUpperCase();
+    const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+    if (currentAmt >= 2000) {
+      if (!panClean) {
+        setError2('PAN is mandatory for donations of ₹2,000 or more under Income Tax regulations (Section 80G). Please enter your 10-character PAN.');
+        return;
+      }
+      if (!panRegex.test(panClean)) {
+        setError2('Please enter a valid 10-character PAN number (e.g. ABCDE1234F).');
+        return;
+      }
+    } else if (panClean && !panRegex.test(panClean)) {
+      setError2('Please enter a valid 10-character PAN number (e.g. ABCDE1234F), or leave it empty.');
       return;
     }
     setError2('');
@@ -154,8 +224,41 @@ function DonateContent({ initialSlug }) {
   };
 
   const handlePay = () => {
-    setStep(4);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const generatedReceipt = `SA/80G/26-27/${String(Math.floor(Date.now() / 1000) % 1000000).padStart(6, '0')}`;
+    const donationPayload = {
+      receiptNo: generatedReceipt,
+      date: new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
+      time: new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }),
+      amount: currentAmt,
+      tipAmt: tipAmt,
+      grandTotal: grandTotal,
+      cause: camp.title,
+      causeSlug: camp.slug,
+      isMonthly: isMonthly,
+      paymentMethod: method,
+      donor: {
+        name: donor.name.trim(),
+        email: donor.email.trim(),
+        phone: donor.phone.trim(),
+        pan: donor.pan.trim().toUpperCase(),
+        dob: donor.dob,
+      },
+      optAccount: optAccount,
+      optWa: optWa,
+      taxDeductible: Math.round(currentAmt * 0.5),
+    };
+
+    if (typeof window !== 'undefined') {
+      try {
+        sessionStorage.setItem('sa-latest-receipt', JSON.stringify(donationPayload));
+        const existing = JSON.parse(localStorage.getItem('sa_donations') || '[]');
+        existing.unshift(donationPayload);
+        localStorage.setItem('sa_donations', JSON.stringify(existing));
+        localStorage.setItem('sa_donor_profile', JSON.stringify(donationPayload.donor));
+        localStorage.setItem('sa_donor_email', donor.email.trim());
+      } catch (e) {}
+      router.push(`/donate/thank-you?receipt=${encodeURIComponent(generatedReceipt)}&amt=${currentAmt}&camp=${encodeURIComponent(camp.title)}`);
+    }
   };
 
   const receiptNo = `SA/80G/26-27/${String(Math.floor(Date.now() / 1000) % 1000000).padStart(6, '0')}`;
@@ -170,63 +273,83 @@ function DonateContent({ initialSlug }) {
 
   return (
     <>
-      <header className="co-head">
-        <div className="wrap">
-          <Link className="brand" href="/">
-            <span className="brand-mark">
-              <span style={{ color: 'var(--saffron)' }}>
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.3"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d="M12 21s-7-4.4-9.3-9A5.4 5.4 0 0 1 12 6.3 5.4 5.4 0 0 1 21.3 12C19 16.6 12 21 12 21z" />
-                </svg>
-              </span>
-              <img
-                src="https://www.sikhaid.ngo/sikhaidLogo.webp"
-                alt=""
-                style={{ width: '32px', height: '32px', objectFit: 'contain' }}
-              />
-            </span>
-            <span className="brand-name">
-              <b>SikhAid</b>
-              <span>Charitable Trust</span>
-            </span>
+      <header className="co-head" style={{ background: '#FFFFFF', borderBottom: '1px solid var(--line)', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 2px 8px rgba(0,0,0,0.03)' }}>
+        <div className="wrap" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBlock: '12px' }}>
+          <Link href="/" className="co-brand" aria-label="SikhAid Charitable Trust home" style={{ display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none' }}>
+            <img
+              src="https://www.sikhaid.ngo/sikhaidLogo.webp"
+              alt="SikhAid Logo"
+              style={{ height: '38px', width: 'auto', objectFit: 'contain', display: 'block' }}
+            />
+            <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.15 }}>
+              <span style={{ fontWeight: 900, fontSize: '18px', color: 'var(--ink)', letterSpacing: '-0.02em' }}>SikhAid</span>
+              <span style={{ fontSize: '11px', color: 'var(--muted)', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Charitable Trust</span>
+            </div>
           </Link>
-          <span className="secure">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+            <span
+              className="co-head-secure"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontSize: '13px',
+                fontWeight: 700,
+                color: 'var(--green)',
+                background: 'var(--green-soft)',
+                padding: '6px 14px',
+                borderRadius: '999px',
+              }}
             >
-              <rect x="4" y="11" width="16" height="10" rx="2" />
-              <path d="M8 11V7a4 4 0 0 1 8 0v4" />
-            </svg>
-            Secure checkout · Razorpay
-          </span>
-          <span style={{ fontSize: '14px' }}>
-            Need help? <b>+91 98513 41234</b> · <Link href="/login"><b>Log in</b></Link>
-          </span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <rect x="4" y="11" width="16" height="10" rx="2" />
+                <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+              </svg>
+              <span>Secure checkout · Razorpay</span>
+            </span>
+
+            <span className="co-help-text" style={{ fontSize: '13.5px', color: 'var(--muted)' }}>
+              Need help? <b style={{ color: 'var(--ink)' }}>+91 98513 41234</b>
+            </span>
+
+            <Link
+              href="/login"
+              className="btn btn-line"
+              style={{
+                padding: '6px 16px',
+                fontSize: '13px',
+                fontWeight: 700,
+                borderRadius: '999px',
+                color: 'var(--ink)',
+                borderColor: 'var(--line)',
+              }}
+            >
+              Log in
+            </Link>
+          </div>
         </div>
       </header>
 
       <main
         className="wrap stack"
-        style={{ paddingBlock: '28px 72px', gap: '22px' }}
+        style={{ paddingBlock: '24px 72px', gap: '18px' }}
       >
+        <div>
+          <button
+            type="button"
+            onClick={isCheckoutPage ? handleBackToDonate : handleBackToCampaign}
+            className="donate-top-back-btn"
+            title={isCheckoutPage ? 'Back to amount selection' : 'Back to campaign page'}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <line x1="19" y1="12" x2="5" y2="12" />
+              <polyline points="12 19 5 12 12 5" />
+            </svg>
+            {isCheckoutPage ? 'Back to donation' : 'Back to campaign'}
+          </button>
+        </div>
+
         {step < 4 && (
           <ol className="steps" id="steps" aria-label="Checkout progress">
             {['Amount', 'Your details', 'Payment'].map((name, i) => {
@@ -237,6 +360,13 @@ function DonateContent({ initialSlug }) {
                   key={k}
                   className={cls}
                   aria-current={step === k ? 'step' : undefined}
+                  style={{ cursor: k === 1 && isCheckoutPage ? 'pointer' : 'default' }}
+                  onClick={() => {
+                    if (k === 1 && isCheckoutPage) {
+                      handleBackToDonate();
+                    }
+                  }}
+                  title={k === 1 && isCheckoutPage ? 'Back to amount selection' : undefined}
                 >
                   <span>{step > k ? '✓' : k}</span>
                   {name}
@@ -246,8 +376,8 @@ function DonateContent({ initialSlug }) {
           </ol>
         )}
 
-        {/* FEATURED CAMPAIGN DESCRIPTION CARD (Screenshots 1 & 4 from live flow) */}
-        {step === 1 && (
+        {/* FEATURED CAMPAIGN DESCRIPTION CARD (Shown on campaign donate page, not on checkout) */}
+        {!isCheckoutPage && step === 1 && (
           <section className="camp-desc-card" aria-label="Campaign information">
             <div className="camp-desc-tag">
               <span className="camp-desc-tag-dot" />
@@ -272,16 +402,19 @@ function DonateContent({ initialSlug }) {
                 ))}
               </div>
 
-              {/* 4 Impact Cards Grid (Image 3 layout) */}
+              {/* 2 Impact Cards Grid (Image 1 layout: Only 500 and 1000) */}
               <div className="camp-impact-grid" role="group" aria-label="Select impact tier">
-                {impactCards.map((item, idx) => (
+                {[
+                  { amt: 500, title: '5 Warm Meals' },
+                  { amt: 1000, title: 'Dry Ration Kit' },
+                ].map((item, idx) => (
                   <button
                     key={idx}
                     type="button"
-                    className={`camp-impact-card ${currentAmt === item.amt && !customAmount ? 'active' : ''}`}
+                    className={`camp-impact-card ${currentAmt === item.amt ? 'active' : ''}`}
                     onClick={() => {
                       setAmount(item.amt);
-                      setCustomAmount('');
+                      setCustomAmount(String(item.amt));
                     }}
                   >
                     <b className="camp-impact-amt">{fmt(item.amt)}</b>
@@ -298,27 +431,6 @@ function DonateContent({ initialSlug }) {
             {step === 1 && (
               <>
                 <h1 style={{ fontSize: '30px' }}>Quick Online Payment</h1>
-
-                <label className="field" htmlFor="camp">
-                  Choose cause
-                  <select
-                    id="camp"
-                    value={selectedSlug}
-                    onChange={(e) => {
-                      const newSlug = e.target.value;
-                      setSelectedSlug(newSlug);
-                      if (typeof window !== 'undefined' && window.history) {
-                        window.history.replaceState(null, '', `/donate/${newSlug}`);
-                      }
-                    }}
-                  >
-                    {options.map((o) => (
-                      <option key={o.slug} value={o.slug}>
-                        {o.title}
-                      </option>
-                    ))}
-                  </select>
-                </label>
 
                 <div className="seg" role="group" aria-label="Frequency">
                   <button
@@ -337,27 +449,9 @@ function DonateContent({ initialSlug }) {
                   </button>
                 </div>
 
-                <div className="amt-tiles" role="group" aria-label="Amount">
-                  {tiers.map((t) => (
-                    <button
-                      key={t.amt}
-                      type="button"
-                      className="amt-tile"
-                      aria-pressed={t.amt === currentAmt && !customAmount}
-                      onClick={() => {
-                        setAmount(t.amt);
-                        setCustomAmount('');
-                      }}
-                    >
-                      <b>{fmt(t.amt)}</b>
-                      <small>{t.what}</small>
-                    </button>
-                  ))}
-                </div>
-
-                {/* Custom Amount without scrolling or number spinners bug (Screenshot 2) */}
+                {/* Custom Amount */}
                 <label className="field" htmlFor="custom">
-                  Or another amount
+                  Or enter custom amount
                   <div className="money-input">
                     <span>₹</span>
                     <input
@@ -371,12 +465,16 @@ function DonateContent({ initialSlug }) {
                       onChange={(e) => {
                         const clean = e.target.value.replace(/[^0-9]/g, '');
                         setCustomAmount(clean);
+                        const num = parseInt(clean, 10);
+                        if (num > 0) {
+                          setAmount(num);
+                        }
                       }}
                     />
                   </div>
                 </label>
 
-                {/* Support SikhAid Tip Section (Screenshot 3) */}
+                {/* Support SikhAid Tip Section */}
                 <div className="support-box">
                   <div className="support-head">
                     <div className="support-title-wrap">
@@ -399,80 +497,6 @@ function DonateContent({ initialSlug }) {
                   </div>
                 </div>
 
-                <div className="gift-box">
-                  <label className="check">
-                    <input
-                      type="checkbox"
-                      id="gift"
-                      checked={isGift}
-                      onChange={(e) => setIsGift(e.target.checked)}
-                    />
-                    Dedicate this as a birthday gift to someone
-                  </label>
-                  {isGift && (
-                    <div className="two">
-                      <label className="field" htmlFor="gName">
-                        Their name
-                        <input
-                          id="gName"
-                          type="text"
-                          autoComplete="off"
-                          value={giftDetails.name}
-                          onChange={(e) =>
-                            setGiftDetails({
-                              ...giftDetails,
-                              name: e.target.value,
-                            })
-                          }
-                        />
-                      </label>
-                      <label className="field" htmlFor="gContact">
-                        Their email or WhatsApp
-                        <input
-                          id="gContact"
-                          type="text"
-                          value={giftDetails.contact}
-                          onChange={(e) =>
-                            setGiftDetails({
-                              ...giftDetails,
-                              contact: e.target.value,
-                            })
-                          }
-                        />
-                      </label>
-                      <label className="field" htmlFor="gDate">
-                        Send the card on
-                        <input
-                          id="gDate"
-                          type="date"
-                          value={giftDetails.date}
-                          onChange={(e) =>
-                            setGiftDetails({
-                              ...giftDetails,
-                              date: e.target.value,
-                            })
-                          }
-                        />
-                      </label>
-                      <label className="field" htmlFor="gMsg">
-                        Your message
-                        <input
-                          id="gMsg"
-                          type="text"
-                          placeholder="Happy birthday!"
-                          value={giftDetails.msg}
-                          onChange={(e) =>
-                            setGiftDetails({
-                              ...giftDetails,
-                              msg: e.target.value,
-                            })
-                          }
-                        />
-                      </label>
-                    </div>
-                  )}
-                </div>
-
                 {error1 && (
                   <p className="err">Please choose an amount of ₹100 or more.</p>
                 )}
@@ -482,7 +506,7 @@ function DonateContent({ initialSlug }) {
                   type="button"
                   onClick={handleNext1}
                 >
-                  Continue · {fmt(grandTotal)}
+                  Continue to Checkout · {fmt(grandTotal)}
                   {suffix}
                 </button>
 
@@ -566,26 +590,23 @@ function DonateContent({ initialSlug }) {
                       }
                     />
                   </label>
-                  <label className="field" htmlFor="city">
-                    City
-                    <input
-                      id="city"
-                      type="text"
-                      autoComplete="address-level2"
-                      placeholder="Your city"
-                      value={donor.city}
-                      onChange={(e) =>
-                        setDonor({ ...donor, city: e.target.value })
-                      }
-                    />
-                  </label>
                   <label className="field" htmlFor="pan">
-                    PAN <small>Needed to claim 80G</small>
+                    {currentAmt >= 2000 ? (
+                      <span style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span>PAN * <b style={{ color: 'var(--red)', fontSize: '12px' }}>(Mandatory for ₹2,000+)</b></span>
+                        <small style={{ color: 'var(--red)', fontWeight: 600 }}>Required for 80G</small>
+                      </span>
+                    ) : (
+                      'PAN'
+                    )}
                     <input
                       id="pan"
                       type="text"
                       placeholder="ABCDE1234F"
-                      style={{ textTransform: 'uppercase' }}
+                      style={{
+                        textTransform: 'uppercase',
+                        borderColor: currentAmt >= 2000 && !donor.pan.trim() ? 'var(--red)' : undefined,
+                      }}
                       maxLength={10}
                       value={donor.pan}
                       onChange={(e) =>
@@ -622,16 +643,7 @@ function DonateContent({ initialSlug }) {
                       checked={optAccount}
                       onChange={(e) => setOptAccount(e.target.checked)}
                     />
-                    Create my free account to track donations and download
-                    receipts
-                  </label>
-                  <label className="check">
-                    <input
-                      type="checkbox"
-                      checked={optWall}
-                      onChange={(e) => setOptWall(e.target.checked)}
-                    />
-                    Show my first name and city on the live donor feed
+                    Create my free account to track donations and download receipts
                   </label>
                   <label className="check">
                     <input
@@ -649,7 +661,7 @@ function DonateContent({ initialSlug }) {
                   <button
                     className="btn btn-line btn-lg"
                     type="button"
-                    onClick={() => setStep(1)}
+                    onClick={handleBackToDonate}
                   >
                     Back
                   </button>
@@ -1008,137 +1020,44 @@ function DonateContent({ initialSlug }) {
             DONATION PAGE CONTEXT SECTIONS (From live https://www.sikhaid.ngo/donate)
             ======================================================== */}
         <div className="donate-extra-content">
-          {/* Section 1: Choose Your Impact */}
-          <section aria-labelledby="choose-impact-h">
-            <div className="extra-sec-head">
-              <h2 id="choose-impact-h">Choose Your Impact</h2>
-              <p>Every contribution funds verifiable, transparent grassroots relief</p>
-            </div>
-            <div className="impact-options-grid">
-              <div className="impact-fund-box">
-                <div className="impact-fund-head">
-                  <div className="impact-fund-icon" style={{ background: '#FFF4E5', color: '#D97706' }}>
-                    🧡
-                  </div>
-                  <div>
-                    <h3 style={{ fontSize: '22px', fontWeight: 800, color: 'var(--ink)' }}>General Relief Fund</h3>
-                    <span style={{ fontSize: '13px', color: 'var(--muted)' }}>Rapid Emergency Response</span>
-                  </div>
-                </div>
-                <p style={{ color: 'var(--text)', fontSize: '14.5px', lineHeight: 1.6 }}>
-                  Support our comprehensive humanitarian work across India. This fund allows us to respond quickly to emergencies and maintain ongoing community relief operations.
-                </p>
-                <div className="impact-fund-buttons">
-                  <button
-                    type="button"
-                    className="impact-btn"
-                    onClick={() => {
-                      setSelectedSlug('general');
-                      setAmount(1000);
-                      setCustomAmount('');
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }}
-                  >
-                    <b>₹1,000</b>
-                    <span>Monthly impact donor</span>
-                  </button>
-                  <button
-                    type="button"
-                    className="impact-btn"
-                    onClick={() => {
-                      setSelectedSlug('general');
-                      setAmount(5000);
-                      setCustomAmount('');
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }}
-                  >
-                    <b>₹5,000</b>
-                    <span>Community supporter</span>
-                  </button>
-                </div>
-              </div>
-
-              <div className="impact-fund-box">
-                <div className="impact-fund-head">
-                  <div className="impact-fund-icon" style={{ background: '#EEF2FF', color: '#2563EB' }}>
-                    🛡️
-                  </div>
-                  <div>
-                    <h3 style={{ fontSize: '22px', fontWeight: 800, color: 'var(--ink)' }}>Campaign Support</h3>
-                    <span style={{ fontSize: '13px', color: 'var(--muted)' }}>Targeted Ground Missions</span>
-                  </div>
-                </div>
-                <p style={{ color: 'var(--text)', fontSize: '14.5px', lineHeight: 1.6 }}>
-                  Support specific campaigns like Langar Sewa, Health on Wheels, Blanket Distribution, and disaster flood relief across Odisha, Assam, Bihar, and Nepal.
-                </p>
-                <div className="impact-fund-buttons">
-                  <button
-                    type="button"
-                    className="impact-btn"
-                    onClick={() => {
-                      setAmount(2000);
-                      setCustomAmount('');
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }}
-                  >
-                    <b>₹2,000</b>
-                    <span>Campaign contributor</span>
-                  </button>
-                  <button
-                    type="button"
-                    className="impact-btn"
-                    onClick={() => {
-                      setAmount(10000);
-                      setCustomAmount('');
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }}
-                  >
-                    <b>₹10,000</b>
-                    <span>Major sponsor</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Section 2: How to Donate (Simple Steps) */}
+          {/* How to Donate (Simple Steps) */}
           <section aria-labelledby="how-steps-h">
             <div className="how-to-donate-card">
-              <h2 id="how-steps-h" style={{ fontSize: '28px', textAlign: 'center', fontWeight: 800 }}>
+              <h2 id="how-steps-h" style={{ fontSize: '28px', textAlign: 'center', fontWeight: 800, color: '#FFFFFF' }}>
                 Simple Steps to Support
               </h2>
               <div className="how-steps-list">
                 <div className="how-step-item">
                   <span className="how-step-num">1</span>
                   <div>
-                    <h3 style={{ fontSize: '17px', fontWeight: 700, marginBottom: '2px' }}>Choose Your Amount</h3>
+                    <h3 style={{ fontSize: '17px', fontWeight: 700, marginBottom: '2px', color: '#FFFFFF' }}>Choose Your Amount</h3>
                     <p style={{ fontSize: '14px', color: '#E0E7FF' }}>Select a predefined impact tier or enter any custom contribution.</p>
                   </div>
                 </div>
                 <div className="how-step-item">
                   <span className="how-step-num">2</span>
                   <div>
-                    <h3 style={{ fontSize: '17px', fontWeight: 700, marginBottom: '2px' }}>Instant Online Payment</h3>
+                    <h3 style={{ fontSize: '17px', fontWeight: 700, marginBottom: '2px', color: '#FFFFFF' }}>Instant Online Payment</h3>
                     <p style={{ fontSize: '14px', color: '#E0E7FF' }}>Pay securely via UPI (GPay, PhonePe, Paytm), Cards, Net Banking, or Wallets.</p>
                   </div>
                 </div>
                 <div className="how-step-item">
                   <span className="how-step-num">3</span>
                   <div>
-                    <h3 style={{ fontSize: '17px', fontWeight: 700, marginBottom: '2px' }}>Instant 80G Tax Receipt</h3>
+                    <h3 style={{ fontSize: '17px', fontWeight: 700, marginBottom: '2px', color: '#FFFFFF' }}>Instant 80G Tax Receipt</h3>
                     <p style={{ fontSize: '14px', color: '#E0E7FF' }}>Your digital tax deduction certificate is generated and emailed immediately.</p>
                   </div>
                 </div>
                 <div className="how-step-item">
                   <span className="how-step-num">4</span>
                   <div>
-                    <h3 style={{ fontSize: '17px', fontWeight: 700, marginBottom: '2px' }}>Track Your Impact</h3>
+                    <h3 style={{ fontSize: '17px', fontWeight: 700, marginBottom: '2px', color: '#FFFFFF' }}>Track Your Impact</h3>
                     <p style={{ fontSize: '14px', color: '#E0E7FF' }}>Receive photo updates and milestone reports showing exactly how your seva helped.</p>
                   </div>
                 </div>
               </div>
               <div className="tax-deduct-badge">
-                <p style={{ fontWeight: 800, fontSize: '16px', marginBottom: '4px' }}>100% Tax Deductible</p>
+                <p style={{ fontWeight: 800, fontSize: '16px', marginBottom: '4px', color: '#FFFFFF' }}>100% Tax Deductible</p>
                 <p style={{ fontSize: '13px', color: '#CBD5E1', margin: 0 }}>
                   Donations qualify for 50% deduction under Section 80G of the Indian Income Tax Act.
                 </p>
@@ -1146,103 +1065,17 @@ function DonateContent({ initialSlug }) {
             </div>
           </section>
 
-          {/* Section 3: Your Impact in Action */}
-          <section aria-labelledby="action-h">
-            <div className="extra-sec-head">
-              <h2 id="action-h">Your Impact in Action</h2>
-              <p>Grassroots outcomes made possible by generous supporters like you</p>
-            </div>
-            <div className="hero-stats" style={{ margin: '0 auto 36px', maxWidth: '780px' }}>
-              <div>
-                <b>2,000+</b>
-                Families Supported
-              </div>
-              <div>
-                <b>50,000+</b>
-                Meals Distributed
-              </div>
-              <div>
-                <b>15</b>
-                Emergency Shelters
-              </div>
-            </div>
-
-            <div className="stories-cards-grid">
-              <div className="story-card-item">
-                <p>
-                  &ldquo;Thanks to the emergency food packets from Sikh Aid, my family survived the first week after our house was flooded. We had lost everything, but you gave us hope.&rdquo;
-                </p>
-                <cite>— Gurpreet Kaur, Flood Victim from Ludhiana</cite>
-              </div>
-              <div className="story-card-item">
-                <p>
-                  &ldquo;The mobile medical unit reached our village when no other help was available. They treated my elderly father&apos;s diabetes when we had no access to medicines.&rdquo;
-                </p>
-                <cite>— Harpreet Singh, Village Dhakoli</cite>
-              </div>
-            </div>
-          </section>
-
-          {/* Section 4: Complete Transparency & Why Trust Sikh Aid */}
-          <section aria-labelledby="transparency-h">
-            <div className="extra-sec-head">
-              <h2 id="transparency-h">Complete Transparency</h2>
-              <p>Why thousands of donors across India place their trust in SikhAid</p>
-            </div>
-            <div className="trust-points-grid">
-              <div className="trust-point-card">
-                <div className="trust-point-icon">🛡️</div>
-                <div>
-                  <h3 style={{ fontSize: '17px', fontWeight: 800, color: 'var(--ink)' }}>100% Direct Relief</h3>
-                  <p style={{ fontSize: '14px', color: 'var(--muted)', marginTop: '4px', lineHeight: 1.5 }}>
-                    Every single rupee goes directly into relief material, nutritious meals, and rescue kits on the ground.
-                  </p>
-                </div>
-              </div>
-
-              <div className="trust-point-card">
-                <div className="trust-point-icon">📜</div>
-                <div>
-                  <h3 style={{ fontSize: '17px', fontWeight: 800, color: 'var(--ink)' }}>80G Tax Benefits</h3>
-                  <p style={{ fontSize: '14px', color: 'var(--muted)', marginTop: '4px', lineHeight: 1.5 }}>
-                    All donations qualify for 50% tax deductions under Section 80G with instant receipt generation.
-                  </p>
-                </div>
-              </div>
-
-              <div className="trust-point-card">
-                <div className="trust-point-icon">📸</div>
-                <div>
-                  <h3 style={{ fontSize: '17px', fontWeight: 800, color: 'var(--ink)' }}>Regular Photo Updates</h3>
-                  <p style={{ fontSize: '14px', color: 'var(--muted)', marginTop: '4px', lineHeight: 1.5 }}>
-                    Receive verified on-ground photos and utilisation statements for each response you back.
-                  </p>
-                </div>
-              </div>
-
-              <div className="trust-point-card">
-                <div className="trust-point-icon">🤝</div>
-                <div>
-                  <h3 style={{ fontSize: '17px', fontWeight: 800, color: 'var(--ink)' }}>Established Trust</h3>
-                  <p style={{ fontSize: '14px', color: 'var(--muted)', marginTop: '4px', lineHeight: 1.5 }}>
-                    Serving communities across India since 2020 with audited financials and 100% compliance.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Section 5: Need Help with Your Donation? */}
+          {/* Section 3: Need Help with Your Donation? (Image 3 fix: bright white legible text) */}
           <section className="help-donate-banner" aria-label="Donation assistance">
-            <h2 style={{ fontSize: '28px', fontWeight: 800, margin: 0 }}>Need Help with Your Donation?</h2>
-            <p style={{ fontSize: '16px', color: '#D5DBEE', maxWidth: '58ch', margin: 0 }}>
+            <h2 style={{ fontSize: '28px', fontWeight: 800, margin: 0, color: '#FFFFFF' }}>Need Help with Your Donation?</h2>
+            <p style={{ fontSize: '16px', color: '#FFFFFF', maxWidth: '58ch', margin: 0, opacity: 0.95 }}>
               Our donor care team is available to assist you with UPI, wire transfers, 80G receipts, or CSR partnerships.
             </p>
             <div className="help-donate-btns">
               <Link className="btn btn-light" href="/get-involved">
                 Contact Support Team
               </Link>
-              <a className="btn btn-line" style={{ color: '#fff', borderColor: 'rgba(255,255,255,0.4)' }} href="tel:+919851341234">
+              <a className="btn btn-line" style={{ color: '#FFFFFF', borderColor: 'rgba(255,255,255,0.6)' }} href="tel:+919851341234">
                 Call +91 98513 41234
               </a>
             </div>
@@ -1253,7 +1086,7 @@ function DonateContent({ initialSlug }) {
   );
 }
 
-export default function DonatePage({ initialSlug }) {
+export default function DonatePage({ initialSlug, isCheckoutPage = false }) {
   return (
     <Suspense
       fallback={
@@ -1262,7 +1095,7 @@ export default function DonatePage({ initialSlug }) {
         </div>
       }
     >
-      <DonateContent initialSlug={initialSlug} />
+      <DonateContent initialSlug={initialSlug} isCheckoutPage={isCheckoutPage} />
     </Suspense>
   );
 }

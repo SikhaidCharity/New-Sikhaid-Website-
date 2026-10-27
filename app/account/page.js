@@ -30,6 +30,9 @@ export default function AccountPage() {
   const [isPaused, setIsPaused] = useState(false);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const [toastMsg, setToastMsg] = useState('');
+  const [profileEmail, setProfileEmail] = useState('priya@example.com');
+  const [newAccPwd, setNewAccPwd] = useState('');
+  const [confirmAccPwd, setConfirmAccPwd] = useState('');
 
   const triggerToast = (msg) => {
     setToastMsg(msg);
@@ -41,6 +44,10 @@ export default function AccountPage() {
     if (tabs.some((t) => t[0] === hash)) {
       setActiveTab(hash);
     }
+    try {
+      const email = localStorage.getItem('sa_auth_user') || localStorage.getItem('sa_donor_email');
+      if (email) setProfileEmail(email);
+    } catch (e) {}
   }, []);
 
   const lifetimeDonated = gifts.reduce((s, g) => s + g[3], 0);
@@ -580,8 +587,9 @@ export default function AccountPage() {
                     <input
                       id="pEmail"
                       type="email"
-                      defaultValue="priya@example.com"
+                      defaultValue={profileEmail}
                       autoComplete="email"
+                      onChange={(e) => setProfileEmail(e.target.value)}
                     />
                   </label>
                   <label className="field" htmlFor="pPhone">
@@ -592,10 +600,6 @@ export default function AccountPage() {
                       defaultValue="+91 98XXX XXXXX"
                       autoComplete="tel"
                     />
-                  </label>
-                  <label className="field" htmlFor="pCity">
-                    City
-                    <input id="pCity" type="text" defaultValue="Delhi" />
                   </label>
                   <label className="field" htmlFor="pPan">
                     PAN (for 80G receipts)
@@ -634,6 +638,70 @@ export default function AccountPage() {
                   Save changes
                 </button>
               </form>
+
+              {/* Password & Security Card (Image 5 & Flow requirement) */}
+              <div className="box" style={{ marginTop: '10px' }}>
+                <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '14px' }}>
+                  <span style={{ fontSize: '24px' }}>🔐</span>
+                  <div>
+                    <h2 style={{ fontSize: '20px', fontWeight: 800, margin: 0, color: 'var(--ink)' }}>
+                      Account Password & Security
+                    </h2>
+                    <p style={{ fontSize: '13.5px', color: 'var(--muted)', margin: 0 }}>
+                      Set or update your password to log in directly without waiting for an OTP.
+                    </p>
+                  </div>
+                </div>
+
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (!newAccPwd || newAccPwd.length < 6) {
+                      triggerToast('Password must be at least 6 characters');
+                      return;
+                    }
+                    if (newAccPwd !== confirmAccPwd) {
+                      triggerToast('Passwords do not match');
+                      return;
+                    }
+                    const cleanEmail = profileEmail.toLowerCase().trim();
+                    localStorage.setItem(`sa_user_password_${cleanEmail}`, newAccPwd);
+                    localStorage.setItem('sa_auth_user', cleanEmail);
+                    triggerToast('Password saved successfully!');
+                    setNewAccPwd('');
+                    setConfirmAccPwd('');
+                  }}
+                  style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}
+                >
+                  <div className="grid g2" style={{ gap: '14px' }}>
+                    <label className="field" htmlFor="new-acc-pwd">
+                      New password
+                      <input
+                        id="new-acc-pwd"
+                        type="password"
+                        placeholder="At least 6 characters"
+                        value={newAccPwd}
+                        onChange={(e) => setNewAccPwd(e.target.value)}
+                        autoComplete="new-password"
+                      />
+                    </label>
+                    <label className="field" htmlFor="confirm-acc-pwd">
+                      Confirm new password
+                      <input
+                        id="confirm-acc-pwd"
+                        type="password"
+                        placeholder="Repeat your password"
+                        value={confirmAccPwd}
+                        onChange={(e) => setConfirmAccPwd(e.target.value)}
+                        autoComplete="new-password"
+                      />
+                    </label>
+                  </div>
+                  <button className="btn btn-dark" type="submit" style={{ alignSelf: 'flex-start' }}>
+                    Update Password
+                  </button>
+                </form>
+              </div>
             </>
           )}
         </div>
