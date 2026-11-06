@@ -3752,9 +3752,9 @@ section[id] { scroll-margin-top: 90px; }
 .graph-growth-pill {
   background: #FEF3C7;
   color: #B45309;
-  padding: 5px 12px;
+  padding: 3px 9px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   display: inline-flex;
   align-items: center;
@@ -4036,9 +4036,9 @@ section[id] { scroll-margin-top: 90px; }
   background: #FFFFFF;
   border: 1.5px solid #CBD5E1;
   color: #334155;
-  padding: 5px 12px;
+  padding: 3px 9px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
@@ -4974,7 +4974,7 @@ input[type="number"] {
 .cd-hero {
   position: relative;
   width: 100%;
-  min-height: clamp(380px, 48vw, 540px);
+  min-height: clamp(260px, 28vw, 360px);
   overflow: hidden;
   background: #0A0F1E;
   display: flex;
@@ -4983,7 +4983,7 @@ input[type="number"] {
 }
 @media (max-width: 900px) {
   .cd-hero {
-    min-height: 440px;
+    min-height: 280px;
     height: auto;
   }
 }
@@ -5047,9 +5047,9 @@ input[type="number"] {
   -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(255,255,255,0.25);
   color: #fff;
-  padding: 5px 12px;
+  padding: 3px 9px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
 }
 .cd-pill-urgent {
@@ -5639,17 +5639,17 @@ input[type="number"] {
     padding-right: 16px !important;
   }
   .cd-hero {
-    min-height: 420px !important;
+    min-height: 260px !important;
     height: auto !important;
   }
   .cd-hero-overlay {
-    padding-top: 48px !important;
-    padding-bottom: 24px !important;
+    padding-top: 20px !important;
+    padding-bottom: 16px !important;
   }
   .cd-hero-title {
-    font-size: 26px !important;
+    font-size: 21px !important;
     line-height: 1.2 !important;
-    margin: 8px 0 !important;
+    margin: 6px 0 8px !important;
   }
   .cd-hero-blurb {
     font-size: 15px !important;

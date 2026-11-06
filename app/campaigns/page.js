@@ -10,7 +10,7 @@ export default function CampaignsPage() {
   const [query, setQuery] = useState('');
   const [filterGroup, setFilterGroup] = useState('All');
 
-  const groups = ['All', 'Emergency', 'Hunger', 'Healthcare', 'Youth', 'Community'];
+  const groups = ['All', 'Emergency', 'Hunger', 'Healthcare', 'Women', 'Community'];
 
   const totalRaised = useMemo(() => campaigns.reduce((s, c) => s + c.raised, 0), []);
   const totalDonors = useMemo(() => campaigns.reduce((s, c) => s + c.donors, 0), []);
@@ -20,7 +20,7 @@ export default function CampaignsPage() {
     const q = query.trim().toLowerCase();
     let list = campaigns.filter(
       (c) =>
-        (filterGroup === 'All' || c.group === filterGroup) &&
+        (filterGroup === 'All' || (filterGroup === 'Women' ? (c.group === 'Women' || c.slug === 'no-spot' || c.slug === 'udaan') : c.group === filterGroup)) &&
         (!q ||
           (c.title + ' ' + c.location + ' ' + c.category + ' ' + c.blurb)
             .toLowerCase()

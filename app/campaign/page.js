@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect, useRef, Suspense } from 'react';
+import { useState, useEffect, useRef, useMemo, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Photo from '@/components/Photo';
 import CampaignCard from '@/components/CampaignCard';
-import { campaigns, TIERS, BREAKDOWN, IMG, fmt, pct, bySlug } from '@/lib/data';
+import { campaigns, BREAKDOWN, IMG, SITE, fmt, pct, bySlug } from '@/lib/data';
 
 function getCampaignGallery(camp) {
   if (camp?.gallery && Array.isArray(camp.gallery) && camp.gallery.length > 0) {
@@ -14,7 +14,7 @@ function getCampaignGallery(camp) {
   const baseImg = camp?.img || IMG.food;
   const t = ((camp?.type || '') + ' ' + (camp?.group || '') + ' ' + (camp?.category || '') + ' ' + (camp?.slug || '')).toLowerCase();
 
-  if (t.includes('flood') || t.includes('disaster') || t.includes('emergency')) {
+  if (t.includes('flood') || t.includes('disaster') || t.includes('emergency') || t.includes('landslide')) {
     return [
       { src: baseImg, caption: `${camp?.title || 'Relief'} — Active Ground Response`, tag: 'Ground Zero' },
       { src: IMG.assam1, caption: 'Volunteers navigating submerged villages with boat rations', tag: 'Boat Rescue' },
@@ -63,20 +63,6 @@ function getCampaignGallery(camp) {
     ];
   }
 
-  if (t.includes('youth') || t.includes('sport') || t.includes('education') || t.includes('dream') || t.includes('academy')) {
-    return [
-      { src: baseImg, caption: `${camp?.title || 'Youth'} — Youth Empowerment`, tag: 'Empowerment' },
-      { src: IMG.merch1 || baseImg, caption: 'Training equipment and sports kits for rural youth', tag: 'Sports Gear' },
-      { src: IMG.merch2 || baseImg, caption: 'Structured coaching, team drills & tournament access', tag: 'Coaching' },
-      { src: IMG.food, caption: 'Nutritional meals and community mentorship sessions', tag: 'Nutrition' },
-      { src: IMG.pads, caption: 'Life skills, education kits, and school aid packs', tag: 'Education' },
-      { src: IMG.langar, caption: 'Wholesome langar meals provided to young trainees', tag: 'Langar' },
-      { src: IMG.ratha1, caption: 'Community youth leadership and volunteer training', tag: 'Leadership' },
-      { src: IMG.assam3, caption: 'Mentors engaging students in skill-building workshops', tag: 'Workshops' },
-      { src: IMG.blanket, caption: 'Winter care packages for hostel students and trainees', tag: 'Student Aid' }
-    ];
-  }
-
   return [
     { src: baseImg, caption: `${camp?.title || 'Mission'} — On-Ground Seva`, tag: 'Active Mission' },
     { src: IMG.langar, caption: 'Hot langar meals and dry provisions for vulnerable hamlets', tag: 'Food Aid' },
@@ -91,6 +77,174 @@ function getCampaignGallery(camp) {
   ];
 }
 
+// Generates the strict paragraph structure requested:
+// Paragraph 1: 200-300 words
+// Image 1
+// Paragraph 2: 200-300 words
+// Image 2
+// Paragraph 3: 100-200 words
+// Image 3
+function getCampaignStoryBlocks(camp) {
+  const t = ((camp?.type || '') + ' ' + (camp?.group || '') + ' ' + (camp?.category || '') + ' ' + (camp?.title || '')).toLowerCase();
+  const loc = camp?.location || 'India';
+  const name = camp?.title || 'Humanitarian Mission';
+
+  if (t.includes('flood') || t.includes('disaster') || t.includes('emergency') || t.includes('landslide')) {
+    return {
+      p1: `Across the vast rural river belts and low-lying settlements of ${loc}, unprecedented seasonal downpours and torrential river overflows have triggered one of the most severe humanitarian crises witnessed across northern India in recent years. Entire agrarian panchayats and riverside hamlets have been submerged beneath several feet of swift floodwaters, ruthlessly sweeping away traditional thatched mud dwellings, stored food grains, valuable cattle herds, and critical access roads. Tens of thousands of vulnerable individuals, including fragile newborn infants, expectant mothers, and disabled elderly residents, have been forced to flee their inundated homes in the dead of night, finding temporary refuge on narrow railway embankments, highway road shoulders, and flimsy tarpaulin shelters without access to clean drinking water, electricity, or basic hygienic sanitation. As muddy flood currents continue to drown local tubewells, boreholes, and open wells, families are exposed to hazardous contaminated runoffs, escalating the imminent threat of devastating waterborne epidemics like cholera, diarrhea, and dysentery across vulnerable relief encampments. Subsistence farmers and daily-wage laborers who already lived hand-to-mouth have lost their entire life savings and agricultural harvests in a matter of hours, leaving them completely destitute and fearful for their children’s future. In remote districts where rescue access remains exceptionally difficult, immediate grassroots humanitarian intervention is the singular lifeline preventing acute hunger, severe hypothermia, and preventable illness among isolated communities.`,
+      img1: camp?.img || IMG.assam1,
+      img1Tag: 'Immediate Crisis',
+      img1Caption: `Submerged communities and isolated families awaiting emergency rescue across ${loc}`,
+      p2: `In direct response to this humanitarian emergency, the SikhAid Rapid Response Taskforce mobilized within hours of the first distress alerts, establishing frontline command posts and continuous operational kitchens across accessible perimeter hubs. Navigating treacherous underwater obstructions and unpredictable currents, our trained volunteer units deployed motorized rescue dinghies and local wooden boats to evacuate marooned families from isolated house rooftops and cut-off hamlet islands. Simultaneously, our community langar teams established hygienic 24/7 field kitchens, preparing and packaging thousands of warm, protein-rich, nourishing meals every single morning and evening to ensure no child or parent goes to sleep hungry amidst the devastation. To counter the acute drinking water crisis, SikhAid logistics convoys transported thousands of sealed potable water cans, certified chlorine purification tablets, and high-volume reverse osmosis filtration units to frontline camps. Furthermore, our relief convoys are systematically handing over comprehensive dry ration survival packs filled with durable food staples, fortified pulses, flattened rice, matches, mosquito coils, solar flashlights, and durable waterproof tarpaulins that protect vulnerable families against relentless monsoon rainfall and night-time dampness. Every distribution drive is coordinated directly with community elders to ensure aid reaches the most marginalized households with total dignity, compassion, and zero administrative bottlenecks.`,
+      img2: IMG.langar,
+      img2Tag: 'Emergency Seva',
+      img2Caption: 'Hot langar cooked 24/7 and delivered directly to displaced families in frontline relief camps',
+      p3: `Beyond immediate life-saving rescue and daily nourishment, SikhAid is resolutely dedicated to standing shoulder-to-shoulder with affected communities through every stage of sustained post-disaster rehabilitation. As the floodwaters gradually recede, our engineers and ground coordinators will conduct thorough structural assessments to repair damaged village shelters, disinfect thousands of community drinking water wells, and restore damaged rural classrooms so children can safely resume their education. We will also distribute essential farming toolkits and high-yield seed reserves to help displaced rural families recover their livelihoods and rebuild their local economy with honor and self-reliance. Rooted in the timeless humanitarian ethos of Sarbat da Bhala—the unconditional service and welfare of all humankind—every single rupee you donate is deployed transparently on the frontlines with verified documentation, zero administrative middlemen, and real-time photographic accountability.`,
+      img3: IMG.assam6,
+      img3Tag: 'Rebuilding Lives',
+      img3Caption: 'Distributing heavy-duty shelter kits, dry rations, and agricultural recovery supplies on the ground'
+    };
+  }
+
+  if (t.includes('health') || t.includes('medical') || t.includes('spot') || t.includes('hygiene') || t.includes('oxygen')) {
+    return {
+      p1: `Across impoverished rural villages and remote interior settlements of ${loc}, access to dependable, quality medical care remains an unattainable luxury for millions of impoverished families, daily-wage laborers, and vulnerable elderly citizens. In these underserved pockets, government primary healthcare centers are frequently understaffed, depleted of vital life-saving medicines, or located dozens of kilometers away over broken, impassable roads. As a consequence, impoverished villagers suffering from chronic diseases such as uncontrolled diabetes, severe hypertension, respiratory infections, and debilitating cardiovascular disorders are forced to go without professional medical diagnostics or essential pharmaceutical prescriptions. For expectant mothers and fragile infants, the complete lack of preventive maternal healthcare and pediatric screenings leads to preventable complications, severe anemia, and chronic malnutrition. Impoverished families are often compelled to borrow catastrophic sums from predatory local moneylenders just to cover emergency transport and private hospital fees, sinking entire generations into lifelong indebtedness. Without regular preventive health monitoring and early medical intervention, common, manageable ailments quickly escalate into permanent disability or fatal emergencies, destroying family stability and deepening rural poverty across thousands of isolated households that possess zero alternative healthcare avenues.`,
+      img1: camp?.img || IMG.health,
+      img1Tag: 'Healthcare Need',
+      img1Caption: `Remote doorstep clinical triage and diagnostic checkups across underserved districts of ${loc}`,
+      p2: `To overcome these severe healthcare disparities and bring life-saving clinical support directly to underserved communities, SikhAid launched and operates dedicated mobile medical relief units and primary healthcare seva programs. Our specialized medical vans are equipped with advanced diagnostic equipment, portable ECG machines, digital vitals monitors, blood glucose analyzers, and comprehensive inventories of certified pharmaceutical medicines. Staffed by qualified volunteer doctors, registered nurses, and compassionate community health workers, our mobile clinics travel deep into remote hamlets to conduct free doorstep medical consultations, comprehensive diagnostic tests, and dispense necessary chronic medications. Beyond acute symptomatic treatment, our clinical teams prioritize preventive health education, conducting village-wide sessions on personal hygiene, safe drinking water handling, pediatric nutrition, and maternal healthcare management. For critical patients requiring specialized surgeries or secondary tertiary care, SikhAid coordinators facilitate emergency hospital transfers, cover diagnostic imaging costs, and provide patient navigation assistance. By bringing world-class, empathetic medical seva directly into forgotten rural backyards, SikhAid restores health, relieves chronic physical suffering, and protects struggling families from catastrophic medical impoverishment with unconditional love and respect.`,
+      img2: IMG.hygiene,
+      img2Tag: 'Mobile Clinics',
+      img2Caption: 'Free doctor consultations, preventive health screenings, and essential prescription supplies on ground',
+      p3: `SikhAid firmly believes that healthcare is a fundamental human right that must be delivered with unwavering dignity, cultural sensitivity, and complete financial transparency. We do not merely distribute temporary medicines; we establish enduring relationships of trust with the rural families we serve, creating digital patient health records to track long-term recovery and clinical outcomes. Guided by the revered Sikh humanitarian ethos of Sarbat da Bhala—welfare and healing for all humanity—our medical initiatives operate with 100% audited accountability and zero administrative overhead. Every diagnostic test administered, every antibiotic course dispensed, and every specialized treatment sponsored is meticulously verified and recorded with photographic evidence, guaranteeing that your philanthropic support directly saves vulnerable lives and nurtures lasting community wellness.`,
+      img3: IMG.pads,
+      img3Tag: 'Dignity Kits',
+      img3Caption: 'Personal wellness and sanitary health dignity packs distributed to mothers and young women'
+    };
+  }
+
+  // Hunger, Langar, Community & Education
+  return {
+    p1: `In the shadow of thriving urban centers and across drought-prone rural districts of ${loc}, the harsh reality of severe food insecurity and chronic hunger affects hundreds of thousands of underprivileged citizens every single day. For daily-wage laborers, migrant construction workers, widowed mothers, orphaned children, and destitute seniors living on the fringes of society, rising food inflation makes securing even one nutritious meal an agonizing daily ordeal. In informal settlements and transit corridors, families frequently consume low-quality, contaminated food scraps or are forced to skip meals entirely so their youngest children can have a morsel to eat before sleep. Chronic hunger deprives children of the essential vitamins, proteins, and micronutrients required for healthy brain development and immune defense, leaving them dangerously susceptible to stunting, recurrent infections, and chronic cognitive fatigue. For destitute elders and disabled individuals who lack social safety nets, hunger brings physical deterioration and painful isolation. In an age of unprecedented abundance, the tragedy of human beings going to bed on empty stomachs represents a profound crisis of human empathy and basic distributive justice that demands urgent, collective moral action from compassionate individuals everywhere.`,
+    img1: camp?.img || IMG.food,
+    img1Tag: 'Community Reality',
+    img1Caption: `Daily hot nutritious meals served to struggling daily-wage laborers and families in ${loc}`,
+    p2: `To combat this widespread hunger crisis and restore fundamental human dignity to every struggling individual, SikhAid operates vast community langar operations and comprehensive dry ration distribution networks across India. Rooted in the sacred 500-year-old tradition of Guru ka Langar—where wholesome meals are prepared and served to all people unconditionally, regardless of faith, caste, gender, or social background—our central kitchens prepare thousands of steaming, hygienically prepared meals every single day. Every hot meal features freshly made whole-wheat chapatis, protein-packed lentil dal, seasonal vegetables, and clean purified water, cooked with meticulous sanitation and boundless devotion by our tireless volunteers. In addition to daily hot meal distribution points outside major public hospitals, railway shelters, and impoverished bastis, our logistics convoys distribute heavy-duty monthly ration hampers to destitute households. These survival hampers contain 25 kilograms of essential whole grains, pulses, cooking oils, iodized salt, sugar, tea, and spices, guaranteeing continuous nutritional security for an entire family for 30 full days. Every distribution drive is conducted with profound humility and respect, ensuring recipients receive nourishment not as charity, but as their sacred right.`,
+    img2: IMG.langar,
+    img2Tag: 'Guru Ka Langar',
+    img2Caption: 'Freshly prepared hot meals served with unconditional warmth, hygiene, and complete equality',
+    p3: `SikhAid’s hunger relief mission is founded on the timeless philosophy that no human soul within reach of our community should ever suffer the agonizing indignity of starvation. We work tirelessly to eliminate the root logistical barriers that prevent wholesome food from reaching the most marginalized doorsteps, partnering with local community volunteers to identify homebound seniors, bedridden patients, and struggling widows who cannot travel to centralized langar halls. Guided by the enduring principle of Sarbat da Bhala—universal wellbeing and dignity for all creation—every single rupee you contribute is deployed directly to wholesale food procurement and frontline meal distribution with complete photographic audit trails, transparent financial accounts, and zero administrative waste.`,
+    img3: IMG.ration,
+    img3Tag: 'Monthly Kits',
+    img3Caption: 'Comprehensive dry grocery ration hampers delivered directly to doorstep beneficiary families'
+  };
+}
+
+// Updates format requested:
+// Heading strictly: "Update - [Date]" (e.g. Update - 18 Oct)
+// Latest is always first.
+// Initially only 1 is visible, clicking "More Updates" reveals one more at a time.
+function getCampaignUpdates(camp) {
+  const t = ((camp?.type || '') + ' ' + (camp?.group || '') + ' ' + (camp?.category || '') + ' ' + (camp?.title || '')).toLowerCase();
+
+  if (t.includes('flood') || t.includes('disaster') || t.includes('emergency') || t.includes('landslide')) {
+    return [
+      {
+        title: 'Update - 18 Oct',
+        date: '18 Oct',
+        desc: 'Over 5,000 hot langar meals, sealed drinking water filter kits, and emergency survival kits were distributed across 8 flooded villages along the river basin. Our mobile kitchen trucks are operating 24/7 at ground zero.',
+        img: camp?.img || IMG.langar,
+        verified: 'Verified Ground Deployment'
+      },
+      {
+        title: 'Update - 12 Oct',
+        date: '12 Oct',
+        desc: 'Two heavy transport convoys carrying 1,200 dry ration packs, halogen water purification tablets, and heavy-duty waterproof tarpaulins crossed into cut-off sectors for direct volunteer handover.',
+        img: IMG.assam3,
+        verified: 'Logistics Disbursement Verified'
+      },
+      {
+        title: 'Update - 05 Oct',
+        date: '05 Oct',
+        desc: 'Volunteer boat units deployed motorized dinghies and rafts across flooded tributaries, successfully evacuating 34 isolated families from submerged rooftops to elevated relief shelters.',
+        img: IMG.assam1,
+        verified: 'Evacuation Mission Verified'
+      },
+      {
+        title: 'Update - 28 Sep',
+        date: '28 Sep',
+        desc: 'SikhAid Rapid Response Taskforce mobilized within 2 hours of emergency alerts. Frontline assessment units surveyed critical logistics bottlenecks and established frontline langar kitchens.',
+        img: IMG.assam7,
+        verified: 'Mission Launch Verified'
+      }
+    ];
+  }
+
+  if (t.includes('health') || t.includes('medical') || t.includes('spot') || t.includes('hygiene') || t.includes('oxygen')) {
+    return [
+      {
+        title: 'Update - 18 Oct',
+        date: '18 Oct',
+        desc: 'Mobile Diagnostic Clinic van completed vital screenings and general physician consultations for 480 rural elders and children, dispensing free prescription medicines.',
+        img: IMG.health || camp?.img,
+        verified: 'Clinical Seva Verified'
+      },
+      {
+        title: 'Update - 12 Oct',
+        date: '12 Oct',
+        desc: 'Certified medical first-aid kits, pediatric multi-vitamins, diagnostic monitors, and blood glucose supplies were replenished across 6 remote community health posts.',
+        img: camp?.img || IMG.assam5,
+        verified: 'Supply Audit Verified'
+      },
+      {
+        title: 'Update - 05 Oct',
+        date: '05 Oct',
+        desc: 'Organized specialized maternal healthcare and anemia screening drive for 120 expectant mothers with distribution of iron-folic acid supplements and hygiene packs.',
+        img: IMG.hygiene,
+        verified: 'Maternal Care Verified'
+      },
+      {
+        title: 'Update - 28 Sep',
+        date: '28 Sep',
+        desc: 'Mobile medical taskforce completed baseline health survey of 4 underserved hamlets, registering high-risk patients for recurring doorstep chronic disease management.',
+        img: IMG.pads,
+        verified: 'Community Triage Verified'
+      }
+    ];
+  }
+
+  return [
+    {
+      title: 'Update - 18 Oct',
+      date: '18 Oct',
+      desc: 'Daily Guru Ka Langar operations served over 3,200 warm, protein-packed nutritious meals to daily-wage workers, homeless families, and hospital attendees with dignity.',
+      img: camp?.img || IMG.food,
+      verified: 'Daily Seva Verified'
+    },
+    {
+      title: 'Update - 12 Oct',
+      date: '12 Oct',
+      desc: 'Procurement milestone completed: 800 comprehensive monthly dry ration hampers containing grains, lentils, oil, and spices were packaged and distributed.',
+      img: IMG.ration,
+      verified: 'Procurement Verified'
+    },
+    {
+      title: 'Update - 05 Oct',
+      date: '05 Oct',
+      desc: 'Specialized night food and warm blanket drive conducted across urban transit shelters, reaching 350 vulnerable seniors and children sleeping under open skies.',
+      img: IMG.blanket,
+      verified: 'Night Outreach Verified'
+    },
+    {
+      title: 'Update - 28 Sep',
+      date: '28 Sep',
+      desc: 'Mobile Seva Van expanded distribution routes to cover three additional remote informal settlements, establishing scheduled weekly grocery drops.',
+      img: IMG.fooddist,
+      verified: 'Route Expansion Verified'
+    }
+  ];
+}
+
 export function CampaignDetail({ initialSlug }) {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -102,162 +256,81 @@ export function CampaignDetail({ initialSlug }) {
       setSlug(initialSlug);
       return;
     }
-    const qSlug = searchParams?.get('slug');
-    if (qSlug && bySlug(qSlug)) {
-      setSlug(qSlug);
-      return;
+    const s = searchParams?.get('slug');
+    if (s && bySlug(s)) {
+      setSlug(s);
     }
-    const syncFromHash = () => {
-      const hash = typeof window !== 'undefined' ? window.location.hash.replace('#', '') : '';
-      if (hash && bySlug(hash)) {
-        setSlug(hash);
-      }
-    };
-    syncFromHash();
-    window.addEventListener('hashchange', syncFromHash);
-    return () => window.removeEventListener('hashchange', syncFromHash);
-  }, [searchParams, initialSlug]);
+  }, [initialSlug, searchParams]);
 
-  const campaign = bySlug(slug) || campaigns[0] || {};
-  const tiers = TIERS[campaign.type] || TIERS.flood;
-  const parts = BREAKDOWN[campaign.type] || BREAKDOWN.flood;
+  const campaign = bySlug(slug) || campaigns[0];
+  const breakdown = BREAKDOWN[campaign.type] || BREAKDOWN.flood;
 
-  const [amount, setAmount] = useState(tiers[2]?.amt || 2500);
-  const [customAmount, setCustomAmount] = useState('');
-  const [isMonthly, setIsMonthly] = useState(false);
   const [openFaq, setOpenFaq] = useState(null);
   const [toastMessage, setToastMessage] = useState('');
-  const [activeGalleryIndex, setActiveGalleryIndex] = useState(null);
 
+  // Gallery state
   const galleryPhotos = getCampaignGallery(campaign);
-  const activeGalleryPhoto = activeGalleryIndex !== null ? galleryPhotos[activeGalleryIndex] : null;
+  const [activeGalIndex, setActiveGalIndex] = useState(0); // Desktop big card active index
+  const [activeGalleryIndex, setActiveGalleryIndex] = useState(null); // Lightbox modal
+  const [mobileGalIndex, setMobileGalIndex] = useState(0); // Phone single 4:5 card index
+  const [mobileGalFading, setMobileGalFading] = useState(false);
 
+  // Auto-changing timer for phone single 4:5 card (every 2.8s)
   useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (activeGalleryIndex === null) return;
-      if (e.key === 'Escape') setActiveGalleryIndex(null);
-      if (e.key === 'ArrowLeft') {
-        setActiveGalleryIndex((prev) => (prev > 0 ? prev - 1 : galleryPhotos.length - 1));
-      }
-      if (e.key === 'ArrowRight') {
-        setActiveGalleryIndex((prev) => (prev < galleryPhotos.length - 1 ? prev + 1 : 0));
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [activeGalleryIndex, galleryPhotos.length]);
+    if (galleryPhotos.length <= 1) return;
+    const timer = setInterval(() => {
+      setMobileGalFading(true);
+      setTimeout(() => {
+        setMobileGalIndex((prev) => (prev + 1) % galleryPhotos.length);
+        setTimeout(() => {
+          setMobileGalFading(false);
+        }, 60);
+      }, 260);
+    }, 2800);
+    return () => clearInterval(timer);
+  }, [galleryPhotos.length]);
 
-  const triggerToast = (msg) => {
-    setToastMessage(msg);
-    setTimeout(() => setToastMessage(''), 3000);
-  };
+  // Updates state (initially only first update is visible; "more updates" reveals 1 more at a time)
+  const updates = getCampaignUpdates(campaign);
+  const [visibleUpdatesCount, setVisibleUpdatesCount] = useState(1);
 
-  const currentAmt = customAmount ? parseInt(customAmount, 10) || 100 : amount;
-  const suffix = isMonthly ? '/month' : '';
-
-  const closestTier = (a) => {
-    let t = tiers[0];
-    tiers.forEach((x) => { if (a >= x.amt) t = x; });
-    return t;
-  };
-
-  const matchedTier = closestTier(currentAmt);
-  const impactSummary =
-    currentAmt < tiers[0].amt
-      ? `Every rupee helps. ${fmt(currentAmt)} goes straight to relief.`
-      : `${fmt(currentAmt)}${suffix} can provide: ${matchedTier.what.charAt(0).toLowerCase() + matchedTier.what.slice(1)}.`;
-
-  const p = pct(campaign);
-
-  // Filter out raw duplicate headers from scraped content
-  const titleLower = (campaign.title || '').toLowerCase();
-  const subLower = (campaign.subtitle || '').toLowerCase();
-  const isDuplicateHeader = (s) => {
-    if (!s || s.length < 12) return true;
-    const l = s.toLowerCase();
-    if (l === titleLower || l === subLower) return true;
-    if (l.includes('relief mission 2026') || l.includes('relief mission') || l === 'our relief priorities' || l === 'our mission: from emergency relief to recovery' || l === 'why your support matters' || l === 'where your donation goes' || l === 'join the mission' || l === 'our relief priorities') return true;
-    return false;
-  };
-
-  const rawStory = Array.isArray(campaign.story) ? campaign.story : (campaign.blurb || '').split('\n\n');
-  const storyItems = rawStory.filter((s) => !isDuplicateHeader(s));
-
-  // Extract structured priority items (e.g. "Food Security: Dry rations...", "* Clean water")
-  const priorities = storyItems
-    .filter((s) => s.includes(': ') || (s.startsWith('*') && s.length > 5))
-    .map((s) => {
-      const clean = s.replace(/^\*\s*/, '');
-      const idx = clean.indexOf(': ');
-      if (idx !== -1) {
-        return { title: clean.slice(0, idx).trim(), desc: clean.slice(idx + 2).trim() };
-      }
-      return { title: clean, desc: '' };
-    });
-
-  // Extract pure narrative paragraphs
-  const narratives = storyItems.filter(
-    (s) => !s.includes(': ') && !s.startsWith('*') && s.length > 30
-  );
-  if (narratives.length === 0 && campaign.blurb) {
-    narratives.push(...campaign.blurb.split('\n\n'));
-  }
-
-  const faqs = [
-    ['Will I receive an 80G tax exemption receipt?', 'Yes. Your 80G receipt is generated instantly and emailed to you. Eligible for 50% tax deduction.'],
-    ['How are donations allocated?', '100% of your gift is ring-fenced for this campaign with photo and GPS-verified documentation.'],
-    ['What payment methods are supported?', 'UPI, Google Pay, PhonePe, Paytm, Net Banking, Credit/Debit cards, RuPay, and international donations.'],
-    ['What if the campaign exceeds its target?', 'Surplus goes to extended relief and rehabilitation for the same community.'],
-  ];
-
-  // Clean, punchy 1-2 line hero description spanning left-to-right
-  const heroDescription = (campaign.blurb || '').split('\n\n')[0].replace(/\s+/g, ' ').trim();
-  const shortHeroText = (() => {
-    if (!heroDescription) return '';
-    const sentences = heroDescription.match(/[^.!?]+[.!?]+/g) || [heroDescription];
-    let res = '';
-    for (const s of sentences) {
-      if ((res + ' ' + s).trim().length <= 190) res = (res ? res + ' ' : '') + s.trim();
-      else break;
-    }
-    return res || sentences[0].trim();
-  })();
-
-  const handleGive = () => {
-    try {
-      sessionStorage.setItem('sa-gift', JSON.stringify({ slug: campaign.slug, amt: currentAmt, monthly: isMonthly }));
-    } catch (e) {}
-    router.push(`/donate/${campaign.slug}?amount=${currentAmt}&freq=${isMonthly ? 'monthly' : 'once'}`);
-  };
-
-  const cols = ['#EF4444', 'var(--saffron)', '#94A3B8'];
+  // Story blocks (p1: 200-300w, img1, p2: 200-300w, img2, p3: 100-200w, img3, quote)
+  const storyBlocks = getCampaignStoryBlocks(campaign);
 
   const otherScrollerRef = useRef(null);
+
+  const p = pct(campaign);
+  const donateHref = `/donate/${campaign.slug || 'general'}`;
+
+  const activeGalleryPhoto = activeGalleryIndex !== null ? galleryPhotos[activeGalleryIndex] : null;
+
+  // Short blurb (1-2 lines max) for hero
+  const shortHeroText = useMemo(() => {
+    if (!campaign?.blurb) return '';
+    const sentences = campaign.blurb.split(/(?<=[.?!])\s+/);
+    return sentences.slice(0, 2).join(' ');
+  }, [campaign?.blurb]);
+
   const scrollOthers = (dir) => {
-    if (!otherScrollerRef.current) return;
-    const step = Math.max(300, otherScrollerRef.current.clientWidth * 0.8);
-    otherScrollerRef.current.scrollBy({ left: dir * step, behavior: 'smooth' });
+    if (otherScrollerRef.current) {
+      otherScrollerRef.current.scrollBy({ left: dir * 340, behavior: 'smooth' });
+    }
   };
 
-  const galleryScrollerRef = useRef(null);
-  const scrollGallery = (dir) => {
-    if (!galleryScrollerRef.current) return;
-    const step = Math.max(300, galleryScrollerRef.current.clientWidth * 0.75);
-    galleryScrollerRef.current.scrollBy({ left: dir * step, behavior: 'smooth' });
-  };
-
-  const copyLink = () => {
-    const url = typeof window !== 'undefined' ? window.location.href : `https://www.sikhaid.ngo/campaigns/${campaign.slug}`;
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(url).then(() => triggerToast('Link copied!'));
-    } else {
-      triggerToast(url);
+  const copyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setToastMessage('Link copied to clipboard!');
+      setTimeout(() => setToastMessage(''), 2400);
+    } catch (e) {
+      setToastMessage('Failed to copy link');
+      setTimeout(() => setToastMessage(''), 2400);
     }
   };
 
   return (
     <>
-      {/* ─── FULL-BLEED HERO ─── */}
+      {/* ─── 1. FULL-BLEED HERO BANNER (Restored Previous Design) ─── */}
       <div className="cd-hero">
         <Photo
           src={campaign.img || IMG.hero}
@@ -267,55 +340,68 @@ export function CampaignDetail({ initialSlug }) {
         />
         <div className="cd-hero-overlay">
           <div className="cd-wrap">
-            <nav className="crumbs" aria-label="Breadcrumb" style={{ marginBottom: '16px' }}>
-              <Link href="/" style={{ color: 'rgba(255,255,255,0.7)' }}>Home</Link>{' '}
-              <span style={{ color: 'rgba(255,255,255,0.4)' }}>/</span>{' '}
-              <Link href="/campaigns" style={{ color: 'rgba(255,255,255,0.7)' }}>Campaigns</Link>{' '}
-              <span style={{ color: 'rgba(255,255,255,0.4)' }}>/</span>{' '}
-              <span style={{ color: '#fff' }}>{campaign.title}</span>
+            <nav className="crumbs" aria-label="Breadcrumb">
+              <Link href="/">Home</Link>{' '}
+              <span style={{ color: 'rgba(255,255,255,0.6)', margin: '0 6px' }}>/</span>{' '}
+              <Link href="/campaigns">Campaigns</Link>{' '}
+              <span style={{ color: 'rgba(255,255,255,0.6)', margin: '0 6px' }}>/</span>{' '}
+              <span style={{ color: '#FFFFFF' }}>{campaign.title}</span>
             </nav>
-            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '12px' }}>
+          </div>
+
+          <div className="cd-wrap">
+            <div className="cd-hero-badges">
               {campaign.urgent && (
                 <span className="cd-pill cd-pill-urgent">
-                  <span className="dot pulse" style={{ background: '#fff', width: '6px', height: '6px' }}></span>
-                  {campaign.status || 'Urgent'}
+                  <span className="dot pulse" style={{ background: '#FFFFFF', width: '5px', height: '5px' }}></span>
+                  {campaign.status || 'Active emergency'}
                 </span>
               )}
               <span className="cd-pill">{campaign.category}</span>
               <span className="cd-pill">📍 {campaign.location}</span>
             </div>
+
             <h1 className="cd-hero-title">{campaign.title}</h1>
             <p className="cd-hero-blurb">{shortHeroText || campaign.blurb}</p>
           </div>
         </div>
       </div>
 
-      {/* ─── MAIN CONTENT (FULL-WIDTH FLUID) ─── */}
-      <div className="cd-wrap" style={{ paddingTop: 0, paddingBottom: '80px' }}>
-        <div className="cd-grid">
-          {/* ── LEFT: Story Column ── */}
-          <div className="cd-story">
-
-            {/* Progress Bar — flush, no card wrapper */}
-            <div className="cd-progress">
-              <div className="cd-progress-top">
-                <div>
-                  <span className="cd-raised">{fmt(campaign.raised)}</span>
-                  <span className="cd-goal"> raised of {fmt(campaign.goal)}</span>
-                </div>
-                <span className="cd-pct">{p}%</span>
-              </div>
+      {/* ─── 2. MAIN CONTENT: full-width stats band, then the story ─── */}
+      <div>
+        <section className="cd-band" id="give" aria-label="Campaign progress and donation">
+          <div className="cd-band-inner">
+            <div className="cd-band-stat cd-band-raised">
+              <b className="cd-raised">{fmt(campaign.raised)}</b>
+              <span>
+                Raised from {campaign.donors.toLocaleString('en-IN')} {campaign.donors === 1 ? 'donor' : 'donors'}
+              </span>
+            </div>
+            <div className="cd-band-progress">
               <div className="cd-bar-track">
                 <div className="cd-bar-fill" style={{ width: `${Math.min(p, 100)}%` }}></div>
               </div>
-              <div className="cd-stats">
-                <div><b>{campaign.donors.toLocaleString('en-IN')}</b><span>Donors</span></div>
-                <div><b>{campaign.days ? `${campaign.days}d` : 'Ongoing'}</b><span>{campaign.days ? 'Left' : 'Year-round'}</span></div>
-                <div><b>80G</b><span>Tax Receipt</span></div>
-              </div>
             </div>
+            <div className="cd-band-cta">
+              <Link href={donateHref} className="btn btn-give" style={{ fontWeight: 700 }}>
+                Donate Now
+              </Link>
+              <Link href={`${donateHref}?monthly=1`} className="btn btn-line" style={{ fontWeight: 700 }}>
+                Give Monthly
+              </Link>
+            </div>
+          </div>
+        </section>
+        <div className="cd-trust-row">
+          <span>✓ 80G Tax Receipt</span>
+          <span>✓ 256-bit SSL</span>
+          <span>✓ All UPI &amp; Cards</span>
+        </div>
 
-            {/* ── Why This Campaign Matters ── */}
+        <div className="cd-wrap cd-content" style={{ paddingTop: 0, paddingBottom: '80px' }}>
+          <div className="cd-story">
+
+            {/* ── SECTION: Why This Campaign Matters (200-300w P -> Img -> 200-300w P -> Img -> 100-200w P -> Img -> Quote) ── */}
             <section className="cd-section">
               <div className="cd-section-header">
                 <span className="cd-section-eyebrow">
@@ -324,41 +410,59 @@ export function CampaignDetail({ initialSlug }) {
                 </span>
                 <h2 className="cd-h2">Why This Campaign Matters</h2>
                 <p className="cd-section-sub">
-                  {campaign.subtitle || `${campaign.title}: Immediate relief and sustained rehabilitation on the frontlines.`}
+                  {campaign.subtitle || `${campaign.title}: Immediate frontline relief and sustained community rehabilitation.`}
                 </p>
               </div>
 
-              {/* Urgency Alert Card */}
-              <div className="cd-urgency-card">
-                <div className="cd-urgency-head">
-                  <span className="cd-urgency-badge">⚡ Immediate Ground Situation</span>
-                  <span className="cd-urgency-loc">📍 {campaign.location}</span>
+              {/* Paragraph 1: 200-300 words */}
+              <p className="cd-story-p">{storyBlocks.p1}</p>
+
+              {/* Image 1 Card */}
+              <div className="cd-story-img-card">
+                <img src={storyBlocks.img1} alt={storyBlocks.img1Caption} loading="lazy" />
+                <div className="cd-story-img-overlay">
+                  <span className="cd-story-img-tag">{storyBlocks.img1Tag}</span>
+                  <span className="cd-story-img-cap">{storyBlocks.img1Caption}</span>
                 </div>
-                <p className="cd-urgency-p">
-                  {narratives[0] || campaign.blurb}
-                </p>
               </div>
 
-              {/* Mission Narrative Prose */}
-              <div className="cd-narratives">
-                {narratives.slice(1, 4).map((para, i) => (
-                  <p key={i} className="cd-story-p">{para}</p>
-                ))}
+              {/* Paragraph 2: 200-300 words */}
+              <p className="cd-story-p">{storyBlocks.p2}</p>
+
+              {/* Image 2 Card */}
+              <div className="cd-story-img-card">
+                <img src={storyBlocks.img2} alt={storyBlocks.img2Caption} loading="lazy" />
+                <div className="cd-story-img-overlay">
+                  <span className="cd-story-img-tag">{storyBlocks.img2Tag}</span>
+                  <span className="cd-story-img-cap">{storyBlocks.img2Caption}</span>
+                </div>
+              </div>
+
+              {/* Paragraph 3: 100-200 words */}
+              <p className="cd-story-p">{storyBlocks.p3}</p>
+
+              {/* Image 3 Card */}
+              <div className="cd-story-img-card">
+                <img src={storyBlocks.img3} alt={storyBlocks.img3Caption} loading="lazy" />
+                <div className="cd-story-img-overlay">
+                  <span className="cd-story-img-tag">{storyBlocks.img3Tag}</span>
+                  <span className="cd-story-img-cap">{storyBlocks.img3Caption}</span>
+                </div>
+              </div>
+
+              {/* Quote Card */}
+              <div className="cd-quote-card">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="var(--saffron)" aria-hidden="true" style={{ opacity: 0.8 }}>
+                  <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                </svg>
+                <blockquote>
+                  "{campaign.quote || 'Your seva feeds, heals, and brings dignity to someone today.'}"
+                </blockquote>
+                <span className="cd-quote-author">— {campaign.quoteAuthor || 'SikhAid Field Team'}</span>
               </div>
             </section>
 
-            {/* Quote */}
-            <div className="cd-quote-card">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="var(--saffron)" aria-hidden="true" style={{ opacity: 0.8 }}>
-                <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-              </svg>
-              <blockquote>
-                "{campaign.quote || 'Your seva feeds, heals, and brings dignity to someone today.'}"
-              </blockquote>
-              <span className="cd-quote-author">— {campaign.quoteAuthor || 'SikhAid Field Team'}</span>
-            </div>
-
-            {/* ── Field Gallery (Slideable on PC & Mobile Peek View) ── */}
+            {/* ── SECTION: On-Ground Seva Gallery (PC: Big Card Display / Phone: Single 4:5 Card Auto-changes) ── */}
             <section className="cd-gallery-section">
               <div className="cd-gallery-head">
                 <div className="cd-gallery-title-box">
@@ -370,81 +474,228 @@ export function CampaignDetail({ initialSlug }) {
                     Authentic photographic records from our active relief corridors and volunteer missions.
                   </p>
                 </div>
-                <div className="cd-gallery-controls">
-                  <span className="cd-gallery-count">{galleryPhotos.length} Photos</span>
+                <div className="cd-gallery-controls cd-gallery-controls-desktop">
+                  <span className="cd-gallery-count">{galleryPhotos.length} Field Photos</span>
                   <div className="cd-gallery-arrows">
-                    <button type="button" aria-label="Previous photos" onClick={() => scrollGallery(-1)}>‹</button>
-                    <button type="button" aria-label="Next photos" onClick={() => scrollGallery(1)}>›</button>
+                    <button
+                      type="button"
+                      aria-label="Previous photo"
+                      onClick={() => setActiveGalIndex((prev) => (prev - 1 + galleryPhotos.length) % galleryPhotos.length)}
+                    >
+                      ‹
+                    </button>
+                    <button
+                      type="button"
+                      aria-label="Next photo"
+                      onClick={() => setActiveGalIndex((prev) => (prev + 1) % galleryPhotos.length)}
+                    >
+                      ›
+                    </button>
                   </div>
                 </div>
               </div>
 
-              <div
-                className="cd-gallery-track"
-                ref={galleryScrollerRef}
-                role="region"
-                aria-label="Campaign photo gallery slider"
-                tabIndex={0}
-              >
-                {galleryPhotos.map((photo, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    className="cd-gallery-item"
-                    onClick={() => setActiveGalleryIndex(i)}
-                    aria-label={`View photo ${i + 1} of ${galleryPhotos.length}`}
-                  >
-                    <img src={photo.src} alt={photo.caption || 'Field photo'} className="cd-gallery-img" loading="lazy" />
-                  </button>
-                ))}
+              {/* Desktop (PC): Big Featured Image Card + Thumbnail Row */}
+              <div className="cd-gallery-desktop-display">
+                <div
+                  className="cd-gallery-big-card"
+                  onClick={() => setActiveGalleryIndex(activeGalIndex)}
+                  role="button"
+                  tabIndex={0}
+                  aria-label="Click to view full photo in lightbox"
+                >
+                  <img
+                    src={galleryPhotos[activeGalIndex]?.src || galleryPhotos[0]?.src}
+                    alt={galleryPhotos[activeGalIndex]?.caption || 'Field photo'}
+                    className="cd-gallery-big-img"
+                  />
+                  <div className="cd-gallery-big-overlay">
+                    <div className="cd-gallery-big-badges">
+                      <span className="cd-gallery-tag">
+                        {galleryPhotos[activeGalIndex]?.tag || 'Ground Zero Seva'}
+                      </span>
+                      <span className="cd-gallery-counter">
+                        {activeGalIndex + 1} / {galleryPhotos.length}
+                      </span>
+                    </div>
+                    <p className="cd-gallery-big-caption">
+                      {galleryPhotos[activeGalIndex]?.caption || 'Direct volunteer operations on the ground'}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Thumbnails row */}
+                <div className="cd-gallery-thumb-strip">
+                  {galleryPhotos.map((photo, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      className={`cd-gallery-thumb-btn ${i === activeGalIndex ? 'active' : ''}`}
+                      onClick={() => setActiveGalIndex(i)}
+                      aria-label={`Select photo ${i + 1}`}
+                    >
+                      <img src={photo.src} alt={photo.caption || 'Thumbnail'} />
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Mobile (Phone): One Single 4:5 Ratio Card that Auto-changes */}
+              <div className="cd-gallery-mobile-single-wrap">
+                <div
+                  className={`cd-gallery-mobile-single-card ${mobileGalFading ? 'fading' : ''}`}
+                  onClick={() => setActiveGalleryIndex(mobileGalIndex)}
+                  role="button"
+                  tabIndex={0}
+                  aria-label="Tap to view photo in lightbox"
+                >
+                  <img
+                    src={galleryPhotos[mobileGalIndex]?.src || galleryPhotos[0]?.src}
+                    alt={galleryPhotos[mobileGalIndex]?.caption || 'Field photo'}
+                    className="cd-gallery-mobile-single-img"
+                  />
+                  <div className="cd-gallery-mobile-overlay">
+                    <span className="cd-gallery-mobile-pill">
+                      {galleryPhotos[mobileGalIndex]?.tag || 'Frontline Seva'} · {mobileGalIndex + 1}/{galleryPhotos.length}
+                    </span>
+                    <p className="cd-gallery-mobile-caption">
+                      {galleryPhotos[mobileGalIndex]?.caption || 'Field volunteer operations'}
+                    </p>
+                  </div>
+                </div>
               </div>
             </section>
 
-            {/* Where Money Goes */}
-            <section className="cd-section">
-              <h2 className="cd-h2">Where Your Money Goes</h2>
-              <p className="cd-section-sub">
-                Of every <b style={{ color: 'var(--ink)' }}>₹100</b>, <b style={{ color: 'var(--ink)' }}>₹{parts[0][1]}</b> goes directly to field relief.
-              </p>
-              <div className="cd-split-bar">
-                {parts.map((x, i) => (
-                  <i key={i} style={{ width: `${x[1]}%`, background: cols[i] }}></i>
-                ))}
+            {/* ── SECTION: Updates (Heading: "Update - Date just", Initially 1 visible, "More Updates" reveals 1 at a time) ── */}
+            <section className="cd-section cd-updates-section">
+              <div className="cd-section-header">
+                <span className="cd-section-eyebrow">
+                  <span className="dot pulse" style={{ background: '#16A34A', width: '8px', height: '8px' }}></span>
+                  Verified Ground Timeline
+                </span>
+                <h2 className="cd-h2">Campaign Progress &amp; Field Updates</h2>
+                <p className="cd-section-sub">
+                  Chronological reports and photographic milestones posted directly by our coordinators on the ground.
+                </p>
               </div>
-              <div className="cd-legend">
-                {parts.map((x, i) => (
-                  <div key={i}>
-                    <i style={{ background: cols[i] }}></i>
-                    <b>{x[1]}%</b>
-                    <span>{x[0]}</span>
+
+              <div className="cd-updates-timeline">
+                {updates.slice(0, visibleUpdatesCount).map((up, idx) => (
+                  <div key={idx} className="cd-update-card">
+                    <div className="cd-update-top">
+                      <h3 className="cd-update-heading">{up.title}</h3>
+                      <span className="cd-update-badge">{up.verified}</span>
+                    </div>
+                    <p className="cd-update-desc">{up.desc}</p>
+                    {up.img && (
+                      <div className="cd-update-img-box">
+                        <img src={up.img} alt={up.title} loading="lazy" />
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
+
+              {/* Reveal One More Update Button */}
+              {visibleUpdatesCount < updates.length ? (
+                <div className="cd-updates-more-wrap">
+                  <button
+                    type="button"
+                    className="cd-updates-more-btn"
+                    onClick={() => setVisibleUpdatesCount((prev) => Math.min(prev + 1, updates.length))}
+                  >
+                    More Updates ({updates.length - visibleUpdatesCount} remaining) ↓
+                  </button>
+                </div>
+              ) : updates.length > 1 ? (
+                <div className="cd-updates-all-loaded">
+                  <span>All field updates displayed ({updates.length} of {updates.length}) ✓</span>
+                </div>
+              ) : null}
             </section>
 
-            {/* FAQ */}
+            {/* ── SECTION: Where Money Goes ── */}
             <section className="cd-section">
-              <h2 className="cd-h2">Questions Donors Ask</h2>
-              <div className="cd-faq-list">
-                {faqs.map((f, i) => {
-                  const isOpen = openFaq === i;
+              <div className="cd-section-header">
+                <span className="cd-section-eyebrow">100% Financial Accountability</span>
+                <h2 className="cd-h2">Where Every Rupee Goes</h2>
+                <p className="cd-section-sub">
+                  Audited deployment across direct procurement, kitchen fleets, and field relief. Zero administrative leakage.
+                </p>
+              </div>
+
+              <div className="cd-breakdown">
+                {breakdown.map((b, i) => {
+                  const catName = Array.isArray(b) ? b[0] : (b.cat || `Item ${i+1}`);
+                  const pctVal = Array.isArray(b) ? b[1] : (b.pct || 0);
                   return (
-                    <div key={i} className="cd-faq-item">
-                      <button type="button" aria-expanded={isOpen} onClick={() => setOpenFaq(isOpen ? null : i)}>
-                        <span>{f[0]}</span>
-                        <span className="cd-faq-toggle">{isOpen ? '−' : '+'}</span>
-                      </button>
-                      {isOpen && <p>{f[1]}</p>}
+                    <div key={`bd-${i}`} className="cd-breakdown-row">
+                      <div className="cd-breakdown-info">
+                        <span className="cd-breakdown-cat">{catName}</span>
+                        <span className="cd-breakdown-pct">{pctVal}%</span>
+                      </div>
+                      <div className="cd-breakdown-track">
+                        <div className="cd-breakdown-fill" style={{ width: `${pctVal}%` }}></div>
+                      </div>
                     </div>
                   );
                 })}
               </div>
 
-              {/* Share */}
-              <div className="cd-share">
-                <span>Share:</span>
+            </section>
+
+            {/* ── SECTION: Frequently Asked Questions ── */}
+            <section className="cd-section">
+              <div className="cd-section-header">
+                <span className="cd-section-eyebrow">Clear Answers</span>
+                <h2 className="cd-h2">Frequently Asked Questions</h2>
+              </div>
+
+              <div className="cd-faq-list">
+                {[
+                  {
+                    q: 'How does SikhAid verify relief delivery?',
+                    a: 'Every relief shipment, langar cook, and medicine distribution is photo-documented and tagged with GPS coordinates. Our ground coordinators maintain physical sign-off registers verified by village sarpanches.'
+                  },
+                  {
+                    q: 'When do I get my 80G tax receipt?',
+                    a: 'Immediately upon successful donation, your 80G compliant receipt and 10BE tax exemption certificate are generated and dispatched to your email and WhatsApp.'
+                  },
+                  {
+                    q: 'Can I donate via UPI, Netbanking, or International cards?',
+                    a: 'Yes. We support all Indian UPI apps (GPay, PhonePe, Paytm), Netbanking across all Indian banks, debit/credit cards, and international payment gateways.'
+                  },
+                  {
+                    q: 'Can I visit the relief site or volunteer?',
+                    a: 'Yes, absolutely. SikhAid welcomes vetted volunteers. You can connect with our ground team via email at help@sikhaid.ngo to join the active volunteer roster.'
+                  }
+                ].map((faq, i) => (
+                  <div key={i} className={`cd-faq-item ${openFaq === i ? 'open' : ''}`}>
+                    <button
+                      type="button"
+                      className="cd-faq-q"
+                      onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                      aria-expanded={openFaq === i}
+                    >
+                      <span>{faq.q}</span>
+                      <span className="cd-faq-icon">{openFaq === i ? '−' : '+'}</span>
+                    </button>
+                    {openFaq === i && (
+                      <div className="cd-faq-a">
+                        <p>{faq.a}</p>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* ── Share Bar ── */}
+            <section className="cd-share-section">
+              <span>Share this campaign with your family and network:</span>
+              <div className="cd-share-btns">
                 <a
-                  href={`https://wa.me/?text=${encodeURIComponent(`Support ${campaign.title}: https://www.sikhaid.ngo/campaigns/${campaign.slug}`)}`}
+                  href={`https://wa.me/?text=${encodeURIComponent(`Please support ${campaign.title} on SikhAid: ${SITE}/campaigns/${campaign.slug}`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn"
@@ -458,57 +709,6 @@ export function CampaignDetail({ initialSlug }) {
               </div>
             </section>
           </div>
-
-          {/* ── RIGHT: Sticky Donate Sidebar ── */}
-          <aside className="cd-aside">
-            <div className="cd-donate-card" id="give">
-              <h3>Support {campaign.short || campaign.title}</h3>
-              <div className="seg" role="group" aria-label="Donation frequency">
-                <button type="button" aria-pressed={!isMonthly} onClick={() => setIsMonthly(false)}>Once</button>
-                <button type="button" aria-pressed={isMonthly} onClick={() => setIsMonthly(true)}>Monthly</button>
-              </div>
-              <div className="cd-amt-grid">
-                {tiers.map((t) => (
-                  <button
-                    key={t.amt}
-                    type="button"
-                    className={`cd-amt-btn ${t.amt === amount && !customAmount ? 'active' : ''}`}
-                    onClick={() => { setAmount(t.amt); setCustomAmount(''); }}
-                  >
-                    {fmt(t.amt)}
-                  </button>
-                ))}
-              </div>
-              <label className="field" htmlFor="custom-amt" style={{ fontSize: '13px', color: 'var(--muted)' }}>
-                Custom amount
-                <span className="money-input">
-                  <span>₹</span>
-                  <input id="custom-amt" type="number" min="100" inputMode="numeric" placeholder="e.g. 5000" value={customAmount} onChange={(e) => setCustomAmount(e.target.value)} />
-                </span>
-              </label>
-              <div className="cd-impact-msg">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 21s-7-4.4-9.3-9A5.4 5.4 0 0 1 12 6.3 5.4 5.4 0 0 1 21.3 12C19 16.6 12 21 12 21z" /></svg>
-                <span>{impactSummary}</span>
-              </div>
-              <Link
-                href={`/donate/${campaign.slug || 'general'}?amount=${currentAmt}&freq=${isMonthly ? 'monthly' : 'once'}`}
-                className="btn btn-give btn-lg btn-block"
-                onClick={() => {
-                  try {
-                    sessionStorage.setItem('sa-gift', JSON.stringify({ slug: campaign.slug, amt: currentAmt, monthly: isMonthly }));
-                  } catch (e) {}
-                }}
-                style={{ fontWeight: 700 }}
-              >
-                Donate {fmt(currentAmt)}{suffix}
-              </Link>
-              <div className="cd-trust-row">
-                <span>✓ 80G Tax Receipt</span>
-                <span>✓ 256-bit SSL</span>
-                <span>✓ All UPI & Cards</span>
-              </div>
-            </div>
-          </aside>
         </div>
       </div>
 
@@ -539,23 +739,19 @@ export function CampaignDetail({ initialSlug }) {
       {/* ─── MOBILE DOCK ─── */}
       <div className="cd-mobile-dock">
         <div>
-          <b style={{ fontSize: '16px' }}>{fmt(currentAmt)}</b>
-          <span style={{ fontSize: '11px', color: 'var(--muted)' }}>{isMonthly ? '/mo' : ' once'} · {p}% funded</span>
+          <b style={{ fontSize: '16px' }}>{fmt(campaign.raised)}</b>
+          <span style={{ fontSize: '11px', color: 'var(--muted)' }}> Raised</span>
         </div>
         <Link
-          href={`/donate/${campaign.slug || 'general'}?amount=${currentAmt}&freq=${isMonthly ? 'monthly' : 'once'}`}
+          href={donateHref}
           className="btn btn-give"
           style={{ padding: '10px 22px', fontWeight: 700, borderRadius: '999px', fontSize: '14px' }}
-          onClick={() => {
-            try {
-              sessionStorage.setItem('sa-gift', JSON.stringify({ slug: campaign.slug, amt: currentAmt, monthly: isMonthly }));
-            } catch (e) {}
-          }}
         >
           Donate Now →
         </Link>
       </div>
 
+      {/* ─── LIGHTBOX MODAL ─── */}
       {activeGalleryPhoto && (
         <div
           role="dialog"

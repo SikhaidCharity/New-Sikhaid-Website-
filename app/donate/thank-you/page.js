@@ -4,6 +4,14 @@ import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { fmt } from '@/lib/data';
+import './receipt.css';
+
+const PAYMENT_LABELS = {
+  upi: 'UPI',
+  card: 'Debit / Credit Card',
+  nb: 'Net Banking',
+  wallet: 'Wallet',
+};
 
 function numberToWordsINR(num) {
   if (!num || isNaN(num)) return 'Zero Only';
@@ -110,7 +118,9 @@ function ThankYouContent() {
     );
   }
 
-  const donorEmail = receiptData.donor?.email || '';
+  const donor = receiptData.donor || {};
+  const donorEmail = donor.email || '';
+  const total = receiptData.grandTotal || receiptData.amount;
   const shareText = encodeURIComponent(
     `I just supported ${receiptData.cause} with SikhAid Charitable Trust. Join me in delivering life-saving relief to families in need: https://www.sikhaid.ngo/donate`
   );
@@ -151,178 +161,145 @@ function ThankYouContent() {
           Thank You, {receiptData.donor?.name || 'Kind Donor'}!
         </h1>
         <p style={{ fontSize: '16px', color: '#E0E7FF', maxWidth: '58ch', margin: '0 auto', lineHeight: 1.6 }}>
-          Waheguru Ji Ka Khalsa, Waheguru Ji Ki Fateh. Your generous contribution of <b>{fmt(receiptData.amount)}</b> for <b>{receiptData.cause}</b> directly reaches those fighting to survive on the ground.
+          Waheguru Ji Ka Khalsa, Waheguru Ji Ki Fateh. Your generous contribution of <b>{fmt(receiptData.amount)}</b> for <b>{receiptData.cause}</b> has been received.
         </p>
       </div>
 
-      {/* Official 80G Tax Exemption Receipt Card */}
-      <div
-        id="official-receipt"
-        style={{
-          background: '#FFFFFF',
-          border: '2px solid var(--ink)',
-          borderRadius: '20px',
-          padding: ' clamp(20px, 4vw, 36px)',
-          boxShadow: '0 8px 30px rgba(0,0,0,0.06)',
-          position: 'relative',
-        }}
-      >
-        {/* Receipt Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px', borderBottom: '2px solid var(--line)', paddingBottom: '20px', marginBottom: '22px' }}>
-          <div style={{ display: 'flex', gap: '14px', alignItems: 'center' }}>
-            <img
-              src="https://www.sikhaid.ngo/sikhaidLogo.webp"
-              alt="SikhAid Logo"
-              style={{ width: '56px', height: '56px', objectFit: 'contain' }}
-            />
-            <div>
-              <b style={{ fontSize: '22px', color: 'var(--ink)', display: 'block', letterSpacing: '-0.02em' }}>
-                SIKHAID CHARITABLE TRUST
-              </b>
-              <span style={{ fontSize: '12px', color: 'var(--muted)', display: 'block', marginTop: '2px' }}>
-                Registered Public Charitable Trust · 80G Tax Exemption Certificate
-              </span>
-              <span style={{ fontSize: '11.5px', color: 'var(--muted)', display: 'block' }}>
-                Reg No: AAATS5892PF20214 · CIT(E)/80G/2021-22/A/10423
-              </span>
-            </div>
-          </div>
-          <div style={{ textAlign: 'right' }}>
-            <span
-              style={{
-                display: 'inline-block',
-                background: 'var(--green-soft)',
-                color: 'var(--green)',
-                padding: '6px 14px',
-                borderRadius: '999px',
-                fontWeight: 800,
-                fontSize: '13px',
-                marginBottom: '6px',
-              }}
-            >
-              80G Tax Exempt
+      {/* Donation receipt */}
+      <section id="official-receipt" className="rc" aria-label="Donation receipt">
+        <header className="rc-head">
+          <div className="rc-brand">
+            <span className="rc-logo">
+              <img src="https://www.sikhaid.ngo/sikhaidLogo.webp" alt="SikhAid logo" />
             </span>
-            <div style={{ fontSize: '13px', color: 'var(--muted)' }}>
-              Receipt No: <b style={{ color: 'var(--ink)' }}>{receiptData.receiptNo}</b>
+            <div>
+              <b>SikhAid Charitable Trust</b>
+              <small>Registered Public Charitable Trust</small>
+              <small>Reg No: AAATS5892PF20214 · CIT(E)/80G/2021-22/A/10423</small>
             </div>
           </div>
+          <div className="rc-doc">
+            <span>Donation Receipt</span>
+            <b>{receiptData.receiptNo}</b>
+          </div>
+        </header>
+
+        <dl className="rc-meta">
+          <div>
+            <dt className="rc-label">Date</dt>
+            <dd>{receiptData.date}</dd>
+          </div>
+          <div>
+            <dt className="rc-label">Time</dt>
+            <dd>{receiptData.time}</dd>
+          </div>
+          <div>
+            <dt className="rc-label">Payment Mode</dt>
+            <dd>{PAYMENT_LABELS[receiptData.paymentMethod] || receiptData.paymentMethod || 'Online'}</dd>
+          </div>
+          <div>
+            <dt className="rc-label">Status</dt>
+            <dd><span className="rc-status">Paid</span></dd>
+          </div>
+        </dl>
+
+        <div className="rc-section">
+          <span className="rc-label">Received From</span>
+          <p className="rc-donor-name">{donor.name || 'Anonymous'}</p>
+          <dl className="rc-donor">
+            <div>
+              <dt>Email</dt>
+              <dd>{donor.email || 'Not provided'}</dd>
+            </div>
+            <div>
+              <dt>Mobile</dt>
+              <dd>{donor.phone ? `+91 ${donor.phone}` : 'Not provided'}</dd>
+            </div>
+            <div>
+              <dt>PAN</dt>
+              <dd>{donor.pan || 'Not provided'}</dd>
+            </div>
+            {donor.address && (
+              <div className="rc-wide">
+                <dt>Address</dt>
+                <dd>{donor.address}</dd>
+              </div>
+            )}
+          </dl>
         </div>
 
-        {/* Receipt Details Grid */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-            gap: '16px',
-            background: 'var(--bg-alt)',
-            padding: '18px',
-            borderRadius: '14px',
-            marginBottom: '22px',
-          }}
+        <div className="rc-section">
+          <table className="rc-items">
+            <thead>
+              <tr>
+                <th scope="col">Description</th>
+                <th scope="col" className="rc-amt">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  Donation{receiptData.isMonthly ? ' (monthly)' : ''}
+                  <small>{receiptData.cause}</small>
+                </td>
+                <td className="rc-amt">{fmt(receiptData.amount)}</td>
+              </tr>
+              {receiptData.tipAmt > 0 && (
+                <tr>
+                  <td>Voluntary SikhAid Support</td>
+                  <td className="rc-amt">{fmt(receiptData.tipAmt)}</td>
+                </tr>
+              )}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td>Total Received</td>
+                <td className="rc-amt">{fmt(total)}</td>
+              </tr>
+            </tfoot>
+          </table>
+          <p className="rc-words">
+            Amount in words: <b>{numberToWordsINR(total)}</b>
+          </p>
+        </div>
+
+        <div className="rc-tear" aria-hidden="true"></div>
+        <footer className="rc-foot">
+          <b>Thank you for your seva.</b>
+          <span>help@sikhaid.ngo · +91 98513 41234</span>
+        </footer>
+      </section>
+
+      <div className="rc-actions">
+        <button
+          type="button"
+          className="btn btn-dark"
+          onClick={() => window.print()}
+          style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
         >
-          <div>
-            <span style={{ fontSize: '12px', color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Donor Name</span>
-            <div style={{ fontWeight: 800, fontSize: '15px', color: 'var(--ink)', marginTop: '2px' }}>{receiptData.donor?.name || 'Anonymous'}</div>
-          </div>
-          <div>
-            <span style={{ fontSize: '12px', color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Email</span>
-            <div style={{ fontWeight: 700, fontSize: '14.5px', color: 'var(--ink)', marginTop: '2px' }}>{receiptData.donor?.email || 'N/A'}</div>
-          </div>
-          <div>
-            <span style={{ fontSize: '12px', color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Mobile</span>
-            <div style={{ fontWeight: 700, fontSize: '14.5px', color: 'var(--ink)', marginTop: '2px' }}>{receiptData.donor?.phone || 'N/A'}</div>
-          </div>
-          <div>
-            <span style={{ fontSize: '12px', color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>PAN Number</span>
-            <div style={{ fontWeight: 800, fontSize: '14.5px', color: receiptData.donor?.pan ? 'var(--ink)' : 'var(--muted)', marginTop: '2px' }}>
-              {receiptData.donor?.pan || 'Not provided'}
-            </div>
-          </div>
-          <div>
-            <span style={{ fontSize: '12px', color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Date & Time</span>
-            <div style={{ fontWeight: 700, fontSize: '14.5px', color: 'var(--ink)', marginTop: '2px' }}>
-              {receiptData.date} · {receiptData.time}
-            </div>
-          </div>
-          <div>
-            <span style={{ fontSize: '12px', color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Payment Mode</span>
-            <div style={{ fontWeight: 700, fontSize: '14.5px', color: 'var(--ink)', marginTop: '2px' }}>
-              {receiptData.paymentMethod?.toUpperCase?.() || 'ONLINE / UPI'}
-            </div>
-          </div>
-        </div>
-
-        {/* Contribution Breakdown */}
-        <div style={{ borderBottom: '1px solid var(--line)', paddingBottom: '18px', marginBottom: '18px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-            <span style={{ fontSize: '15px', color: 'var(--muted)' }}>Campaign / Mission</span>
-            <b style={{ fontSize: '15px', color: 'var(--ink)' }}>{receiptData.cause}</b>
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-            <span style={{ fontSize: '15px', color: 'var(--muted)' }}>Donation Amount</span>
-            <b style={{ fontSize: '17px', color: 'var(--ink)' }}>{fmt(receiptData.amount)}</b>
-          </div>
-          {receiptData.tipAmt > 0 && (
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-              <span style={{ fontSize: '14px', color: 'var(--muted)' }}>Voluntary SikhAid Support</span>
-              <span style={{ fontSize: '14px', color: 'var(--muted)' }}>+{fmt(receiptData.tipAmt)}</span>
-            </div>
-          )}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px', paddingTop: '12px', borderTop: '2px dashed var(--line)' }}>
-            <span style={{ fontSize: '16px', fontWeight: 800, color: 'var(--ink)' }}>Total Received</span>
-            <b style={{ fontSize: '24px', fontWeight: 900, color: 'var(--ink)' }}>{fmt(receiptData.grandTotal || receiptData.amount)}</b>
-          </div>
-          <div style={{ fontSize: '13px', color: 'var(--muted)', marginTop: '6px' }}>
-            Amount in words: <b style={{ color: 'var(--ink)' }}>{numberToWordsINR(receiptData.grandTotal || receiptData.amount)}</b>
-          </div>
-        </div>
-
-        {/* 80G Statutory Exemption Notice */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '20px' }}>
-          <div style={{ maxWidth: '440px', fontSize: '12.5px', color: 'var(--muted)', lineHeight: 1.5 }}>
-            <p style={{ margin: '0 0 4px', fontWeight: 700, color: 'var(--ink)' }}>Income Tax Exemption Under Section 80G:</p>
-            Donations made to SikhAid Charitable Trust qualify for 50% deduction under Section 80G(5)(vi) of the Income Tax Act, 1961. This digital certificate is valid for IT filing without physical signature.
-          </div>
-          <div style={{ textAlign: 'center', border: '1px dashed var(--line)', padding: '12px 20px', borderRadius: '12px' }}>
-            <div style={{ width: '48px', height: '48px', margin: '0 auto 6px', background: 'var(--saffron-soft)', borderRadius: '50%', display: 'grid', placeItems: 'center', color: 'var(--saffron-deep)', fontWeight: 900, fontSize: '18px' }}>
-              SA
-            </div>
-            <span style={{ fontSize: '11px', textTransform: 'uppercase', color: 'var(--muted)', letterSpacing: '0.05em', display: 'block' }}>Authorized Signatory</span>
-            <b style={{ fontSize: '13px', color: 'var(--ink)' }}>SikhAid Trust Accounts</b>
-          </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="row" style={{ marginTop: '24px', gap: '12px', flexWrap: 'wrap' }}>
-          <button
-            type="button"
-            className="btn btn-dark"
-            onClick={() => window.print()}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="6 9 6 2 18 2 18 9" />
-              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
-              <rect x="6" y="14" width="12" height="8" />
-            </svg>
-            Print / Save PDF Receipt
-          </button>
-          <a
-            className="btn btn-line"
-            href={`https://wa.me/?text=${shareText}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
-          >
-            <span>💬</span> Share on WhatsApp
-          </a>
-          <Link className="btn btn-line" href="/account">
-            View Donor Account
-          </Link>
-        </div>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <polyline points="6 9 6 2 18 2 18 9" />
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+            <rect x="6" y="14" width="12" height="8" />
+          </svg>
+          Print / Save PDF Receipt
+        </button>
+        <a
+          className="btn btn-line"
+          href={`https://wa.me/?text=${shareText}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
+        >
+          <span>💬</span> Share on WhatsApp
+        </a>
+        <Link className="btn btn-line" href="/account">
+          View Donor Account
+        </Link>
       </div>
 
-      {/* Account Password Creation Box (Flow requirement from User) */}
+      {/* Account Password Creation Box, for donors who ticked "Create my free account" */}
+      {receiptData.optAccount !== false && (
       <div
         className="box"
         style={{
@@ -424,6 +401,7 @@ function ThankYouContent() {
           </form>
         )}
       </div>
+      )}
 
       <div style={{ textAlign: 'center', marginTop: '10px' }}>
         <Link className="btn btn-line" href="/campaigns">

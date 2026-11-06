@@ -26,13 +26,17 @@ export default function HomePage() {
   };
 
   // Campaigns filter
-  const campGroups = ['All', 'Emergency', 'Hunger', 'Healthcare', 'Youth'];
+  const campGroups = ['All', 'Emergency', 'Hunger', 'Healthcare', 'Women'];
   const [campFilter, setCampFilter] = useState('All');
   const campScrollerRef = useRef(null);
 
-  const filteredCampaigns = campaigns.filter(
-    (c) => campFilter === 'All' || c.group === campFilter
-  );
+  const filteredCampaigns = campaigns.filter((c) => {
+    if (campFilter === 'All') return true;
+    if (campFilter === 'Women') {
+      return c.group === 'Women' || c.slug === 'no-spot' || c.slug === 'udaan';
+    }
+    return c.group === campFilter;
+  });
 
   const scrollCamp = (direction) => {
     if (!campScrollerRef.current) return;
@@ -60,6 +64,36 @@ export default function HomePage() {
   const [activePhotoIndex, setActivePhotoIndex] = useState(null);
 
   const shownGal = gal.filter((g) => galFilter === 'All' || g[1] === galFilter);
+
+  // Mobile auto-changing impact gallery cards (1/2 x 3 grid = 6 slots)
+  const [mobileSlotIndices, setMobileSlotIndices] = useState([0, 1, 2, 3, 4, 5]);
+  const [mobileFadingSlot, setMobileFadingSlot] = useState(null);
+
+  useEffect(() => {
+    if (shownGal.length <= 6) return;
+    let slotToChange = 0;
+    const interval = setInterval(() => {
+      setMobileFadingSlot(slotToChange);
+      setTimeout(() => {
+        setMobileSlotIndices((prev) => {
+          const next = [...prev];
+          let candidate = (next[slotToChange] + 1) % shownGal.length;
+          while (next.includes(candidate) && shownGal.length > 6) {
+            candidate = (candidate + 1) % shownGal.length;
+          }
+          next[slotToChange] = candidate;
+          return next;
+        });
+        setTimeout(() => {
+          setMobileFadingSlot(null);
+        }, 120);
+      }, 450);
+
+      slotToChange = (slotToChange + 1) % 6;
+    }, 2800);
+
+    return () => clearInterval(interval);
+  }, [shownGal.length]);
 
   // Testimonials (Expanded with 15 more Indian names)
   const quotes = [
@@ -116,28 +150,24 @@ export default function HomePage() {
   ];
   const [selectedRegion, setSelectedRegion] = useState(null);
 
-  // FAQs
+  // FAQs (Headings capitalized in Title Case, categories removed)
   const faqs = [
-    ['Donations & 80G', 'Do my donations get 80G tax exemption?', 'Yes. SikhAid Charitable Trust is registered under Section 80G of the Income Tax Act, so eligible donations qualify for a 50% deduction. Your receipt is generated the moment your payment succeeds, emailed to you and saved in your account.'],
-    ['Donations & 80G', 'Why do you ask for my PAN?', 'Income Tax rules require your PAN on 80G receipts so the donation can be reported and claimed. PAN is optional for giving, but needed if you want to claim the deduction.'],
-    ['Donations & 80G', 'Can I cancel a monthly donation?', 'Yes. Pause, change the amount or cancel anytime from My account, or write to help@sikhaid.ngo. We remind you 3 days before every debit.'],
-    ['Campaigns', 'Where does my donation actually go?', 'Every donation funds a specific outcome: meals, hygiene kits, shelter and rehabilitation for disaster-affected families. Each campaign page shows a fund-use breakdown and dated updates, so you can see exactly how your gift was used.'],
-    ['Campaigns', 'What happens if a campaign raises more than its goal?', 'Extra funds go to the next phase of the same response, usually rehabilitation, and are shown in that campaign’s utilisation report.'],
-    ['About SikhAid', 'Is SikhAid a registered charity?', 'Yes. SikhAid Charitable Trust is a registered Indian non-governmental organisation operating since 2020, working across multiple states with full transparency on fund utilisation.'],
-    ['Volunteering', 'How can I volunteer with SikhAid?', 'Visit Get Involved → Volunteering and submit your details. We respond within a few working days with open roles and field opportunities that match your skills and location.'],
-    ['CSR', 'How can companies partner or contribute CSR funds?', 'We work with corporate partners on CSR projects across disaster relief, langar, sanitation drives and rural healthcare. Write to help@sikhaid.ngo and our partnerships team replies within 2 business days.'],
-    ['Account', 'Do I need an account to donate?', 'No, you can give as a guest. A free account lets you see your full giving history, download every receipt and manage monthly donations.'],
-    ['Account', 'How do I get all my receipts at tax time?', 'Log in to My account → Donation history. Filter by financial year and download every receipt, or one consolidated annual statement that we also email each March.']
+    ['Donations & 80G', 'Do My Donations Get 80G Tax Exemption?', 'Yes. SikhAid Charitable Trust is registered under Section 80G of the Income Tax Act, so eligible donations qualify for a 50% deduction. Your receipt is generated the moment your payment succeeds, emailed to you and saved in your account.'],
+    ['Donations & 80G', 'Why Do You Ask For My PAN?', 'Income Tax rules require your PAN on 80G receipts so the donation can be reported and claimed. PAN is optional for giving, but needed if you want to claim the deduction.'],
+    ['Donations & 80G', 'Can I Cancel A Monthly Donation?', 'Yes. Pause, change the amount or cancel anytime from My account, or write to help@sikhaid.ngo. We remind you 3 days before every debit.'],
+    ['Campaigns', 'Where Does My Donation Actually Go?', 'Every donation funds a specific outcome: meals, hygiene kits, shelter and rehabilitation for disaster-affected families. Each campaign page shows a fund-use breakdown and dated updates, so you can see exactly how your gift was used.'],
+    ['Campaigns', 'What Happens If A Campaign Raises More Than Its Goal?', 'Extra funds go to the next phase of the same response, usually rehabilitation, and are shown in that campaign’s utilisation report.'],
+    ['About SikhAid', 'Is SikhAid A Registered Charity?', 'Yes. SikhAid Charitable Trust is a registered Indian non-governmental organisation operating since 2020, working across multiple states with full transparency on fund utilisation.'],
+    ['Volunteering', 'How Can I Volunteer With SikhAid?', 'Visit Get Involved → Volunteering and submit your details. We respond within a few working days with open roles and field opportunities that match your skills and location.'],
+    ['CSR', 'How Can Companies Partner Or Contribute CSR Funds?', 'We work with corporate partners on CSR projects across disaster relief, langar, sanitation drives and rural healthcare. Write to help@sikhaid.ngo and our partnerships team replies within 2 business days.'],
+    ['Account', 'Do I Need An Account To Donate?', 'No, you can give as a guest. A free account lets you see your full giving history, download every receipt and manage monthly donations.'],
+    ['Account', 'How Do I Get All My Receipts At Tax Time?', 'Log in to My account → Donation history. Filter by financial year and download every receipt, or one consolidated annual statement that we also email each March.']
   ];
-  const fcats = ['All', 'Donations & 80G', 'Campaigns', 'About SikhAid', 'Volunteering', 'CSR', 'Account'];
-  const [faqCat, setFaqCat] = useState('All');
   const [openFaq, setOpenFaq] = useState(0);
-
-  const filteredFaqs = faqs.map((f, i) => ({ ...f, origIndex: i })).filter((f) => faqCat === 'All' || f[0] === faqCat);
 
   // FAQ view all toggle
   const [showAllFaqs, setShowAllFaqs] = useState(false);
-  const visibleFaqs = faqCat === 'All' && !showAllFaqs ? filteredFaqs.slice(0, 5) : filteredFaqs;
+  const visibleFaqs = !showAllFaqs ? faqs.slice(0, 5) : faqs;
 
   // Copy helper
   const [copiedText, setCopiedText] = useState('');
@@ -219,8 +249,8 @@ export default function HomePage() {
 
           {/* Simple 2-Line Text */}
           <h1 id="hero-h" className="hero-simple-title">
-            <span className="hero-line-1">Langar for all. Seva for all.</span>
-            <span className="hero-line-2">Nepal needs you today.</span>
+            <span className="hero-line-1">Langar For All. Seva For All.</span>
+            <span className="hero-line-2">Nepal Needs You Today.</span>
           </h1>
 
           {/* Scroll Down Indicator */}
@@ -239,7 +269,7 @@ export default function HomePage() {
           <div className="row between">
             <h2 id="em-h" style={{ fontSize: '26px', display: 'flex', gap: '12px', alignItems: 'center' }}>
               <span className="dot pulse" style={{ color: 'var(--red)', width: '12px', height: '12px' }}></span>
-              Relief in action
+              Relief In Action
             </h2>
             <span style={{ fontSize: '14px', fontWeight: 700, color: '#7A2F28' }}>
               3 live responses · updated 2 hours ago
@@ -258,7 +288,7 @@ export default function HomePage() {
                     </span>
                     <b style={{ color: 'var(--ink)', fontSize: '16px', lineHeight: 1.3 }}>{c.title}</b>
                     <span style={{ fontSize: '13.5px', color: 'var(--muted)' }}>
-                      {fmt(c.raised)} of {fmt(c.goal)} · {pct(c)}%
+                      {fmt(c.raised)} Raised · {pct(c)}%
                     </span>
                     <span style={{ fontSize: '14px', fontWeight: 800, color: 'var(--red)' }}>
                       Donate &amp; know more →
@@ -275,8 +305,8 @@ export default function HomePage() {
         <div className="wrap">
           <div className="sec-head">
             <div className="stack">
-              <span className="eyebrow">Our campaigns</span>
-              <h2 className="h-sec" id="camp-h">Choose a cause close to your heart</h2>
+              <span className="eyebrow">Our Campaigns</span>
+              <h2 className="h-sec" id="camp-h">Choose A Cause Close To Your Heart</h2>
               <p className="lead">Every campaign shows how much has been raised, how many people have given, and what is still needed.</p>
             </div>
           </div>
@@ -315,9 +345,9 @@ export default function HomePage() {
         <div className="wrap">
           <div className="sec-head">
             <div className="stack">
-              <span className="eyebrow">Our process</span>
-              <h2 className="h-sec" id="resp-h">How we respond to a crisis</h2>
-              <p className="lead">A proven 4-stage emergency response framework, refined across hundreds of ground operations. The clock starts the moment a disaster strikes.</p>
+              <span className="eyebrow">Our Process</span>
+              <h2 className="h-sec" id="resp-h">How We Respond To A Crisis</h2>
+              <p className="lead">A proven 4-stage emergency response framework, refined across hundreds of ground operations.</p>
             </div>
           </div>
           
@@ -331,13 +361,15 @@ export default function HomePage() {
                   Within 2 Hours
                 </span>
               </div>
-              <div className="process-icon-box">
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <circle cx="12" cy="12" r="2"/>
-                  <path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/>
-                </svg>
+              <div className="process-header-row">
+                <div className="process-icon-box">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="2"/>
+                    <path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/>
+                  </svg>
+                </div>
+                <h3 className="process-card-title">Alert &amp; Assess</h3>
               </div>
-              <h3 className="process-card-title">Alert &amp; Assess</h3>
               <p className="process-card-desc">24/7 crisis monitoring and rapid on-ground situation assessment to verify needs and mobilize local volunteers.</p>
               <div className="process-action-tag">
                 <span className="action-dot"></span>
@@ -354,15 +386,17 @@ export default function HomePage() {
                   Within 8 Hours
                 </span>
               </div>
-              <div className="process-icon-box">
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <rect x="1" y="3" width="15" height="13"/>
-                  <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
-                  <circle cx="5.5" cy="18.5" r="2.5"/>
-                  <circle cx="18.5" cy="18.5" r="2.5"/>
-                </svg>
+              <div className="process-header-row">
+                <div className="process-icon-box">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <rect x="1" y="3" width="15" height="13"/>
+                    <polygon points="16 8 20 8 23 11 23 16 16 16 8"/>
+                    <circle cx="5.5" cy="18.5" r="2.5"/>
+                    <circle cx="18.5" cy="18.5" r="2.5"/>
+                  </svg>
+                </div>
+                <h3 className="process-card-title">Mobilise Teams</h3>
               </div>
-              <h3 className="process-card-title">Mobilise Teams</h3>
               <p className="process-card-desc">Trained SikhAid volunteers muster, and relief convoys loaded with food, water, blankets, and medical kits depart.</p>
               <div className="process-action-tag">
                 <span className="action-dot"></span>
@@ -379,17 +413,19 @@ export default function HomePage() {
                   Within 24 Hours
                 </span>
               </div>
-              <div className="process-icon-box">
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <circle cx="12" cy="12" r="10"/>
-                  <circle cx="12" cy="12" r="4"/>
-                  <line x1="4.93" y1="4.93" x2="9.17" y2="9.17"/>
-                  <line x1="14.83" y1="14.83" x2="19.07" y2="19.07"/>
-                  <line x1="14.83" y1="9.17" x2="19.07" y2="4.93"/>
-                  <line x1="4.93" y1="19.07" x2="9.17" y2="14.83"/>
-                </svg>
+              <div className="process-header-row">
+                <div className="process-icon-box">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10"/>
+                    <circle cx="12" cy="12" r="4"/>
+                    <line x1="4.93" y1="4.93" x2="9.17" y2="9.17"/>
+                    <line x1="14.83" y1="14.83" x2="19.07" y2="19.07"/>
+                    <line x1="14.83" y1="9.17" x2="19.07" y2="4.93"/>
+                    <line x1="4.93" y1="19.07" x2="9.17" y2="14.83"/>
+                  </svg>
+                </div>
+                <h3 className="process-card-title">Immediate Relief</h3>
               </div>
-              <h3 className="process-card-title">Immediate Relief</h3>
               <p className="process-card-desc">Hot langar, dry ration kits, water filtration, temporary shelters, and boat evacuations reach stranded families.</p>
               <div className="process-action-tag">
                 <span className="action-dot"></span>
@@ -406,13 +442,15 @@ export default function HomePage() {
                   Sustained Recovery
                 </span>
               </div>
-              <div className="process-icon-box">
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                  <polyline points="9 22 9 12 15 12 15 22"/>
-                </svg>
+              <div className="process-header-row">
+                <div className="process-icon-box">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                    <polyline points="9 22 9 12 15 12 15 22"/>
+                  </svg>
+                </div>
+                <h3 className="process-card-title">Rehabilitation</h3>
               </div>
-              <h3 className="process-card-title">Rehabilitation</h3>
               <p className="process-card-desc">Long-term recovery: rebuilding damaged homes and schools, restoring agricultural bunds, and restoring livelihoods.</p>
               <div className="process-action-tag">
                 <span className="action-dot"></span>
@@ -423,19 +461,50 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* MISSION / VISION - OUR PURPOSE */}
+      <section className="band purpose-section" aria-labelledby="pur-h">
+        <div className="purpose-bg-overlay" aria-hidden="true" />
+        <div className="wrap" style={{ position: 'relative', zIndex: 2 }}>
+          <div className="sec-head">
+            <div className="stack">
+              <span className="eyebrow" style={{ color: 'var(--saffron)' }}>Our Purpose</span>
+              <h2 className="h-sec" id="pur-h" style={{ color: '#FFFFFF' }}>Guided By Compassion, Driven By Service</h2>
+            </div>
+          </div>
+
+          <div className="grid g2 purpose-cards-grid">
+            <div className="mv mv-mission">
+              <span className="eyebrow">Our Mission</span>
+              <p className="big">To provide immediate humanitarian aid and disaster relief to communities across India during times of crisis, serving with compassion, dignity and unwavering commitment.</p>
+              <ul className="ticks">
+                <li>Rapid emergency response within 24 hours</li>
+                <li>Community-centred relief and rehabilitation</li>
+                <li>100% transparent fund utilisation</li>
+              </ul>
+            </div>
+            <div className="mv mv-vision">
+              <span className="eyebrow">Our Vision</span>
+              <p className="big">A resilient India where no community faces disaster alone: a network of compassionate service reaching every corner of the nation.</p>
+              <ul className="ticks">
+                <li>Pan-India disaster preparedness network</li>
+                <li>Empowered communities with resilience training</li>
+                <li>Technology-driven humanitarian response</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* TOTAL LIVES IMPACTED - Interactive Dashboard */}
       <ImpactDashboard />
-
-      {/* SUPPORT FROM - RENOWNED PERSONALITIES (SIDE-BY-SIDE 3X3 GRID & SLIDABLE STORY CARD) */}
-      <CelebritySupportSection />
 
       {/* HOW CAN YOU HELP */}
       <section className="band" aria-labelledby="help-h">
         <div className="wrap">
           <div className="sec-head">
             <div className="stack">
-              <span className="eyebrow">Support our cause</span>
-              <h2 className="h-sec" id="help-h">How can you help?</h2>
+              <span className="eyebrow">Support Our Cause</span>
+              <h2 className="h-sec" id="help-h">How Can You Help?</h2>
               <p className="lead">Every contribution, big or small, one-time or recurring, directly funds humanitarian work across India.</p>
             </div>
           </div>
@@ -450,7 +519,7 @@ export default function HomePage() {
                 </div>
                 <span className="help-card-badge" style={{ background: 'var(--green-soft)', color: 'var(--green)' }}>Instant 80G</span>
               </div>
-              <h3>One-time donation</h3>
+              <h3>One-Time Donation</h3>
               <p>Make an immediate impact on emergency relief, nutritious langar, medical aid and crisis support across India.</p>
               <ul className="ticks">
                 <li>50% tax exemption with instant 80G digital receipt</li>
@@ -471,7 +540,7 @@ export default function HomePage() {
                 </div>
                 <span className="help-card-badge" style={{ background: 'var(--saffron)', color: 'var(--ink)', fontWeight: 800 }}>★ Most impact</span>
               </div>
-              <h3>Monthly donation</h3>
+              <h3>Monthly Donation</h3>
               <p>Predictable recurring support lets our teams maintain ongoing emergency readiness and sustained rehabilitation.</p>
               <ul className="ticks">
                 <li>Auto-debit via UPI, cards or net banking</li>
@@ -492,7 +561,7 @@ export default function HomePage() {
                 </div>
                 <span className="help-card-badge" style={{ background: '#EEF2F6', color: '#2563EB' }}>Corporate</span>
               </div>
-              <h3>CSR partnership</h3>
+              <h3>CSR Partnership</h3>
               <p>Partner with SikhAid for corporate social responsibility initiatives that create measurable grassroots change.</p>
               <ul className="ticks">
                 <li>Custom CSR programs &amp; geographic targeting</li>
@@ -514,7 +583,7 @@ export default function HomePage() {
                 </div>
                 <span className="help-card-badge" style={{ background: '#FFF1E6', color: '#C2410C' }}>Dedication</span>
               </div>
-              <h3>Gift a birthday donation</h3>
+              <h3>Gift A Birthday Donation</h3>
               <p>Dedicate seva in honour of someone you love. They receive a personalized certificate and e-card on their birthday.</p>
               <ul className="ticks">
                 <li>Scheduled digital e-card on the morning of their day</li>
@@ -537,7 +606,7 @@ export default function HomePage() {
                 </div>
                 <span className="help-card-badge" style={{ background: '#E6FBF7', color: '#0D9488' }}>On ground</span>
               </div>
-              <h3>Become a volunteer</h3>
+              <h3>Become A Volunteer</h3>
               <p>Join 300+ dedicated volunteers responding to emergencies, serving langar, and supporting medical missions.</p>
               <ul className="ticks">
                 <li>Disaster rescue, medical &amp; langar kitchen roles</li>
@@ -558,7 +627,7 @@ export default function HomePage() {
                 </div>
                 <span className="help-card-badge" style={{ background: '#F5EEFD', color: '#7C3AED' }}>Special occasion</span>
               </div>
-              <h3>Sponsor a program</h3>
+              <h3>Sponsor A Program</h3>
               <p>Directly underwrite a complete unit of seva: a full day of community langar, a rural health camp, or 100 disaster kits.</p>
               <ul className="ticks">
                 <li>Ideal for anniversaries, birthdays and memorials</li>
@@ -572,105 +641,23 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* WAYS TO DONATE */}
-      <section className="band alt" aria-labelledby="ways-h" id="ways">
-        <div className="wrap">
-          <div className="sec-head">
-            <div className="stack">
-              <span className="eyebrow">Ways to donate</span>
-              <h2 className="h-sec" id="ways-h">Give the way that suits you</h2>
-              <p className="lead">Every method qualifies for an 80G receipt. Online gifts receive their certificate instantly; for direct bank wire transfers, share your details and we email your 80G statement within 48 hours.</p>
-            </div>
-          </div>
-          <div style={{ maxWidth: '840px', margin: '0 auto', width: '100%' }}>
-            <div className="pay-tile" style={{ display: 'flex', flexDirection: 'column', gap: '22px', padding: '36px', border: '1.5px solid var(--line)', boxShadow: '0 10px 32px rgba(18,26,74,0.06)', borderRadius: '24px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '14px', flexWrap: 'wrap' }}>
-                <h3 style={{ fontSize: '26px', fontWeight: 800, margin: 0, color: 'var(--ink)' }}>Donate online &amp; claim instant 80G tax benefit</h3>
-                <span className="help-card-badge" style={{ background: 'var(--green-soft)', color: 'var(--green)', fontWeight: 800, fontSize: '13px', padding: '6px 14px', borderRadius: '999px' }}>
-                  Instant 80G Certificate
-                </span>
-              </div>
-              <p style={{ color: 'var(--muted)', fontSize: '15.5px', lineHeight: 1.6, margin: 0 }}>
-                The fastest and most secure method to support our emergency relief and langar operations across India. 100% of your contribution directly powers ground aid.
-              </p>
-              
-              <div>
-                <span style={{ fontSize: '12.5px', fontWeight: 800, color: 'var(--ink)', textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: '12px' }}>
-                  Supported Payment Methods
-                </span>
-                <div className="logo-row" style={{ gap: '12px' }}>
-                  {payLogos.map(([name, url]) => (
-                    <span key={name} className="lg" title={name} style={{ height: '46px', minWidth: '84px', padding: '0 16px', background: '#FFFFFF', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
-                      {name}
-                      <img src={url} alt={name} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-                    </span>
-                  ))}
-                </div>
-              </div>
+      {/* SUPPORT FROM - RENOWNED PERSONALITIES (SIDE-BY-SIDE 3X3 GRID & SLIDABLE STORY CARD) */}
+      <CelebritySupportSection />
 
-              <ul className="ticks" style={{ marginBlock: '4px 8px' }}>
-                <li>Instant 80G tax exemption receipt generated and emailed immediately</li>
-                <li>Automatically recorded and saved to your donor account profile</li>
-                <li>Supports UPI, Google Pay, PhonePe, Paytm, RuPay, Visa, Mastercard &amp; Netbanking</li>
-                <li>100% secure 256-bit SSL encrypted checkout powered by Razorpay</li>
-              </ul>
+      
 
-              <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', alignItems: 'center', marginTop: '6px' }}>
-                <Link className="btn btn-give" href="/donate" style={{ minHeight: '52px', fontSize: '16.5px', fontWeight: 800, padding: '0 34px' }}>
-                  Donate online now <span aria-hidden="true">→</span>
-                </Link>
-                <span style={{ fontSize: '13.5px', color: 'var(--muted)', display: 'inline-flex', alignItems: 'center', gap: '6px', fontWeight: 600 }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--green)' }}><polyline points="20 6 9 17 4 12"/></svg>
-                  Eligible for 50% tax deduction under Section 80G
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      
 
-      {/* MISSION / VISION - OUR PURPOSE */}
-      <section className="band purpose-section" aria-labelledby="pur-h">
-        <div className="purpose-bg-overlay" aria-hidden="true" />
-        <div className="wrap" style={{ position: 'relative', zIndex: 2 }}>
-          <div className="sec-head">
-            <div className="stack">
-              <span className="eyebrow" style={{ color: 'var(--saffron)' }}>Our purpose</span>
-              <h2 className="h-sec" id="pur-h" style={{ color: '#FFFFFF' }}>Guided by compassion, driven by service</h2>
-            </div>
-          </div>
-
-          <div className="grid g2 purpose-cards-grid">
-            <div className="mv mv-mission">
-              <span className="eyebrow">Our mission</span>
-              <p className="big">To provide immediate humanitarian aid and disaster relief to communities across India during times of crisis, serving with compassion, dignity and unwavering commitment.</p>
-              <ul className="ticks">
-                <li>Rapid emergency response within 24 hours</li>
-                <li>Community-centred relief and rehabilitation</li>
-                <li>100% transparent fund utilisation</li>
-              </ul>
-            </div>
-            <div className="mv mv-vision">
-              <span className="eyebrow">Our vision</span>
-              <p className="big">A resilient India where no community faces disaster alone: a network of compassionate service reaching every corner of the nation.</p>
-              <ul className="ticks">
-                <li>Pan-India disaster preparedness network</li>
-                <li>Empowered communities with resilience training</li>
-                <li>Technology-driven humanitarian response</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
+      
 
       {/* OUR IMPACT GALLERY */}
       <section className="band" aria-labelledby="gal-h">
         <div className="wrap">
           <div className="sec-head" style={{ flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: '14px', marginBottom: '24px' }}>
             <div className="stack" style={{ alignItems: 'center', textAlign: 'center' }}>
-              <span className="eyebrow">Our impact</span>
+              <span className="eyebrow">Our Impact</span>
               <h2 className="h-sec" id="gal-h" style={{ textAlign: 'center', maxWidth: '820px', margin: '0 auto' }}>
-                Transforming lives across India through compassionate service
+                Transforming Lives Across India Through Compassionate Service
               </h2>
             </div>
 
@@ -694,7 +681,8 @@ export default function HomePage() {
             </Link>
           </div>
 
-          <div className="gallery">
+          {/* Desktop full gallery */}
+          <div className="gallery gallery-desktop-view">
             {shownGal.map((g, i) => (
               <button
                 key={i}
@@ -712,6 +700,32 @@ export default function HomePage() {
               </button>
             ))}
           </div>
+
+          {/* Mobile Phone 1/2 x 3 Auto-changing Grid (2 columns x 3 rows = 6 cards) */}
+          <div className="gallery-mobile-auto-grid" role="region" aria-label="Mobile Impact Highlights">
+            {mobileSlotIndices.slice(0, 6).map((photoIdx, slot) => {
+              const safeIdx = photoIdx % shownGal.length;
+              const g = shownGal[safeIdx] || shownGal[0];
+              const isFading = mobileFadingSlot === slot;
+              return (
+                <button
+                  key={`slot-${slot}`}
+                  type="button"
+                  className={`mobile-impact-card ${isFading ? 'fading' : ''}`}
+                  aria-label={`View photo: ${g[2]}`}
+                  onClick={() => setActivePhotoIndex(safeIdx)}
+                >
+                  <Photo
+                    src={g[0]}
+                    label={g[2]}
+                    tone={g[3]}
+                    alt={g[2]}
+                  />
+
+                </button>
+              );
+            })}
+          </div>
         </div>
       </section>
 
@@ -721,7 +735,7 @@ export default function HomePage() {
           <div className="sec-head">
             <div className="stack">
               <span className="eyebrow">Testimonials</span>
-              <h2 className="h-sec" id="test-h">What people say about us</h2>
+              <h2 className="h-sec" id="test-h">What People Say About Us</h2>
               <p className="lead">Hear from the communities we serve and the partners who support our mission.</p>
             </div>
           </div>
@@ -760,7 +774,7 @@ export default function HomePage() {
           <div className="sec-head">
             <div className="stack">
               <span className="eyebrow">Presence &amp; Operations</span>
-              <h2 className="h-sec" id="map-h">Sewa across India &amp; Nepal</h2>
+              <h2 className="h-sec" id="map-h">Sewa Across India &amp; Nepal</h2>
               <p className="lead">
                 Where our volunteer teams, emergency kitchens and relief vehicles operate 24/7. Select a region to view on-ground seva.
               </p>
@@ -864,83 +878,37 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* STORIES FROM THE FIELD */}
-      <section className="band alt" aria-labelledby="blog-h">
-        <div className="wrap">
-          <div className="sec-head">
-            <div className="stack">
-              <span className="eyebrow">Latest updates</span>
-              <h2 className="h-sec" id="blog-h">Stories from the field</h2>
-            </div>
-            <Link className="more" href="/blog">View all posts →</Link>
-          </div>
-          <div className="grid g4 updates-grid">
-            {[
-              [IMG.langar, '#4A4A6A', 'Volunteer stories', '20 Jan 2025', 'Meet our volunteers: stories from the heart of SikhAid', 'The people who dedicate their time and energy to serve communities across India.'],
-              [IMG.food, '#7A4E26', 'Food security', '18 Jan 2025', 'Inside our community kitchens: a day with Langar Aid', '300+ volunteers preparing over 2,000 fresh meals daily for vulnerable communities.'],
-              [IMG.assam1, '#3E5872', 'Disaster relief', '16 Jan 2025', 'Assam flood response: delivering emergency kits to 4,000 families', 'Boats deployed with clean water, ration kits and urgent supplies to cut-off villages.'],
-              [null, '#2E6B68', 'Education', '15 Jan 2025', 'Educational support: scholarships changing lives in Odisha', 'Scholarships, school supplies and tuition support breaking the cycle of poverty.']
-            ].map(([img, tone, cat, date, title, excerpt], i) => (
-              <article key={i} className="post">
-                <Photo src={img} label={cat} tone={tone} alt={title} />
-                <div className="b">
-                  <span className="eyebrow" style={{ fontSize: '12px' }}>{cat} · {date}</span>
-                  <h3><Link href="/blog">{title}</Link></h3>
-                  <p style={{ color: 'var(--muted)', fontSize: '15px' }}>{excerpt}</p>
-                  <Link className="more" href="/blog" style={{ marginTop: 'auto' }}>Read more →</Link>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* FAQS (Image 3 Redesign: Header -> Categories -> Questions) */}
+      {/* FAQS */}
       <section className="band alt" aria-labelledby="faq-h">
         <div className="wrap">
-          {/* 1. Header Centered */}
+          {/* Header Centered */}
           <div className="faq-header-center">
-            <span className="eyebrow">COMMON QUESTIONS</span>
-            <h2 className="h-sec" id="faq-h">Frequently asked questions</h2>
+            <span className="eyebrow">Common Questions</span>
+            <h2 className="h-sec" id="faq-h">Frequently Asked Questions</h2>
             <p className="lead" style={{ fontSize: '17px' }}>
               Common questions about SikhAid, donations, 80G tax benefits, and how to get involved.
             </p>
           </div>
 
-          {/* 2. Categories directly below the heading */}
-          <div className="chips faq-chips-center" role="group" aria-label="Filter FAQ topics">
-            {fcats.map((c) => (
-              <button
-                key={c}
-                className="chip"
-                type="button"
-                aria-pressed={faqCat === c}
-                onClick={() => setFaqCat(c)}
-              >
-                {c}
-              </button>
-            ))}
-          </div>
-
-          {/* 3. Questions accordion list below categories */}
+          {/* Questions Accordion List (Categories and Help Footer Removed) */}
           <div className="faq-accordion-wrap">
             <div className="faq-list">
               {visibleFaqs.map((f, i) => (
-                <div key={i} className={`faq-card ${openFaq === f.origIndex ? 'open' : ''}`}>
+                <div key={i} className={`faq-card ${openFaq === i ? 'open' : ''}`}>
                   <h3>
                     <button
                       type="button"
                       className="faq-trigger"
-                      aria-expanded={openFaq === f.origIndex}
-                      onClick={() => setOpenFaq(openFaq === f.origIndex ? -1 : f.origIndex)}
+                      aria-expanded={openFaq === i}
+                      onClick={() => setOpenFaq(openFaq === i ? -1 : i)}
                     >
                       <span className="faq-q">{f[1]}</span>
                       <span className="faq-icon" aria-hidden="true">
-                        {openFaq === f.origIndex ? '−' : '+'}
+                        {openFaq === i ? '−' : '+'}
                       </span>
                     </button>
                   </h3>
-                  {openFaq === f.origIndex && (
+                  {openFaq === i && (
                     <div className="faq-body">
                       <p>{f[2]}</p>
                     </div>
@@ -949,7 +917,7 @@ export default function HomePage() {
               ))}
             </div>
 
-            {faqCat === 'All' && faqs.length > 5 && (
+            {faqs.length > 5 && (
               <div style={{ textAlign: 'center', marginTop: '14px' }}>
                 <button
                   type="button"
@@ -961,17 +929,6 @@ export default function HomePage() {
                 </button>
               </div>
             )}
-
-            <div className="faq-footer-help">
-              <span className="faq-help-icon" aria-hidden="true">💬</span>
-              <div className="faq-help-text">
-                <b>Need more assistance?</b>
-                <span>Our donor support team is available 24/7 to help with receipts or queries.</span>
-              </div>
-              <a className="btn btn-dark btn-sm" href="mailto:help@sikhaid.ngo">
-                Email help@sikhaid.ngo
-              </a>
-            </div>
           </div>
         </div>
       </section>

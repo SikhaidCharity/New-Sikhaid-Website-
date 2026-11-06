@@ -42,13 +42,13 @@ export default function CampaignCard({ campaign }) {
         </h3>
 
         <div className="ccard-stats">
-          <div className="progress" role="img" aria-label={`${p}% of goal raised`}>
+          <div className="progress" role="img" aria-label={`${p}% funded`}>
             <i style={{ width: `${p}%` }}></i>
           </div>
           <div className="money">
             <span>
               <b className="num">{fmt(campaign.raised)}</b>
-              <span className="goal-sub"> raised of {fmt(campaign.goal)}</span>
+              <span className="goal-sub"> Raised</span>
             </span>
             <span className="ccard-pct">{p}%</span>
           </div>

@@ -7,9 +7,10 @@ import { IMG } from '@/lib/data';
 export default function Footer({ withCta = true }) {
   const pathname = usePathname();
 
-  // Hide CTA band on checkout, campaign detail, account and login pages just like data-cta="0" in static HTML
+  // Hide CTA band on checkout, campaign detail, account, login pages, and homepage as requested
   const noCtaPages = ['/donate', '/campaign', '/account', '/login'];
-  const showCta = withCta && !noCtaPages.some((p) => pathname?.startsWith(p));
+  const isHomePage = pathname === '/' || pathname === '' || pathname === '/index.html';
+  const showCta = withCta && !isHomePage && !noCtaPages.some((p) => pathname?.startsWith(p));
 
   return (
     <>

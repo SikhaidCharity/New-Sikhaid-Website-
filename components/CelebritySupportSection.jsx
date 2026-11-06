@@ -101,9 +101,9 @@ export default function CelebritySupportSection() {
         {/* Section Header */}
         <div className="sec-head" style={{ marginBottom: '28px' }}>
           <div className="stack">
-            <span className="eyebrow">Support from</span>
+            <span className="eyebrow">Support From</span>
             <h2 className="h-sec celeb-main-heading" id="cel-h">
-              Renowned personalities who lend their voice
+              Renowned Personalities Who Lend Their Voice
             </h2>
             <p className="lead" style={{ maxWidth: '780px' }}>
               Artists, sports icons, and humanitarian champions standing beside SikhAid&apos;s on-ground seva across India.

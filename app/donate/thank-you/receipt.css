@@ -1,0 +1,289 @@
+.rc {
+  width: 100%;
+  max-width: 720px;
+  margin-inline: auto;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: #fff;
+  color: var(--ink);
+  box-shadow: 0 12px 36px rgba(18, 26, 74, 0.1);
+}
+
+/* Letterhead */
+.rc-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 24px;
+  padding: 24px 28px;
+  background: linear-gradient(120deg, #0a1f5c 0%, #1650a8 60%, #3f8fdd 100%);
+  color: #fff;
+}
+.rc-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+.rc-logo {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  padding: 6px;
+  border-radius: 14px;
+  background: #fff;
+}
+.rc-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.rc-brand b {
+  display: block;
+  font-family: var(--display);
+  font-size: 18px;
+  line-height: 1.25;
+}
+.rc-brand small {
+  display: block;
+  margin-top: 2px;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: #dbeafe;
+}
+.rc-doc {
+  text-align: right;
+}
+.rc-doc span {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #dbeafe;
+}
+.rc-doc b {
+  display: block;
+  margin-top: 4px;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Date, time, mode, status */
+.rc-meta {
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  justify-content: space-between;
+  gap: 14px 20px;
+  margin: 0;
+  padding: 18px 28px;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg-alt);
+}
+.rc-label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.rc-meta dd {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+}
+.rc-status {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--green-soft);
+  color: var(--green);
+  font-size: 12.5px;
+  font-weight: 800;
+}
+
+.rc-section {
+  padding: 22px 28px 0;
+}
+
+/* Donor */
+.rc-donor-name {
+  margin: 0 0 8px;
+  font-size: 17px;
+  font-weight: 800;
+}
+.rc-donor {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 24px;
+  margin: 0;
+  font-size: 14px;
+}
+.rc-donor div {
+  min-width: 0;
+}
+.rc-donor dt {
+  font-size: 12px;
+  color: var(--muted);
+}
+.rc-donor dd {
+  margin: 1px 0 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.rc-donor .rc-wide {
+  grid-column: 1 / -1;
+}
+
+/* Line items */
+.rc-items {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14.5px;
+}
+.rc-items th {
+  padding: 0 0 8px;
+  border-bottom: 2px solid var(--ink);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-align: left;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.rc-items td {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+.rc-items td small {
+  display: block;
+  margin-top: 2px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.rc-items .rc-amt {
+  padding-left: 16px;
+  text-align: right;
+  white-space: nowrap;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.rc-items tfoot td {
+  border-bottom: 0;
+  padding-top: 14px;
+  padding-bottom: 0;
+  font-size: 15px;
+  font-weight: 800;
+}
+.rc-items tfoot .rc-amt {
+  font-family: var(--display);
+  font-size: 24px;
+  line-height: 1.1;
+}
+.rc-words {
+  margin: 8px 0 0;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.rc-words b {
+  color: var(--ink);
+}
+
+/* Tear line with punched edges */
+.rc-tear {
+  position: relative;
+  margin-top: 22px;
+  border-top: 2px dashed var(--line);
+}
+.rc-tear::before,
+.rc-tear::after {
+  content: '';
+  position: absolute;
+  top: -11px;
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--bg);
+}
+.rc-tear::before {
+  left: -11px;
+}
+.rc-tear::after {
+  right: -11px;
+}
+
+.rc-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 20px;
+  padding: 16px 28px 20px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.rc-foot b {
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.rc-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+@media (max-width: 600px) {
+  .rc-head,
+  .rc-meta,
+  .rc-foot {
+    padding-inline: 18px;
+  }
+  .rc-section {
+    padding-inline: 18px;
+  }
+  .rc-doc {
+    width: 100%;
+    text-align: left;
+  }
+  .rc-meta {
+    grid-template-columns: 1fr 1fr;
+    justify-content: stretch;
+  }
+  .rc-donor {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Print / Save PDF outputs the receipt alone */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #official-receipt,
+  #official-receipt * {
+    visibility: visible;
+  }
+  #official-receipt {
+    position: absolute;
+    top: 0;
+    left: 0;
+    max-width: 100%;
+    box-shadow: none;
+  }
+  .rc-head,
+  .rc-meta,
+  .rc-status {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

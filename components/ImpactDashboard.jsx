@@ -7,7 +7,7 @@ const IMPACT_DATA = {
   funds: {
     id: 'funds',
     name: 'Fund Raised',
-    metricTitle: 'TRANSPARENT FUNDS RAISED & COMMUNITY CAPITAL DEPLOYED',
+    metricTitle: 'Transparent Funds Raised & Community Capital Deployed',
     totalHighlight: '₹90+ Cr',
     growthBadge: '↗ 2020 → 2026 Mobilised Capital',
     cards: [
@@ -98,7 +98,7 @@ const IMPACT_DATA = {
   relief: {
     id: 'relief',
     name: 'Relief Aid',
-    metricTitle: 'GROUND RELIEF MISSIONS & DISASTER RESCUE BY REGION',
+    metricTitle: 'Ground Relief Missions & Disaster Rescue By Region',
     totalHighlight: '250,000+',
     growthBadge: '↗ 2020 → 2025 Lives Impacted',
     timelineMilestones: [
@@ -171,7 +171,7 @@ const IMPACT_DATA = {
   education: {
     id: 'education',
     name: 'Education',
-    metricTitle: 'STUDENTS EDUCATED, LABS & SCHOOLS BUILT',
+    metricTitle: 'Students Educated, Labs & Schools Built',
     totalHighlight: '28,500+',
     growthBadge: '↗ 2020 → 2025 Lives Impacted',
     timelineMilestones: [
@@ -270,7 +270,7 @@ const IMPACT_DATA = {
   healthcare: {
     id: 'healthcare',
     name: 'Healthcare',
-    metricTitle: 'FREE PATIENT VISITS, MOBILE CLINICS & MEDICAL UNITS',
+    metricTitle: 'Free Patient Visits, Mobile Clinics & Medical Units',
     totalHighlight: '185,000+',
     growthBadge: '↗ 2020 → 2025 Lives Impacted',
     timelineMilestones: [
@@ -368,7 +368,7 @@ const IMPACT_DATA = {
   langar: {
     id: 'langar',
     name: 'Langar Sewa',
-    metricTitle: 'HOT MEALS DISTRIBUTED ACROSS CITY & VILLAGE CORRIDORS',
+    metricTitle: 'Hot Meals Distributed Across City & Village Corridors',
     totalHighlight: '1,250,000+',
     growthBadge: '↗ 2020 → 2025 Lives Impacted',
     timelineMilestones: [
@@ -477,7 +477,7 @@ const IMPACT_DATA = {
   covid: {
     id: 'covid',
     name: 'COVID Relief',
-    metricTitle: 'CRISIS SUPPLIES & OXYGEN UNITS DEPLOYED',
+    metricTitle: 'Crisis Supplies & Oxygen Units Deployed',
     totalHighlight: '150,000+',
     growthBadge: '↗ 2020 → 2024 Lives Impacted',
     timelineMilestones: [
@@ -661,10 +661,7 @@ export default function ImpactDashboard() {
       <div className="impact-inner-wrap">
         {/* Section Header - Bold & Center Aligned */}
         <div className="impact-header-block">
-          <span className="impact-eyebrow">TOTAL LIVES IMPACTED</span>
-          <h2 className="impact-main-heading" id="imp-dashboard-h">
-            Over 575,000+ lives impacted since 2020, across every domain we serve
-          </h2>
+          <span className="impact-eyebrow">Total Lives Impacted</span>
           <div className="impact-big-counter">575,000+</div>
           <p className="impact-sub-lead">
             Transparent, ground-verified humanitarian relief, free healthcare, schools built, and 24/7 langar sewa across India and Nepal.
@@ -699,41 +696,14 @@ export default function ImpactDashboard() {
             </div>
           </div>
 
-          {/* Main Content: If Fund Raised tab is active, show only the 3 Cards, else show Graph + Inspector */}
+          {/* Main Content: If Fund Raised tab is active, show only the 3 Cards in one line (Image 3 reference) */}
           {activeTab === 'funds' ? (
-            <div className="funds-section-wrapper">
-              {/* Only the 3 Cards for Fund Raised */}
-              <div className="funds-three-cards-grid">
+            <div className="funds-image3-wrapper">
+              <div className="funds-image3-grid">
                 {activeCategory.cards.map((card, idx) => (
-                  <div key={idx} className="fund-impact-card">
-                    <div className="fund-impact-card-top">
-                      <span className="fund-impact-badge">{card.badge}</span>
-                      <div className="fund-impact-icon-circle">
-                        {card.iconType === 'currency' && (
-                          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                            <line x1="12" y1="1" x2="12" y2="23"/>
-                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-                          </svg>
-                        )}
-                        {card.iconType === 'map' && (
-                          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                            <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"/>
-                            <circle cx="12" cy="10" r="3"/>
-                          </svg>
-                        )}
-                        {card.iconType === 'users' && (
-                          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                            <circle cx="9" cy="7" r="4"/>
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                          </svg>
-                        )}
-                      </div>
-                    </div>
-                    <div className="fund-impact-num">{card.val}</div>
-                    <div className="fund-impact-label">{card.label}</div>
-                    <p className="fund-impact-desc">{card.sub}</p>
+                  <div key={idx} className="fund-image3-card">
+                    <div className="fund-image3-num">{card.val}</div>
+                    <div className="fund-image3-label">{card.label}</div>
                   </div>
                 ))}
               </div>
