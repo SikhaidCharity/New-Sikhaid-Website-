@@ -8,7 +8,12 @@ import './DonationCard.css';
 const AMOUNTS = [701, 1701, 2701, 5701];
 const SUGGESTED_AMOUNT = 1701;
 const MIN_AMOUNT = 100;
-const TIP_PERCENTS = [0, 5, 12, 18];
+const TIP_SLABS = [
+  { value: 0, label: 'No thanks' },
+  { value: 5, label: '5%' },
+  { value: 12, label: '12%' },
+  { value: 18, label: '18%' },
+];
 const DEFAULT_TIP = 12;
 const PAN_REQUIRED_FROM = 2000;
 const PAN_PATTERN = /^[A-Z]{5}[0-9]{4}[A-Z]$/;
@@ -46,7 +51,7 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose }) {
   const [amountText, setAmountText] = useState(String(startAmount));
   const [isMonthly, setIsMonthly] = useState(initialMonthly);
   const [tipPercent, setTipPercent] = useState(DEFAULT_TIP);
-  const [donor, setDonor] = useState({ name: '', email: '', phone: '', pan: '', address: '' });
+  const [donor, setDonor] = useState({ name: '', email: '', phone: '', pan: '' });
   const [createAccount, setCreateAccount] = useState(true);
   const [whatsappUpdates, setWhatsappUpdates] = useState(true);
   const [method, setMethod] = useState('upi');
@@ -82,8 +87,16 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose }) {
     const pan = donor.pan.trim();
     if (amount < MIN_AMOUNT) found.amount = `Please enter an amount of ${fmt(MIN_AMOUNT)} or more.`;
     if (!donor.name.trim()) found.name = 'Please enter your full name.';
-    if (!/\S+@\S+\.\S+/.test(donor.email)) found.email = 'Please enter a valid email.';
-    if (!/^[0-9]{10}$/.test(donor.phone)) found.phone = 'Please enter your 10-digit mobile number.';
+    if (!donor.email.trim()) {
+      found.email = 'Please enter your email address.';
+    } else if (!/\S+@\S+\.\S+/.test(donor.email)) {
+      found.email = 'Please enter a valid email.';
+    }
+    if (!donor.phone.trim()) {
+      found.phone = 'Please enter your mobile number.';
+    } else if (!/^[0-9]{10}$/.test(donor.phone)) {
+      found.phone = 'Please enter your 10-digit mobile number.';
+    }
     if (panRequired && !pan) {
       found.pan = `PAN is mandatory for donations of ${fmt(PAN_REQUIRED_FROM)} or more.`;
     } else if (pan && !PAN_PATTERN.test(pan)) {
@@ -112,7 +125,6 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose }) {
       email: donor.email.trim(),
       phone: donor.phone,
       pan: donor.pan.trim(),
-      address: donor.address.trim(),
     };
     const donation = {
       receiptNo,
@@ -208,31 +220,61 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose }) {
                 {errors.amount && <p className="dc-error">{errors.amount}</p>}
               </section>
 
-              <section>
-                <h3 className="dc-h">Support SikhAid</h3>
-                <select
-                  className="dc-tip-select"
-                  aria-label="Optional contribution to support SikhAid"
-                  value={tipPercent}
-                  onChange={(e) => setTipPercent(Number(e.target.value))}
-                >
-                  {TIP_PERCENTS.map((percent) => (
-                    <option key={percent} value={percent}>
-                      {percent === 0 ? 'No thanks' : `${percent}% (${fmt(tipFor(percent))})`}
-                    </option>
-                  ))}
-                </select>
-              </section>
+              <div className="dc-tip-row">
+                <div className="dc-tip-left">
+                  <label htmlFor="dc-tip-select" className="dc-tip-label">
+                    Support SikhAid:
+                  </label>
+                  <div className="dc-tip-dropdown-wrap">
+                    <select
+                      id="dc-tip-select"
+                      className="dc-tip-native-select"
+                      aria-label="Support SikhAid percentage"
+                      value={tipPercent}
+                      onChange={(e) => setTipPercent(Number(e.target.value))}
+                    >
+                      {TIP_SLABS.map((slab) => (
+                        <option key={slab.value} value={slab.value}>
+                          {slab.label}
+                        </option>
+                      ))}
+                    </select>
+                    <span className="dc-tip-badge" aria-hidden="true">
+                      <span className="dc-tip-pct">
+                        {tipPercent === 0 ? 'No thanks' : `${tipPercent}%`}
+                      </span>
+                      <svg
+                        className="dc-tip-arrow"
+                        width="11"
+                        height="11"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M6 9l6 6 6-6" />
+                      </svg>
+                    </span>
+                  </div>
+                </div>
+                <div className="dc-tip-amount">
+                  {fmt(tipAmount)}
+                </div>
+              </div>
 
               <section className="dc-details">
                 <h3 className="dc-h">Donor Details</h3>
                 <label className="dc-field" htmlFor="dc-name">
-                  Full Name
+                  Full Name *
                   <input
                     id="dc-name"
                     type="text"
+                    required
                     autoComplete="name"
                     placeholder="Enter name here..."
+                    aria-required="true"
                     aria-invalid={Boolean(errors.name)}
                     value={donor.name}
                     onChange={(e) => updateDonor('name', e.target.value)}
@@ -240,12 +282,14 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose }) {
                   {errors.name && <span className="dc-error">{errors.name}</span>}
                 </label>
                 <label className="dc-field" htmlFor="dc-email">
-                  Email
+                  Email *
                   <input
                     id="dc-email"
                     type="email"
+                    required
                     autoComplete="email"
                     placeholder="Enter email here..."
+                    aria-required="true"
                     aria-invalid={Boolean(errors.email)}
                     value={donor.email}
                     onChange={(e) => updateDonor('email', e.target.value)}
@@ -253,16 +297,18 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose }) {
                   {errors.email && <span className="dc-error">{errors.email}</span>}
                 </label>
                 <label className="dc-field" htmlFor="dc-phone">
-                  Phone Number
+                  Phone Number *
                   <span className="dc-phone" aria-invalid={Boolean(errors.phone)}>
                     <span className="dc-phone-code">+91</span>
                     <input
                       id="dc-phone"
                       type="tel"
+                      required
                       autoComplete="tel-national"
                       inputMode="numeric"
                       maxLength={10}
                       placeholder="Enter number here..."
+                      aria-required="true"
                       value={donor.phone}
                       onChange={(e) => updateDonor('phone', e.target.value.replace(/[^0-9]/g, ''))}
                     />
@@ -272,7 +318,11 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose }) {
                 <label className="dc-field" htmlFor="dc-pan">
                   <span className="dc-label-row">
                     PAN Number{panRequired ? ' *' : ''}
-                    {panRequired && <small>Mandatory for {fmt(PAN_REQUIRED_FROM)} or more</small>}
+                    {panRequired ? (
+                      <small style={{ color: 'var(--dc-error)' }}>Mandatory for {fmt(PAN_REQUIRED_FROM)} or more</small>
+                    ) : (
+                      <small style={{ color: 'var(--dc-muted)' }}>Mandatory only for {fmt(PAN_REQUIRED_FROM)}+</small>
+                    )}
                   </span>
                   <input
                     id="dc-pan"
@@ -286,17 +336,6 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose }) {
                     onChange={(e) => updateDonor('pan', e.target.value.toUpperCase())}
                   />
                   {errors.pan && <span className="dc-error">{errors.pan}</span>}
-                </label>
-                <label className="dc-field" htmlFor="dc-address">
-                  Address
-                  <textarea
-                    id="dc-address"
-                    rows={3}
-                    autoComplete="street-address"
-                    placeholder="Enter address here..."
-                    value={donor.address}
-                    onChange={(e) => updateDonor('address', e.target.value)}
-                  />
                 </label>
                 <label className="dc-check">
                   <input

@@ -200,6 +200,13 @@ export default function HomePage() {
     <main>
       {/* HERO: flagship video background with dark blue shade down-to-up and clean 2-line title */}
       <section className="hero" aria-labelledby="hero-h">
+        {/* Clickable video overlay linking to Langar campaign */}
+        <Link
+          href="/campaigns/langar-sewa"
+          className="hero-video-link"
+          aria-label="Support Langar Sewa campaign"
+        />
+
         {/* Background Video */}
         <div className="hero-video-bg">
           <video
@@ -224,7 +231,10 @@ export default function HomePage() {
           <button
             type="button"
             className="hero-sound-btn"
-            onClick={toggleSound}
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleSound();
+            }}
             aria-label={isMuted ? 'Turn sound on' : 'Turn sound off'}
           >
             {isMuted ? (
@@ -247,14 +257,21 @@ export default function HomePage() {
             )}
           </button>
 
-          {/* Simple 2-Line Text */}
-          <h1 id="hero-h" className="hero-simple-title">
-            <span className="hero-line-1">Langar For All. Seva For All.</span>
-            <span className="hero-line-2">Nepal Needs You Today.</span>
-          </h1>
+          {/* Simple 2-Line Text - Clickable to Langar Campaign */}
+          <Link href="/campaigns/langar-sewa" className="hero-title-link">
+            <h1 id="hero-h" className="hero-simple-title">
+              <span className="hero-line-1">Langar For All. Seva For All.</span>
+              <span className="hero-line-2">Nepal Needs You Today.</span>
+            </h1>
+          </Link>
 
           {/* Scroll Down Indicator */}
-          <a href="#emergencies" className="hero-scroll-down" aria-label="Scroll down to Relief in action">
+          <a
+            href="#emergencies"
+            className="hero-scroll-down"
+            aria-label="Scroll down to Relief in action"
+            onClick={(e) => e.stopPropagation()}
+          >
             <span>Scroll down</span>
             <svg className="hero-scroll-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M6 9l6 6 6-6" />
