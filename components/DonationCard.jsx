@@ -44,6 +44,14 @@ function readStoredUtm() {
   }
 }
 
+
+// 32 random hex characters from the browser's secure random generator.
+function newDownloadToken() {
+  const bytes = new Uint8Array(16);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+}
+
 function DonationCard({ campaign, initialAmount, initialMonthly, onClose }) {
   const router = useRouter();
   // Each campaign can set its own amounts in the admin panel.
@@ -133,6 +141,8 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose }) {
     };
     const donation = {
       receiptNo,
+      // Private code that lets this donor download their receipt and 80G certificate later.
+      downloadToken: newDownloadToken(),
       paidAt: now.toISOString(),
       date: now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
       time: now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }),

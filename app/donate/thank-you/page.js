@@ -6,10 +6,13 @@ import Link from 'next/link';
 import { fmt } from '@/lib/data';
 import { SITE } from '@/lib/site';
 import trust from '@/lib/content/trust-80g.json';
+import { donorPdfUrl } from '@/lib/forms';
 import './receipt.css';
 
 // As printed on the current sikhaid.ngo receipt.
 const REGD_NO = '4123009581';
+// Donations of this amount or more get an 80G certificate (Admin → 80G → minimum amount).
+const MIN_80G = Number(trust.minAmount) || 2000;
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 // "10-Nov-2026 · 17:49"
@@ -180,6 +183,17 @@ function ThankYouContent() {
             </svg>
             Download Official Receipt
           </button>
+          {total >= MIN_80G && receiptData.downloadToken && (
+            <a className="ty-btn ty-btn-80g" href={donorPdfUrl(receiptData.receiptNo, receiptData.downloadToken)}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <path d="M12 18v-6" />
+                <polyline points="9 15 12 18 15 15" />
+              </svg>
+              Download 80G Certificate
+            </a>
+          )}
           <a className="ty-btn ty-btn-orange" href={`https://wa.me/?text=${shareText}`} target="_blank" rel="noopener noreferrer">
             Share Your Impact
           </a>

@@ -283,6 +283,11 @@
   background: var(--ty-orange);
   color: #fff;
 }
+.ty-btn-80g {
+  border: 2px solid #15803d;
+  background: #f0fdf4;
+  color: #15803d;
+}
 .ty-pair {
   display: grid;
   grid-template-columns: 1fr 1fr;
