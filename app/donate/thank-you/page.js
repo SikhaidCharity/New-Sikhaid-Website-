@@ -163,6 +163,7 @@ function ThankYouContent() {
           </footer>
         </section>
 
+        <div className="ty-side">
         <aside className="ty-panel">
           <h2>Thank you, {firstName}! 🙏</h2>
           <p>
@@ -191,44 +192,45 @@ function ThankYouContent() {
             </Link>
           </div>
         </aside>
-      </div>
 
-      {/* For donors who ticked "Create my free account" */}
-      {receiptData.optAccount === true && (
-        <div className="ty-account">
-          <h2>Create Account Password</h2>
-          <p>
-            Set a password for your account (<b>{donor.email || 'your email'}</b>) so you can log in anytime to download
-            80G receipts and track your impact.
-          </p>
-          {passwordSaved ? (
-            <div className="ty-saved">
-              <b>✓ Password created successfully!</b>
-              <Link className="btn btn-give" href="/account">Go to Account</Link>
+          {/* For donors who ticked "Create my free account" */}
+          {receiptData.optAccount === true && (
+            <div className="ty-account">
+              <h2>Create Account Password</h2>
+              <p>
+                Set a password for <b>{donor.email || 'your email'}</b> to download 80G receipts and track your impact anytime.
+              </p>
+              {passwordSaved ? (
+                <div className="ty-saved">
+                  <b>✓ Password created successfully!</b>
+                  <Link className="ty-mini ty-mini-give" href="/account">Go to Account</Link>
+                </div>
+              ) : (
+                <form onSubmit={handleSetPassword} className="ty-form">
+                  <div className="ty-pw">
+                    <label className="field" htmlFor="new-pwd">
+                      Create password *
+                      <input id="new-pwd" type="password" placeholder="At least 6 characters" value={password}
+                        onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" />
+                    </label>
+                    <label className="field" htmlFor="confirm-pwd">
+                      Confirm password *
+                      <input id="confirm-pwd" type="password" placeholder="Repeat your password" value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)} autoComplete="new-password" />
+                    </label>
+                  </div>
+                  {passwordError && <p className="ty-error">{passwordError}</p>}
+                  <div className="ty-mini-row">
+                    <button className="ty-mini ty-mini-give" type="submit">Save Password</button>
+                    <Link className="ty-mini ty-mini-line" href="/account">Skip</Link>
+                  </div>
+                </form>
+              )}
             </div>
-          ) : (
-            <form onSubmit={handleSetPassword} className="ty-form">
-              <div className="two" style={{ gap: '12px' }}>
-                <label className="field" htmlFor="new-pwd">
-                  Create password *
-                  <input id="new-pwd" type="password" placeholder="At least 6 characters" value={password}
-                    onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" />
-                </label>
-                <label className="field" htmlFor="confirm-pwd">
-                  Confirm password *
-                  <input id="confirm-pwd" type="password" placeholder="Repeat your password" value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)} autoComplete="new-password" />
-                </label>
-              </div>
-              {passwordError && <p className="ty-error">{passwordError}</p>}
-              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                <button className="btn btn-give" type="submit">Save Password &amp; Continue</button>
-                <Link className="btn btn-line" href="/account">Skip to Account</Link>
-              </div>
-            </form>
           )}
         </div>
-      )}
+      </div>
+
     </main>
   );
 }
