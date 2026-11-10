@@ -133,6 +133,7 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose }) {
     };
     const donation = {
       receiptNo,
+      paidAt: now.toISOString(),
       date: now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
       time: now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }),
       amount,
