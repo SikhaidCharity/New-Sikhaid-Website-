@@ -1,0 +1,129 @@
+{
+  "reliefCampaigns": [
+    "assam-flood-relief-2026",
+    "nepal-flood-relief-2026",
+    "punjab-floods-2025"
+  ],
+  "campaignOrder": [
+    "education-aid",
+    "dreams-on-field",
+    "punjab-floods-2025",
+    "rural-sanitation-drive",
+    "bihar-flood-relief-2026",
+    "udaan",
+    "nepal-flood-relief-2026",
+    "assam-flood-relief-2026",
+    "guru-nanak-dev-ji-chardi-kala-sports-academy",
+    "blanket-distribution",
+    "road-safety",
+    "langar-sewa",
+    "sikh-aid-health-on-wheels",
+    "project-farmer-first",
+    "no-spot",
+    "project-chardikala"
+  ],
+  "process": {
+    "title": "How We Respond To A Crisis",
+    "intro": "A proven 4-stage emergency response framework, refined across hundreds of ground operations.",
+    "steps": [
+      {
+        "time": "Within 2 Hours",
+        "title": "Alert & Assess",
+        "description": "24/7 crisis monitoring and rapid on-ground situation assessment to verify needs and mobilize local volunteers.",
+        "action": "SOS verification & field reconnaissance"
+      },
+      {
+        "time": "Within 8 Hours",
+        "title": "Mobilise Teams",
+        "description": "Trained SikhAid volunteers muster, and relief convoys loaded with food, water, blankets, and medical kits depart.",
+        "action": "Volunteer dispatch & mobile kitchen fleet"
+      },
+      {
+        "time": "Within 24 Hours",
+        "title": "Immediate Relief",
+        "description": "Hot langar, dry ration kits, water filtration, temporary shelters, and boat evacuations reach stranded families.",
+        "action": "Direct ground rescue & community langar"
+      },
+      {
+        "time": "Sustained Recovery",
+        "title": "Rehabilitation",
+        "description": "Long-term recovery: rebuilding damaged homes and schools, restoring agricultural bunds, and restoring livelihoods.",
+        "action": "Rebuilding homes, schools & farming tools"
+      }
+    ]
+  },
+  "impactPhotos": [
+    {
+      "image": "https://www.sikhaid.ngo/api/img?src=https%3A%2F%2Fi.ibb.co%2FzWXc5WPS%2FIMG-1877.webp",
+      "category": "Disaster relief",
+      "caption": "Assam flood relief operations",
+      "big": true
+    },
+    {
+      "image": "https://www.sikhaid.ngo/gallery/gallery-151-community-food.webp",
+      "category": "Food security",
+      "caption": "Large-scale community food distribution",
+      "big": false
+    },
+    {
+      "image": "https://www.sikhaid.ngo/api/img?src=https%3A%2F%2Fi.ibb.co%2FymN4S1Yq%2FIMG-2200.webp",
+      "category": "Disaster relief",
+      "caption": "Volunteers distributing relief supplies",
+      "big": false
+    },
+    {
+      "image": "https://www.sikhaid.ngo/gallery/gallery-153-sanitary-pads.webp",
+      "category": "Women's health",
+      "caption": "No Spot: sanitary pad distribution",
+      "big": false
+    },
+    {
+      "image": "https://www.sikhaid.ngo/annapurna-seva/ratha-yatra-hero-4.webp",
+      "category": "Devotee relief",
+      "caption": "Ratha Yatra seva, Puri 2025",
+      "big": true
+    },
+    {
+      "image": "https://www.sikhaid.ngo/gallery/gallery-147-langar-meals.webp",
+      "category": "Food security",
+      "caption": "Volunteers preparing langar meals",
+      "big": false
+    },
+    {
+      "image": "https://www.sikhaid.ngo/campaigns-bg/impact-healthcare.webp",
+      "category": "Healthcare",
+      "caption": "Mobile medical camp in a rural area",
+      "big": false
+    },
+    {
+      "image": "https://www.sikhaid.ngo/campaigns-bg/mission-blanket.webp",
+      "category": "Winter relief",
+      "caption": "Winter blanket distribution",
+      "big": false
+    },
+    {
+      "image": "https://www.sikhaid.ngo/gallery/gallery-154-hygiene-workshop.webp",
+      "category": "Women's health",
+      "caption": "Hygiene awareness workshop",
+      "big": false
+    },
+    {
+      "image": "https://www.sikhaid.ngo/gallery/gallery-164-ration-kits.webp",
+      "category": "Pandemic relief",
+      "caption": "COVID oxygen sewa: ration kits",
+      "big": false
+    },
+    {
+      "image": "https://www.sikhaid.ngo/api/img?src=https%3A%2F%2Fi.ibb.co%2F2YKbjxLM%2FDSC-3891.webp",
+      "category": "Disaster relief",
+      "caption": "On-ground flood relief in Assam",
+      "big": false
+    },
+    {
+      "image": "https://www.sikhaid.ngo/annapurna-seva/ratha-yatra-hero-6.webp",
+      "category": "Devotee relief",
+      "caption": "Water and ORS for pilgrims",
+      "big": false
+    }
+  ]
+}

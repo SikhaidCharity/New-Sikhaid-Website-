@@ -8,7 +8,35 @@ import Lightbox from '@/components/Lightbox';
 import IndiaMap from '@/components/IndiaMap';
 import ImpactDashboard from '@/components/ImpactDashboard';
 import CelebritySupportSection from '@/components/CelebritySupportSection';
-import { IMG, campaigns, fmt, pct } from '@/lib/data';
+import { IMG, allCampaigns, campaigns, fmt, pct } from '@/lib/data';
+import hero from '@/lib/content/hero.json';
+import home from '@/lib/content/home.json';
+
+// Icons for the Our Process cards, used in turn.
+const PROCESS_ICONS = [
+  <svg key="a" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg>,
+  <svg key="b" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>,
+  <svg key="c" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="4.93" y1="4.93" x2="9.17" y2="9.17"/><line x1="14.83" y1="14.83" x2="19.07" y2="19.07"/><line x1="14.83" y1="9.17" x2="19.07" y2="4.93"/><line x1="4.93" y1="19.07" x2="9.17" y2="14.83"/></svg>,
+  <svg key="d" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
+];
+
+function HeroSlides({ images, seconds, className }) {
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    if (images.length <= 1) return undefined;
+    const timer = setInterval(() => setActive((i) => (i + 1) % images.length), Math.max(2, seconds || 5) * 1000);
+    return () => clearInterval(timer);
+  }, [images.length, seconds]);
+
+  return (
+    <div className={className}>
+      {images.map((src, i) => (
+        <img key={`${src}-${i}`} src={src} alt="" style={{ opacity: i === active ? 1 : 0 }} />
+      ))}
+    </div>
+  );
+}
 
 export default function HomePage() {
   const nepal = campaigns.find((c) => c.slug === 'nepal-flood-relief-2026');
@@ -30,7 +58,14 @@ export default function HomePage() {
   const [campFilter, setCampFilter] = useState('All');
   const campScrollerRef = useRef(null);
 
-  const filteredCampaigns = campaigns.filter((c) => {
+  // Order set in Admin > Home Page. Campaigns not in that list follow at the end.
+  const rank = (c) => {
+    const i = (home.campaignOrder || []).indexOf(c.slug);
+    return i === -1 ? Number.MAX_SAFE_INTEGER : i;
+  };
+  const orderedCampaigns = [...campaigns].sort((a, b) => rank(a) - rank(b));
+
+  const filteredCampaigns = orderedCampaigns.filter((c) => {
     if (campFilter === 'All') return true;
     if (campFilter === 'Women') {
       return c.group === 'Women' || c.slug === 'no-spot' || c.slug === 'udaan';
@@ -44,22 +79,16 @@ export default function HomePage() {
     campScrollerRef.current.scrollBy({ left: direction * step, behavior: 'smooth' });
   };
 
+  // Relief In Action: the three campaigns chosen in Admin > Home Page.
+  const reliefCampaigns = (home.reliefCampaigns || [])
+    .map((slug) => allCampaigns.find((c) => c.slug === slug))
+    .filter(Boolean)
+    .slice(0, 3);
+
   // Gallery
-  const gal = [
-    [IMG.assam1, 'Disaster relief', 'Assam flood relief operations', '#3E5872', 1],
-    [IMG.food, 'Food security', 'Large-scale community food distribution', '#7A4E26'],
-    [IMG.assam2, 'Disaster relief', 'Volunteers distributing relief supplies', '#46607A'],
-    [IMG.pads, "Women's health", 'No Spot: sanitary pad distribution', '#6B3A4E'],
-    [IMG.ratha4, 'Devotee relief', 'Ratha Yatra seva, Puri 2025', '#8A5A2B', 1],
-    [IMG.langar, 'Food security', 'Volunteers preparing langar meals', '#6E4A2A'],
-    [IMG.health, 'Healthcare', 'Mobile medical camp in a rural area', '#2E6B68'],
-    [IMG.blanket, 'Winter relief', 'Winter blanket distribution', '#4A4A6A'],
-    [IMG.hygiene, "Women's health", 'Hygiene awareness workshop', '#5A3442'],
-    [IMG.ration, 'Pandemic relief', 'COVID oxygen sewa: ration kits', '#5C5030'],
-    [IMG.assam8, 'Disaster relief', 'On-ground flood relief in Assam', '#34506E'],
-    [IMG.ratha6, 'Devotee relief', 'Water and ORS for pilgrims', '#8A5A2B'],
-  ];
-  const gcats = ['All', 'Disaster relief', 'Food security', "Women's health", 'Healthcare', 'Devotee relief'];
+  // Photos managed in Admin > Home Page > Our Impact.
+  const gal = (home.impactPhotos || []).map((p) => [p.image, p.category, p.caption, undefined, p.big]);
+  const gcats = ['All', ...new Set(gal.map((g) => g[1]).filter(Boolean))];
   const [galFilter, setGalFilter] = useState('All');
   const [activePhotoIndex, setActivePhotoIndex] = useState(null);
 
@@ -209,26 +238,35 @@ export default function HomePage() {
 
         {/* Background Video */}
         <div className="hero-video-bg">
-          <video
-            ref={heroVideoRef}
-            autoPlay
-            loop
-            muted={isMuted}
-            playsInline
-            poster={IMG.food}
-          >
-            <source src="/assets/langar-hero-video.mp4" type="video/mp4" />
-            <source src="/assets/hero-video.mp4" type="video/mp4" />
-          </video>
+          {hero.mediaType === 'images' ? (
+            <>
+              <HeroSlides images={hero.desktopImages} seconds={hero.slideSeconds} className="hero-slides hero-slides-desktop" />
+              <HeroSlides
+                images={hero.mobileImages.length > 0 ? hero.mobileImages : hero.desktopImages}
+                seconds={hero.slideSeconds}
+                className="hero-slides hero-slides-mobile"
+              />
+            </>
+          ) : (
+            <video
+              ref={heroVideoRef}
+              autoPlay
+              loop
+              muted={isMuted}
+              playsInline
+              poster={hero.posterUrl || IMG.food}
+              src={hero.videoUrl}
+            />
+          )}
         </div>
 
         {/* Down to up dark blue faded shade overlay */}
-        <div className="hero-overlay-fade" aria-hidden="true" />
+        <div className="hero-overlay-fade" aria-hidden="true" style={{ opacity: hero.overlayOpacity / 100 }} />
 
         {/* Hero Center Content - Clean 2-line text & Sound Button (Reference Image) */}
         <div className="hero-center-content">
           {/* Sound Toggle Button */}
-          <button
+          {hero.mediaType !== 'images' && hero.showSoundButton && <button
             type="button"
             className="hero-sound-btn"
             onClick={(e) => {
@@ -255,24 +293,24 @@ export default function HomePage() {
                 <span>sound on</span>
               </>
             )}
-          </button>
+          </button>}
 
-          {/* Simple 2-Line Text - Clickable to Langar Campaign */}
-          <Link href="/campaigns/langar-sewa" className="hero-title-link">
+          {/* Simple 2-Line Text - links to the page set in Hero Background admin */}
+          <Link href={hero.titleLink || '/campaigns/langar-sewa'} className="hero-title-link">
             <h1 id="hero-h" className="hero-simple-title">
-              <span className="hero-line-1">Langar For All. Seva For All.</span>
-              <span className="hero-line-2">Nepal Needs You Today.</span>
+              <span className="hero-line-1">{hero.line1}</span>
+              <span className="hero-line-2">{hero.line2}</span>
             </h1>
           </Link>
 
           {/* Scroll Down Indicator */}
           <a
-            href="#emergencies"
+            href={hero.scrollLink}
             className="hero-scroll-down"
-            aria-label="Scroll down to Relief in action"
+            aria-label={hero.scrollText}
             onClick={(e) => e.stopPropagation()}
           >
-            <span>Scroll down</span>
+            <span>{hero.scrollText}</span>
             <svg className="hero-scroll-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M6 9l6 6 6-6" />
             </svg>
@@ -289,13 +327,11 @@ export default function HomePage() {
               Relief In Action
             </h2>
             <span style={{ fontSize: '14px', fontWeight: 700, color: '#7A2F28' }}>
-              3 live responses · updated 2 hours ago
+              {reliefCampaigns.length} live {reliefCampaigns.length === 1 ? 'response' : 'responses'} · updated 2 hours ago
             </span>
           </div>
           <div className="grid g3">
-            {['assam-flood-relief-2026', 'nepal-flood-relief-2026', 'punjab-floods-2025']
-              .map((slug) => campaigns.find((c) => c.slug === slug))
-              .filter(Boolean)
+            {reliefCampaigns
               .map((c) => (
                 <Link key={c.slug} className="ecard" href={`/campaign#${c.slug}`}>
                   <Photo src={c.img} tone={c.tone} label={c.title} style={{ width: '108px', flex: 'none', borderRadius: '12px', minHeight: '108px' }} />
@@ -363,117 +399,36 @@ export default function HomePage() {
           <div className="sec-head">
             <div className="stack">
               <span className="eyebrow">Our Process</span>
-              <h2 className="h-sec" id="resp-h">How We Respond To A Crisis</h2>
-              <p className="lead">A proven 4-stage emergency response framework, refined across hundreds of ground operations.</p>
+              <h2 className="h-sec" id="resp-h">{home.process.title}</h2>
+              <p className="lead">{home.process.intro}</p>
             </div>
           </div>
-          
+
           <div className="process-stages-grid">
-            {/* Stage 1 */}
-            <div className="process-card">
-              <div className="process-card-top">
-                <span className="process-step-num">01</span>
-                <span className="process-time-badge">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                  Within 2 Hours
-                </span>
-              </div>
-              <div className="process-header-row">
-                <div className="process-icon-box">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <circle cx="12" cy="12" r="2"/>
-                    <path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/>
-                  </svg>
+            {home.process.steps.map((step, i) => (
+              <div className="process-card" key={i}>
+                <div className="process-card-top">
+                  <span className="process-step-num">{String(i + 1).padStart(2, '0')}</span>
+                  {step.time && (
+                    <span className={`process-time-badge${/^within/i.test(step.time) ? '' : ' ongoing'}`}>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                      {step.time}
+                    </span>
+                  )}
                 </div>
-                <h3 className="process-card-title">Alert &amp; Assess</h3>
-              </div>
-              <p className="process-card-desc">24/7 crisis monitoring and rapid on-ground situation assessment to verify needs and mobilize local volunteers.</p>
-              <div className="process-action-tag">
-                <span className="action-dot"></span>
-                <span><b>Action:</b> SOS verification &amp; field reconnaissance</span>
-              </div>
-            </div>
-
-            {/* Stage 2 */}
-            <div className="process-card">
-              <div className="process-card-top">
-                <span className="process-step-num">02</span>
-                <span className="process-time-badge">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                  Within 8 Hours
-                </span>
-              </div>
-              <div className="process-header-row">
-                <div className="process-icon-box">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <rect x="1" y="3" width="15" height="13"/>
-                    <polygon points="16 8 20 8 23 11 23 16 16 16 8"/>
-                    <circle cx="5.5" cy="18.5" r="2.5"/>
-                    <circle cx="18.5" cy="18.5" r="2.5"/>
-                  </svg>
+                <div className="process-header-row">
+                  <div className="process-icon-box">{PROCESS_ICONS[i % PROCESS_ICONS.length]}</div>
+                  <h3 className="process-card-title">{step.title}</h3>
                 </div>
-                <h3 className="process-card-title">Mobilise Teams</h3>
+                <p className="process-card-desc">{step.description}</p>
+                {step.action && (
+                  <div className="process-action-tag">
+                    <span className="action-dot"></span>
+                    <span><b>Action:</b> {step.action}</span>
+                  </div>
+                )}
               </div>
-              <p className="process-card-desc">Trained SikhAid volunteers muster, and relief convoys loaded with food, water, blankets, and medical kits depart.</p>
-              <div className="process-action-tag">
-                <span className="action-dot"></span>
-                <span><b>Action:</b> Volunteer dispatch &amp; mobile kitchen fleet</span>
-              </div>
-            </div>
-
-            {/* Stage 3 */}
-            <div className="process-card">
-              <div className="process-card-top">
-                <span className="process-step-num">03</span>
-                <span className="process-time-badge">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                  Within 24 Hours
-                </span>
-              </div>
-              <div className="process-header-row">
-                <div className="process-icon-box">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <circle cx="12" cy="12" r="10"/>
-                    <circle cx="12" cy="12" r="4"/>
-                    <line x1="4.93" y1="4.93" x2="9.17" y2="9.17"/>
-                    <line x1="14.83" y1="14.83" x2="19.07" y2="19.07"/>
-                    <line x1="14.83" y1="9.17" x2="19.07" y2="4.93"/>
-                    <line x1="4.93" y1="19.07" x2="9.17" y2="14.83"/>
-                  </svg>
-                </div>
-                <h3 className="process-card-title">Immediate Relief</h3>
-              </div>
-              <p className="process-card-desc">Hot langar, dry ration kits, water filtration, temporary shelters, and boat evacuations reach stranded families.</p>
-              <div className="process-action-tag">
-                <span className="action-dot"></span>
-                <span><b>Action:</b> Direct ground rescue &amp; community langar</span>
-              </div>
-            </div>
-
-            {/* Stage 4 */}
-            <div className="process-card">
-              <div className="process-card-top">
-                <span className="process-step-num">04</span>
-                <span className="process-time-badge ongoing">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-                  Sustained Recovery
-                </span>
-              </div>
-              <div className="process-header-row">
-                <div className="process-icon-box">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                    <polyline points="9 22 9 12 15 12 15 22"/>
-                  </svg>
-                </div>
-                <h3 className="process-card-title">Rehabilitation</h3>
-              </div>
-              <p className="process-card-desc">Long-term recovery: rebuilding damaged homes and schools, restoring agricultural bunds, and restoring livelihoods.</p>
-              <div className="process-action-tag">
-                <span className="action-dot"></span>
-                <span><b>Action:</b> Rebuilding homes, schools &amp; farming tools</span>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>

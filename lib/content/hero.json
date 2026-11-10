@@ -1,0 +1,15 @@
+{
+  "mediaType": "video",
+  "videoUrl": "/assets/langar-hero-video.mp4",
+  "posterUrl": "https://www.sikhaid.ngo/gallery/gallery-151-community-food.webp",
+  "desktopImages": [],
+  "mobileImages": [],
+  "line1": "Langar For All. Seva For All.",
+  "line2": "Nepal Needs You Today.",
+  "titleLink": "/campaigns/langar-sewa",
+  "scrollText": "Scroll down",
+  "scrollLink": "#emergencies",
+  "showSoundButton": true,
+  "overlayOpacity": 100,
+  "slideSeconds": 5
+}

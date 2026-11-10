@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { IMG } from '@/lib/data';
+import { SITE, SITE_LINKS } from '@/lib/site';
 
 export default function Footer({ withCta = true }) {
   const pathname = usePathname();
@@ -55,7 +56,7 @@ export default function Footer({ withCta = true }) {
                   <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z" />
                 </svg>
                 <span>
-                  <b>Emergency support 24/7:</b> +91 98513 41234
+                  <b>Emergency support 24/7:</b> {SITE.phone}
                 </span>
               </span>
             </div>
@@ -103,22 +104,20 @@ export default function Footer({ withCta = true }) {
                 </span>
               </Link>
               <p style={{ maxWidth: '44ch' }}>
-                Serving India with humanitarian aid and disaster relief since
-                2020, with compassion, dignity, and 100% transparency during
-                times of crisis.
+                {SITE.tagline}
               </p>
               <ul>
                 <li>
-                  <a href="mailto:help@sikhaid.ngo">help@sikhaid.ngo</a>
+                  <a href={SITE_LINKS.mail}>{SITE.email}</a>
                 </li>
                 <li>
-                  <a href="tel:+919851341234">+91 98513 41234</a>
+                  <a href={SITE_LINKS.tel}>{SITE.phone}</a>
                 </li>
-                <li>House no. 222, Mangraj Lane, Cuttack, Odisha 753001</li>
+                <li>{SITE.address}</li>
               </ul>
               <div className="socials">
                 <a
-                  href="https://www.instagram.com/sikh_aid"
+                  href={SITE.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Instagram"
@@ -138,7 +137,7 @@ export default function Footer({ withCta = true }) {
                   </svg>
                 </a>
                 <a
-                  href="https://www.facebook.com/share/17fYSEFjUA/"
+                  href={SITE.facebook}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Facebook"
@@ -157,7 +156,7 @@ export default function Footer({ withCta = true }) {
                   </svg>
                 </a>
                 <a
-                  href="https://www.linkedin.com/company/sikh-aid-charitable-trustt/"
+                  href={SITE.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="LinkedIn"
@@ -178,7 +177,7 @@ export default function Footer({ withCta = true }) {
                   </svg>
                 </a>
                 <a
-                  href="https://wa.me/919851341234"
+                  href={SITE_LINKS.whatsapp}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="WhatsApp"

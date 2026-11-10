@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { saveFormSubmission } from '@/lib/forms';
+import { SITE, SITE_LINKS } from '@/lib/site';
 
 export default function ContactPage() {
   const [copiedPhone, setCopiedPhone] = useState(false);
@@ -44,6 +46,7 @@ export default function ContactPage() {
     const ok = cName.trim() && /\S+@\S+\.\S+/.test(cEmail) && cMsg.trim();
     setCErr(!ok);
     if (ok) {
+      saveFormSubmission('contact', { Name: cName, Email: cEmail, Phone: cPhone, Subject: cTopic, Message: cMsg });
       setCOk(true);
     }
   };
@@ -87,13 +90,13 @@ export default function ContactPage() {
                   <span className="sos-badge">
                     Emergency helpline · 24/7
                   </span>
-                  <b className="sos-number">+91 98513 41234</b>
+                  <b className="sos-number">{SITE.phone}</b>
                 </div>
               </div>
               <div className="sos-actions">
                 <a
                   className="btn btn-light sos-btn-call"
-                  href="tel:+919851341234"
+                  href={SITE_LINKS.tel}
                   aria-label="Call emergency helpline"
                 >
                   Call now
@@ -101,7 +104,7 @@ export default function ContactPage() {
                 <button
                   className="btn sos-btn-copy"
                   type="button"
-                  onClick={() => copyToClipboard('+91 98513 41234', 'phone')}
+                  onClick={() => copyToClipboard(SITE.phone, 'phone')}
                 >
                   {copiedPhone ? 'Copied ✓' : 'Copy'}
                 </button>
@@ -115,11 +118,11 @@ export default function ContactPage() {
                   <span className="contact-tile-label">Email</span>
                   <span className="contact-tile-status">Reply in 2d</span>
                 </div>
-                <b className="contact-tile-val">help@sikhaid.ngo</b>
+                <b className="contact-tile-val">{SITE.email}</b>
                 <button
                   className="btn btn-line btn-contact-act"
                   type="button"
-                  onClick={() => copyToClipboard('help@sikhaid.ngo', 'email')}
+                  onClick={() => copyToClipboard(SITE.email, 'email')}
                 >
                   {copiedEmail ? 'Copied ✓' : 'Copy email'}
                 </button>
@@ -129,10 +132,10 @@ export default function ContactPage() {
                   <span className="contact-tile-label">WhatsApp</span>
                   <span className="contact-tile-status">Direct chat</span>
                 </div>
-                <b className="contact-tile-val">+91 98513 41234</b>
+                <b className="contact-tile-val">{SITE.phone}</b>
                 <a
                   className="btn btn-line btn-contact-act"
-                  href="https://wa.me/919851341234"
+                  href={SITE_LINKS.whatsapp}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -149,10 +152,10 @@ export default function ContactPage() {
               <div style={{ padding: '18px' }} className="stack">
                 <b style={{ color: 'var(--ink)' }}>Office</b>
                 <span style={{ color: 'var(--muted)' }}>
-                  House no. 222, Mangraj Lane, Cuttack, Odisha 753001
+                  {SITE.address}
                 </span>
                 <a
-                  href="https://www.google.com/maps/search/?api=1&query=Mangraj+Lane+Cuttack+Odisha+753001"
+                  href={SITE_LINKS.map}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{ fontWeight: 800 }}
@@ -315,7 +318,7 @@ export default function ContactPage() {
                   We never sell or share your data with third parties for
                   marketing. Payments are processed by Razorpay; we do not store
                   card details. You can ask us to delete your account data at
-                  help@sikhaid.ngo.
+                  {SITE.email}.
                 </p>
               </details>
             </div>
@@ -349,7 +352,7 @@ export default function ContactPage() {
                   {openRefund ? 'Close summary' : 'Read summary'}
                 </summary>
                 <p>
-                  If you donated by mistake, email help@sikhaid.ngo within 7
+                  If you donated by mistake, email {SITE.email} within 7
                   days with your receipt number. Approved refunds return to the
                   original payment method within 7–10 working days. Monthly
                   gifts can be cancelled anytime before the next debit.

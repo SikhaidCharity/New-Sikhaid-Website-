@@ -6355,3 +6355,12 @@ input[type="number"] {
 }
 
 
+
+/* Home hero image slideshow */
+.hero-slides { position: absolute; inset: 0; }
+.hero-slides img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity .8s ease; }
+.hero-slides-mobile { display: none; }
+@media (max-width: 720px) {
+  .hero-slides-desktop { display: none; }
+  .hero-slides-mobile { display: block; }
+}

@@ -7,7 +7,7 @@ import Photo from '@/components/Photo';
 import CampaignCard from '@/components/CampaignCard';
 import { campaigns, BREAKDOWN, IMG, SITE, fmt, pct, bySlug } from '@/lib/data';
 
-function getCampaignGallery(camp) {
+export function getCampaignGallery(camp) {
   if (camp?.gallery && Array.isArray(camp.gallery) && camp.gallery.length > 0) {
     return camp.gallery;
   }
@@ -84,7 +84,12 @@ function getCampaignGallery(camp) {
 // Image 2
 // Paragraph 3: 100-200 words
 // Image 3
-function getCampaignStoryBlocks(camp) {
+export function getCampaignStoryBlocks(camp) {
+  const edited = Object.fromEntries(Object.entries(camp?.storyOverride || {}).filter(([, value]) => value));
+  return { ...standardStoryBlocks(camp), ...edited };
+}
+
+function standardStoryBlocks(camp) {
   const t = ((camp?.type || '') + ' ' + (camp?.group || '') + ' ' + (camp?.category || '') + ' ' + (camp?.title || '')).toLowerCase();
   const loc = camp?.location || 'India';
   const name = camp?.title || 'Humanitarian Mission';
@@ -144,7 +149,8 @@ function getCampaignStoryBlocks(camp) {
 // Heading strictly: "Update - [Date]" (e.g. Update - 18 Oct)
 // Latest is always first.
 // Initially only 1 is visible, clicking "More Updates" reveals one more at a time.
-function getCampaignUpdates(camp) {
+export function getCampaignUpdates(camp) {
+  if (camp?.updates?.length > 0) return camp.updates;
   const t = ((camp?.type || '') + ' ' + (camp?.group || '') + ' ' + (camp?.category || '') + ' ' + (camp?.title || '')).toLowerCase();
 
   if (t.includes('flood') || t.includes('disaster') || t.includes('emergency') || t.includes('landslide')) {
@@ -384,7 +390,7 @@ export function CampaignDetail({ initialSlug }) {
             </div>
             <div className="cd-band-cta">
               <Link href={donateHref} className="btn btn-give" style={{ fontWeight: 700 }}>
-                Donate Now
+                {campaign.ctaText || 'Donate Now'}
               </Link>
               <Link href={`${donateHref}?monthly=1`} className="btn btn-line" style={{ fontWeight: 700 }}>
                 Give Monthly
@@ -460,6 +466,7 @@ export function CampaignDetail({ initialSlug }) {
                 </blockquote>
                 <span className="cd-quote-author">— {campaign.quoteAuthor || 'SikhAid Field Team'}</span>
               </div>
+
             </section>
 
             {/* ── SECTION: On-Ground Seva Gallery (PC: Big Card Display / Phone: Single 4:5 Card Auto-changes) ── */}
@@ -747,7 +754,7 @@ export function CampaignDetail({ initialSlug }) {
           className="btn btn-give"
           style={{ padding: '10px 22px', fontWeight: 700, borderRadius: '999px', fontSize: '14px' }}
         >
-          Donate Now →
+          {campaign.ctaText || 'Donate Now'} →
         </Link>
       </div>
 

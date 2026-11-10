@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { saveFormSubmission } from '@/lib/forms';
 
 export default function VolunteeringPage() {
   const [selectedArea, setSelectedArea] = useState('Online Volunteering');
@@ -21,6 +22,18 @@ export default function VolunteeringPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    saveFormSubmission('volunteer', {
+      'Full Name': formData.name,
+      Email: formData.email,
+      Mobile: formData.phone,
+      Gender: formData.gender,
+      Address: formData.address,
+      Opportunity: formData.area,
+      Duration: formData.duration,
+      Experience: formData.experience,
+      'Start Date': formData.startDate,
+      About: formData.about,
+    });
     setSubmitted(true);
   };
 

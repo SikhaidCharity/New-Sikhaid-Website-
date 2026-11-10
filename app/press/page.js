@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { SITE, SITE_LINKS } from '@/lib/site';
 
 const PRESS_ITEMS = [
   {
@@ -375,10 +376,10 @@ export default function PressPage() {
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '6px' }}>
                 <span style={{ fontSize: '14.5px', color: 'var(--ink)' }}>
-                  <b>Press desk:</b> <a href="mailto:help@sikhaid.ngo" style={{ color: 'var(--indigo)' }}>help@sikhaid.ngo</a>
+                  <b>Press desk:</b> <a href={SITE_LINKS.mail} style={{ color: 'var(--indigo)' }}>{SITE.email}</a>
                 </span>
                 <span style={{ fontSize: '14.5px', color: 'var(--ink)' }}>
-                  <b>Media hotline:</b> <a href="tel:+919851341234" style={{ color: 'var(--indigo)' }}>+91 98513 41234</a>
+                  <b>Media hotline:</b> <a href={SITE_LINKS.tel} style={{ color: 'var(--indigo)' }}>{SITE.phone}</a>
                 </span>
               </div>
             </div>

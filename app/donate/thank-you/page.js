@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { fmt } from '@/lib/data';
 import './receipt.css';
+import { SITE } from '@/lib/site';
 
 const PAYMENT_LABELS = {
   upi: 'UPI',
@@ -266,7 +267,7 @@ function ThankYouContent() {
         <div className="rc-tear" aria-hidden="true"></div>
         <footer className="rc-foot">
           <b>Thank you for your seva.</b>
-          <span>help@sikhaid.ngo · +91 98513 41234</span>
+          <span>{SITE.email} · {SITE.phone}</span>
         </footer>
       </section>
 

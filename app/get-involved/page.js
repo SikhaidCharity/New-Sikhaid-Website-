@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { SITE, SITE_LINKS } from '@/lib/site';
 
 export default function GetInvolvedPage() {
   return (
@@ -345,11 +346,11 @@ export default function GetInvolvedPage() {
             We welcome university clubs, community groups, and compassionate individuals. Reach out directly.
           </p>
           <div className="row" style={{ justifyContent: 'center', gap: '14px', marginTop: '6px' }}>
-            <a className="btn btn-dark btn-lg" href="mailto:help@sikhaid.ngo">
-              Write to: help@sikhaid.ngo
+            <a className="btn btn-dark btn-lg" href={SITE_LINKS.mail}>
+              Write to: {SITE.email}
             </a>
-            <a className="btn btn-line btn-lg" href="tel:+919851341234">
-              Call: +91 98513 41234
+            <a className="btn btn-line btn-lg" href={SITE_LINKS.tel}>
+              Call: {SITE.phone}
             </a>
           </div>
         </div>

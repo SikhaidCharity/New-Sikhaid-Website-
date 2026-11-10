@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { saveFormSubmission } from '@/lib/forms';
+import { SITE, SITE_LINKS } from '@/lib/site';
 
 export default function CSRPage() {
   const [submitted, setSubmitted] = useState(false);
@@ -31,6 +33,17 @@ export default function CSRPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    saveFormSubmission('csr', {
+      'Company Name': formData.companyName,
+      'Contact Person': formData.contactPerson,
+      Email: formData.email,
+      Phone: formData.phone,
+      'Company Size': formData.companySize,
+      Industry: formData.industry,
+      'Budget Range': formData.budgetRange,
+      'Partnership Interest': formData.interests,
+      Message: formData.message,
+    });
     setSubmitted(true);
   };
 
@@ -257,7 +270,7 @@ export default function CSRPage() {
                 Want to delve deeper into our CSR activities and find out how you can contribute towards the betterment of your country?
               </b>
               <span style={{ fontSize: '14.5px', color: 'var(--muted)' }}>
-                Reach out to us at <a href="mailto:help@sikhaid.ngo" style={{ color: 'var(--indigo)', fontWeight: 700 }}>help@sikhaid.ngo</a> · Contact Us: <a href="tel:+919851341234" style={{ color: 'var(--indigo)', fontWeight: 700 }}>+91 98513 41234</a>
+                Reach out to us at <a href={SITE_LINKS.mail} style={{ color: 'var(--indigo)', fontWeight: 700 }}>{SITE.email}</a> · Contact Us: <a href={SITE_LINKS.tel} style={{ color: 'var(--indigo)', fontWeight: 700 }}>{SITE.phone}</a>
               </span>
             </div>
             <Link className="btn btn-line" href="/about">

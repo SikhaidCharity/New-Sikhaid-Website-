@@ -1,0 +1,40 @@
+/* Blog list and article pages */
+.blog-meta { font-size: 14px; color: var(--muted); margin: 0; }
+
+.blog-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+.blog-card { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--bg); color: inherit; text-decoration: none; transition: box-shadow .2s, transform .2s; }
+.blog-card:hover { box-shadow: 0 14px 30px rgba(18, 26, 74, .1); transform: translateY(-2px); color: inherit; }
+.blog-card .ph { aspect-ratio: 16 / 10; }
+.blog-card-body { display: flex; flex-direction: column; flex: 1; gap: 8px; padding: 18px; }
+.blog-card-body h2 { font-size: 20px; line-height: 1.28; color: var(--ink); }
+.blog-card-body p { margin: 0; color: var(--muted); font-size: 15px; }
+.blog-card-body .blog-meta { margin-top: auto; padding-top: 8px; }
+.blog-empty { margin: 0; padding: 24px 0; color: var(--muted); }
+
+/* Article: image, title, date, text */
+.blog-post-head, .blog-post-body, .blog-post-back { max-width: 760px; margin-inline: auto; padding-inline: 16px; }
+.blog-post-image { max-width: 1080px; margin: 28px auto 0; padding-inline: 16px; }
+.blog-post-image .ph { aspect-ratio: 16 / 9; border-radius: 20px; }
+.blog-post-head { display: flex; flex-direction: column; gap: 10px; padding-block: 32px 24px; }
+.blog-post-head h1 { font-size: clamp(30px, 4.6vw, 46px); }
+.blog-post-body { font-size: 18px; line-height: 1.75; color: var(--text); }
+.blog-post-body > * { margin: 0 0 22px; }
+.blog-post-body h2 { margin-top: 36px; font-size: clamp(24px, 3vw, 30px); }
+.blog-post-body h3 { margin-top: 28px; font-size: clamp(20px, 2.4vw, 23px); }
+.blog-post-body ul { padding-left: 22px; }
+.blog-post-body li { margin-bottom: 8px; }
+.blog-post-body figure img { display: block; width: 100%; height: auto; border-radius: 14px; }
+.blog-post-body figcaption { margin-top: 8px; font-size: 14px; color: var(--muted); text-align: center; }
+.blog-post-back { padding-block: 8px 56px; font-weight: 700; }
+
+@media (max-width: 960px) {
+  .blog-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .blog-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* The site-wide styles centre headings and lead text, so these pages set it back. */
+.blog-list .lead { margin-inline: 0; }
+.blog-list .lead, .blog-card-body { text-align: left; }
+.blog-card-body h2, .blog-post-head h1, .blog-post-body h2, .blog-post-body h3 { text-align: left !important; }

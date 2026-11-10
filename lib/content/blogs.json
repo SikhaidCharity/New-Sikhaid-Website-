@@ -1,0 +1,41 @@
+[
+  {
+    "id": "meet-our-volunteers",
+    "slug": "meet-our-volunteers",
+    "title": "Meet our volunteers: stories from the heart of SikhAid",
+    "category": "Volunteer stories",
+    "author": "SikhAid Team",
+    "status": "published",
+    "excerpt": "The inspiring people who dedicate their time and energy to serve communities across India, embodying the true spirit of sewa.",
+    "image": "https://www.sikhaid.ngo/gallery/gallery-147-langar-meals.webp",
+    "createdAt": "2025-01-20T06:00:00.000Z",
+    "updatedAt": "2025-01-20T06:00:00.000Z",
+    "content": "The inspiring people who dedicate their time and energy to serve communities across India, embodying the true spirit of sewa."
+  },
+  {
+    "id": "inside-our-community-kitchens",
+    "slug": "inside-our-community-kitchens",
+    "title": "Inside our community kitchens: a day with Langar Aid",
+    "category": "Food security",
+    "author": "SikhAid Team",
+    "status": "published",
+    "excerpt": "300+ volunteers preparing over 2,000 meals daily, serving fresh, nutritious food to vulnerable communities.",
+    "image": "https://www.sikhaid.ngo/gallery/gallery-151-community-food.webp",
+    "createdAt": "2025-01-18T06:00:00.000Z",
+    "updatedAt": "2025-01-18T06:00:00.000Z",
+    "content": "Step inside the kitchens where 300+ volunteers prepare over 2,000 fresh, nutritious meals daily for vulnerable communities."
+  },
+  {
+    "id": "scholarships-changing-lives-in-odisha",
+    "slug": "scholarships-changing-lives-in-odisha",
+    "title": "Educational support: scholarships changing lives in Odisha",
+    "category": "Education",
+    "author": "SikhAid Team",
+    "status": "published",
+    "excerpt": "How scholarships, school supplies and tuition support are breaking the cycle of poverty for children.",
+    "image": "",
+    "createdAt": "2025-01-15T06:00:00.000Z",
+    "updatedAt": "2025-01-15T06:00:00.000Z",
+    "content": "How scholarships, school supplies and tuition support are breaking the cycle of poverty for children."
+  }
+]

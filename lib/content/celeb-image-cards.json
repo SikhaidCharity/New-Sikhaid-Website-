@@ -1,0 +1,56 @@
+[
+  {
+    "id": "badshah",
+    "name": "Badshah",
+    "image": "/personalities/badshah.webp",
+    "active": true
+  },
+  {
+    "id": "harbhajan",
+    "name": "Harbhajan Singh",
+    "image": "/personalities/harbhajan-singh.webp",
+    "active": true
+  },
+  {
+    "id": "banita",
+    "name": "Banita Sandhu",
+    "image": "/personalities/banita-sandhu.webp",
+    "active": true
+  },
+  {
+    "id": "jaspreet",
+    "name": "Jaspreet Singh",
+    "image": "/personalities/jaspreet-singh.webp",
+    "active": true
+  },
+  {
+    "id": "rohanpreet",
+    "name": "Rohanpreet Singh",
+    "image": "/personalities/rohanpreet-singh.webp",
+    "active": true
+  },
+  {
+    "id": "prophc",
+    "name": "The PropheC",
+    "image": "/personalities/prophc.webp",
+    "active": true
+  },
+  {
+    "id": "badshah-2",
+    "name": "Badshah",
+    "image": "/personalities/badshah.webp",
+    "active": true
+  },
+  {
+    "id": "harbhajan-2",
+    "name": "Harbhajan Singh",
+    "image": "/personalities/harbhajan-singh.webp",
+    "active": true
+  },
+  {
+    "id": "banita-2",
+    "name": "Banita Sandhu",
+    "image": "/personalities/banita-sandhu.webp",
+    "active": true
+  }
+]

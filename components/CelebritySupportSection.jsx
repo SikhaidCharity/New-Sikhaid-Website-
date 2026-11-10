@@ -1,54 +1,12 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import imageCards from '@/lib/content/celeb-image-cards.json';
+import bigCards from '@/lib/content/celeb-big-cards.json';
 
-export const STORIES = [
-  {
-    id: 'badshah',
-    name: 'Badshah',
-    img: '/personalities/badshah.webp',
-  },
-  {
-    id: 'harbhajan',
-    name: 'Harbhajan Singh',
-    img: '/personalities/harbhajan-singh.webp',
-  },
-  {
-    id: 'banita',
-    name: 'Banita Sandhu',
-    img: '/personalities/banita-sandhu.webp',
-  },
-  {
-    id: 'jaspreet',
-    name: 'Jaspreet Singh',
-    img: '/personalities/jaspreet-singh.webp',
-  },
-  {
-    id: 'rohanpreet',
-    name: 'Rohanpreet Singh',
-    img: '/personalities/rohanpreet-singh.webp',
-  },
-  {
-    id: 'prophc',
-    name: 'The PropheC',
-    img: '/personalities/prophc.webp',
-  },
-  {
-    id: 'badshah-2',
-    name: 'Badshah',
-    img: '/personalities/badshah.webp',
-  },
-  {
-    id: 'harbhajan-2',
-    name: 'Harbhajan Singh',
-    img: '/personalities/harbhajan-singh.webp',
-  },
-  {
-    id: 'banita-2',
-    name: 'Banita Sandhu',
-    img: '/personalities/banita-sandhu.webp',
-  },
-];
+// Each part has its own entries in Admin > Celebrity Support.
+const CARDS = imageCards.filter((card) => card.active);
+const STORIES = bigCards.filter((card) => card.active);
 
 export default function CelebritySupportSection() {
   const [activeIdx, setActiveIdx] = useState(0);
@@ -59,6 +17,7 @@ export default function CelebritySupportSection() {
   const activeStory = STORIES[activeIdx] || STORIES[0];
 
   const handleNext = useCallback(() => {
+    if (STORIES.length === 0) return;
     setActiveIdx((prev) => (prev + 1) % STORIES.length);
   }, []);
 
@@ -95,6 +54,8 @@ export default function CelebritySupportSection() {
     }
   };
 
+  if (STORIES.length === 0 && CARDS.length === 0) return null;
+
   return (
     <section className="band celeb-support-band" aria-labelledby="cel-h" id="support-from">
       <div className="wrap">
@@ -116,8 +77,9 @@ export default function CelebritySupportSection() {
           {/* Sub-section 1: 3x3 Square Cards Grid (Edge-to-Edge Image, No Text) */}
           <div className="support-grid-col">
             <div className="support-3x3-grid" role="tablist" aria-label="Celebrity Endorsement Stories">
-              {STORIES.map((s, idx) => {
-                const isActive = idx === activeIdx;
+              {CARDS.map((s, idx) => {
+                // A card highlights while the big card in the same position is showing.
+                const isActive = STORIES.length > 0 && idx % STORIES.length === activeIdx;
                 return (
                   <button
                     key={`${s.id}-${idx}`}
@@ -126,10 +88,10 @@ export default function CelebritySupportSection() {
                     aria-selected={isActive}
                     aria-label={`View story ${idx + 1} (${s.name})`}
                     className={`support-square-card ${isActive ? 'active-card' : ''}`}
-                    onClick={() => setActiveIdx(idx)}
+                    onClick={() => STORIES.length > 0 && setActiveIdx(idx % STORIES.length)}
                   >
                     <img
-                      src={s.img}
+                      src={s.image}
                       alt={s.name}
                       className="square-edge-img"
                       loading="lazy"
@@ -141,6 +103,7 @@ export default function CelebritySupportSection() {
           </div>
 
           {/* Sub-section 2: Big Slidable Story Card (100% Edge-to-Edge Image, Zero Text) */}
+          {activeStory && (
           <div
             className="support-story-col"
             onMouseEnter={() => setIsPaused(true)}
@@ -152,7 +115,7 @@ export default function CelebritySupportSection() {
             <div className="support-story-frame">
               {/* Pure Edge-to-Edge Story Image: No text, No overlay */}
               <img
-                src={activeStory.img}
+                src={activeStory.image}
                 alt={activeStory.name}
                 className="story-main-img"
               />
@@ -191,6 +154,7 @@ export default function CelebritySupportSection() {
               </button>
             </div>
           </div>
+          )}
         </div>
       </div>
     </section>

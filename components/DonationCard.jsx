@@ -2,6 +2,7 @@
 
 import { Suspense, useEffect, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { saveDonation } from '@/lib/forms';
 import { bySlug, fmt } from '@/lib/data';
 import './DonationCard.css';
 
@@ -45,7 +46,11 @@ function readStoredUtm() {
 
 function DonationCard({ campaign, initialAmount, initialMonthly, onClose }) {
   const router = useRouter();
-  const startAmount = initialAmount >= MIN_AMOUNT ? initialAmount : SUGGESTED_AMOUNT;
+  // Each campaign can set its own amounts in the admin panel.
+  const amounts = campaign.donationAmounts?.length ? campaign.donationAmounts : AMOUNTS;
+  const suggestedAmount = campaign.suggestedAmount || SUGGESTED_AMOUNT;
+  const minAmount = campaign.minAmount || MIN_AMOUNT;
+  const startAmount = initialAmount >= minAmount ? initialAmount : suggestedAmount;
 
   const [step, setStep] = useState('details');
   const [amountText, setAmountText] = useState(String(startAmount));
@@ -85,7 +90,7 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose }) {
   const validate = () => {
     const found = {};
     const pan = donor.pan.trim();
-    if (amount < MIN_AMOUNT) found.amount = `Please enter an amount of ${fmt(MIN_AMOUNT)} or more.`;
+    if (amount < minAmount) found.amount = `Please enter an amount of ${fmt(minAmount)} or more.`;
     if (!donor.name.trim()) found.name = 'Please enter your full name.';
     if (!donor.email.trim()) {
       found.email = 'Please enter your email address.';
@@ -152,6 +157,7 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose }) {
       localStorage.setItem('sa_donor_profile', JSON.stringify(donorRecord));
       localStorage.setItem('sa_donor_email', donorRecord.email);
     } catch (e) {}
+    saveDonation(donation);
 
     const query = new URLSearchParams({ receipt: receiptNo, amt: String(amount), camp: campaign.title, ...utm });
     router.push(`/donate/thank-you?${query.toString()}`);
@@ -172,6 +178,8 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose }) {
                 <button type="button" onClick={() => setIsMonthly(false)}>Switch to one-time</button>
               </p>
             )}
+            {campaign.donateHighlight && <p className="dc-highlight">{campaign.donateHighlight}</p>}
+            {campaign.donateMessage && <p className="dc-message">{campaign.donateMessage}</p>}
           </div>
           <button type="button" className="dc-close" onClick={onClose} aria-label="Close donation card">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
@@ -186,7 +194,7 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose }) {
               <section>
                 <h3 className="dc-h">Choose an Amount</h3>
                 <div className="dc-amounts">
-                  {AMOUNTS.map((value) => (
+                  {amounts.map((value) => (
                     <button
                       key={value}
                       type="button"
@@ -197,7 +205,7 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose }) {
                         setErrors((current) => ({ ...current, amount: undefined }));
                       }}
                     >
-                      {value === SUGGESTED_AMOUNT && <span className="dc-suggested">Suggested ✨</span>}
+                      {value === suggestedAmount && <span className="dc-suggested">Suggested ✨</span>}
                       {fmt(value)}
                     </button>
                   ))}
@@ -209,7 +217,7 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose }) {
                     type="text"
                     inputMode="numeric"
                     aria-label="Donation amount in rupees"
-                    placeholder={`Minimum ${MIN_AMOUNT}`}
+                    placeholder={`Minimum ${minAmount}`}
                     value={amountText}
                     onChange={(e) => {
                       setAmountText(e.target.value.replace(/[^0-9]/g, ''));

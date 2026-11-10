@@ -1,5 +1,6 @@
 [
   {
+    "publishStatus": "published",
     "slug": "education-aid",
     "title": "Education Aid",
     "short": "Education",
@@ -22,68 +23,6 @@
     ],
     "quote": "Education is the greatest equalizer. By providing a rural child with textbooks, stationery, and digital tools, we break cycles of intergenerational poverty and unlock limitless potential.",
     "quoteAuthor": "Education Aid Program Director",
-    "impactStats": [
-      {
-        "label": "Students Supported",
-        "value": "4,500+",
-        "icon": "📚"
-      },
-      {
-        "label": "School Kits Distributed",
-        "value": "3,000+",
-        "icon": "🎒"
-      },
-      {
-        "label": "Digital Classrooms Set Up",
-        "value": "15+",
-        "icon": "💻"
-      },
-      {
-        "label": "Rural Partner Schools",
-        "value": "25+",
-        "icon": "🏫"
-      }
-    ],
-    "howItWorks": [
-      {
-        "step": 1,
-        "title": "You Donate",
-        "description": "Sponsor a child’s school kit, annual textbook sets, digital tablets, or merit scholarships."
-      },
-      {
-        "step": 2,
-        "title": "Fund Allocated",
-        "description": "100% of educational funds purchase quality textbooks, notebooks, school bags, and learning software."
-      },
-      {
-        "step": 3,
-        "title": "Direct Distribution",
-        "description": "Volunteer sevadars partner with rural government schools to personally distribute supplies."
-      },
-      {
-        "step": 4,
-        "title": "Impact Report",
-        "description": "Student progress report cards, attendance gains, and personalized handwritten donor thank-yous."
-      }
-    ],
-    "metrics": [
-      [
-        "4,500+",
-        "Students Supported"
-      ],
-      [
-        "3,000+",
-        "School Kits Distributed"
-      ],
-      [
-        "15+",
-        "Digital Classrooms Set Up"
-      ],
-      [
-        "25+",
-        "Rural Partner Schools"
-      ]
-    ],
     "raised": 760000,
     "goal": 1500000,
     "donors": 615,
@@ -92,6 +31,7 @@
     "img": "https://incred.com/uploads/2020/03/23101529/el8-2048x1367.jpg"
   },
   {
+    "publishStatus": "published",
     "slug": "dreams-on-field",
     "title": "Dreams On Field",
     "short": "Dreams",
@@ -140,68 +80,6 @@
     ],
     "quote": "From small fields to big dreams because every young player deserves a chance. Sports instill discipline, confidence, and leadership that lift young minds out of despair.",
     "quoteAuthor": "Grassroots Sports Director",
-    "impactStats": [
-      {
-        "label": "Youth Athletes Engaged",
-        "value": "1,500+",
-        "icon": "⚽"
-      },
-      {
-        "label": "Village Tournaments Held",
-        "value": "24+",
-        "icon": "🏃"
-      },
-      {
-        "label": "Sports Kits Distributed",
-        "value": "800+",
-        "icon": "👟"
-      },
-      {
-        "label": "Village Grounds Developed",
-        "value": "12+",
-        "icon": "🏟️"
-      }
-    ],
-    "howItWorks": [
-      {
-        "step": 1,
-        "title": "You Donate",
-        "description": "Sponsor footballs, training cones, athletic footwear, and team uniforms for rural youth."
-      },
-      {
-        "step": 2,
-        "title": "Fund Allocated",
-        "description": "Direct purchase of high-durability sporting goods and coaching provisions."
-      },
-      {
-        "step": 3,
-        "title": "Grassroots Camps",
-        "description": "Certified physical trainers conduct structured after-school coaching and weekend leagues."
-      },
-      {
-        "step": 4,
-        "title": "Impact Report",
-        "description": "Athlete performance tracking, tournament photo galleries, and scouting achievements."
-      }
-    ],
-    "metrics": [
-      [
-        "1,500+",
-        "Youth Athletes Engaged"
-      ],
-      [
-        "24+",
-        "Village Tournaments Held"
-      ],
-      [
-        "800+",
-        "Sports Kits Distributed"
-      ],
-      [
-        "12+",
-        "Village Grounds Developed"
-      ]
-    ],
     "raised": 540000,
     "goal": 1000000,
     "donors": 430,
@@ -210,6 +88,7 @@
     "img": "https://adamfletcher.net/wp-content/uploads/2020/04/f6d34-youthempowerment.jpg"
   },
   {
+    "publishStatus": "published",
     "slug": "punjab-floods-2025",
     "title": "Punjab Floods 2025",
     "short": "Punjab",
@@ -237,68 +116,6 @@
     ],
     "quote": "When floodwaters devastated Punjab, SikhAid stood shoulder-to-shoulder with our farming communities. We provide hot meals, clear sand-silted fields, and supply free seeds so families can revive their livelihoods with dignity.",
     "quoteAuthor": "Punjab Seva Wing",
-    "impactStats": [
-      {
-        "label": "Houses Rebuilt",
-        "value": "15+",
-        "icon": "🛟"
-      },
-      {
-        "label": "Houses Repaired",
-        "value": "50+",
-        "icon": "⛺"
-      },
-      {
-        "label": "Khets Cleared of Silt",
-        "value": "7,000+ Acre",
-        "icon": "📦"
-      },
-      {
-        "label": "Seeds & DAP Distributed",
-        "value": "1,000+ Acre",
-        "icon": "👥"
-      }
-    ],
-    "howItWorks": [
-      {
-        "step": 1,
-        "title": "Rapid Mobilization",
-        "description": "Deploy emergency response teams within hours of disaster alert to assess situation and begin rescue operations."
-      },
-      {
-        "step": 2,
-        "title": "Emergency Rescue",
-        "description": "Conduct boat and vehicle rescues to evacuate families from flooded areas to safety."
-      },
-      {
-        "step": 3,
-        "title": "Relief Distribution",
-        "description": "Set up temporary shelters and distribute food, water, medicines, and essential supplies to displaced families."
-      },
-      {
-        "step": 4,
-        "title": "Rehabilitation Support",
-        "description": "Provide long-term support for rebuilding homes, livelihoods, and community infrastructure."
-      }
-    ],
-    "metrics": [
-      [
-        "15+",
-        "Houses Rebuilt"
-      ],
-      [
-        "50+",
-        "Houses Repaired"
-      ],
-      [
-        "7,000+ Acre",
-        "Khets Cleared of Silt"
-      ],
-      [
-        "1,000+ Acre",
-        "Seeds & DAP Distributed"
-      ]
-    ],
     "raised": 3120000,
     "goal": 4000000,
     "donors": 2650,
@@ -307,6 +124,7 @@
     "img": "https://i.ibb.co/B20Q7cBV/Hero1.jpg"
   },
   {
+    "publishStatus": "published",
     "slug": "rath-yatra-seva-2026",
     "title": "Rath Yatra Seva 2026",
     "short": "Rath",
@@ -358,68 +176,6 @@
     ],
     "quote": "Every ₹9 sponsors a clean water bottle, every ₹25 sponsors an ORS pack, every ₹35 sponsors a meal. Serving millions of thirsty, exhausted pilgrims in scorching heat is pure, selfless Seva.",
     "quoteAuthor": "Puri Annapurna Seva Jatha",
-    "impactStats": [
-      {
-        "label": "Water Bottles Distributed",
-        "value": "2,00,000+",
-        "icon": "💧"
-      },
-      {
-        "label": "ORS Packs Handed Out",
-        "value": "50,000+",
-        "icon": "🥤"
-      },
-      {
-        "label": "Packed Meals Served",
-        "value": "50,000+",
-        "icon": "🍱"
-      },
-      {
-        "label": "Devotees Served",
-        "value": "3,00,000+",
-        "icon": "🙏"
-      }
-    ],
-    "howItWorks": [
-      {
-        "step": "1",
-        "title": "You Donate",
-        "description": "Choose any amount or sponsor a specific item — water, ORS, or meals."
-      },
-      {
-        "step": "2",
-        "title": "Fund Allocated",
-        "description": "Every rupee is mapped to a tangible item — bottles, ORS packs, packed meals."
-      },
-      {
-        "step": "3",
-        "title": "Seva at Puri",
-        "description": "Our volunteer network distributes supplies along the Rath Yatra route during the festival."
-      },
-      {
-        "step": "4",
-        "title": "Impact Report",
-        "description": "Photos, videos, and counts of devotees served are shared with every donor post-event."
-      }
-    ],
-    "metrics": [
-      [
-        "2,00,000+",
-        "Water Bottles Distributed"
-      ],
-      [
-        "50,000+",
-        "ORS Packs Handed Out"
-      ],
-      [
-        "50,000+",
-        "Packed Meals Served"
-      ],
-      [
-        "3,00,000+",
-        "Devotees Served"
-      ]
-    ],
     "raised": 2500000,
     "goal": 2500000,
     "donors": 3200,
@@ -428,6 +184,7 @@
     "img": "https://i.ibb.co/rR52qRhx/Chat-GPT-Image-Jun-5-2026-09-28-48-PM.webp"
   },
   {
+    "publishStatus": "published",
     "slug": "rural-sanitation-drive",
     "title": "Rural Sanitation Drive",
     "short": "Rural",
@@ -476,68 +233,6 @@
     ],
     "quote": "Sanitation is about basic human dignity, privacy, and hygiene — especially for rural women and daughters. Building clean household toilets transforms community health from the ground up.",
     "quoteAuthor": "Sanitation Mission Lead",
-    "impactStats": [
-      {
-        "label": "Household Toilets Built",
-        "value": "250+",
-        "icon": "🚽"
-      },
-      {
-        "label": "Villages Covered",
-        "value": "40+",
-        "icon": "🏘️"
-      },
-      {
-        "label": "Clean Water Connections",
-        "value": "100%",
-        "icon": "💧"
-      },
-      {
-        "label": "Families Trained in Hygiene",
-        "value": "5,000+",
-        "icon": "🧼"
-      }
-    ],
-    "howItWorks": [
-      {
-        "step": 1,
-        "title": "You Donate",
-        "description": "Fund masonry materials, sanitary fixtures, plumbing lines, and septic soak pits."
-      },
-      {
-        "step": 2,
-        "title": "Fund Allocated",
-        "description": "Materials sourced locally to support village artisans and guarantee high construction standards."
-      },
-      {
-        "step": 3,
-        "title": "Community Construction",
-        "description": "Village youth and local masons build resilient, private sanitation blocks for each family."
-      },
-      {
-        "step": 4,
-        "title": "Impact Report",
-        "description": "Geo-tagged photographic evidence of completed toilets and water connectivity logs."
-      }
-    ],
-    "metrics": [
-      [
-        "250+",
-        "Household Toilets Built"
-      ],
-      [
-        "40+",
-        "Villages Covered"
-      ],
-      [
-        "100%",
-        "Clean Water Connections"
-      ],
-      [
-        "5,000+",
-        "Families Trained in Hygiene"
-      ]
-    ],
     "raised": 890000,
     "goal": 1600000,
     "donors": 710,
@@ -546,6 +241,7 @@
     "img": "https://cf-images.assettype.com/down-to-earth%2Fimport%2Flibrary%2Flarge%2F2018-03-28%2F0.15608900_1522239934_toilets---vikas-choudhary.jpg?w=1024&auto=format%2Ccompress&fit=max"
   },
   {
+    "publishStatus": "published",
     "slug": "bihar-flood-relief-2026",
     "title": "BIHAR FLOOD RELIEF 2026",
     "short": "BIHAR",
@@ -593,68 +289,6 @@
     ],
     "quote": "Your support can bring immediate relief to flood-affected families in Bihar. Every contribution helps provide dry ration kits, clean drinking water, freshly prepared meals, emergency shelter materials, blankets, hygiene kits, and other essential supplies to communities struggling to recover from the floods.",
     "quoteAuthor": "Bihar Relief Team Coordinator",
-    "impactStats": [
-      {
-        "label": "Food Packets Distributed",
-        "value": "400+ Daily",
-        "icon": "🍱"
-      },
-      {
-        "label": "Emergency Lights Distributed",
-        "value": "500+",
-        "icon": "🔦"
-      },
-      {
-        "label": "Families Rescued & Fed",
-        "value": "3,450+",
-        "icon": "🛟"
-      },
-      {
-        "label": "Submerged Panchayats Served",
-        "value": "9",
-        "icon": "📍"
-      }
-    ],
-    "howItWorks": [
-      {
-        "step": 1,
-        "title": "You Donate",
-        "description": "Choose any amount or sponsor essential relief items including clean water, ORS, ready-to-eat meals, dry ration, and emergency relief kits."
-      },
-      {
-        "step": 2,
-        "title": "Fund Allocated",
-        "description": "Our volunteer network is delivering emergency relief supplies across flood-affected communities in Nepal"
-      },
-      {
-        "step": 3,
-        "title": "Seva at Bihar",
-        "description": "Our volunteer network is delivering emergency relief supplies across flood-affected communities in Nepal"
-      },
-      {
-        "step": 4,
-        "title": "Impact Report",
-        "description": "Photos, videos, and counts of devotees served are shared with every donor post-event."
-      }
-    ],
-    "metrics": [
-      [
-        "400+ Daily",
-        "Food Packets Distributed"
-      ],
-      [
-        "500+",
-        "Emergency Lights Distributed"
-      ],
-      [
-        "3,450+",
-        "Families Rescued & Fed"
-      ],
-      [
-        "9",
-        "Submerged Panchayats Served"
-      ]
-    ],
     "raised": 1840000,
     "goal": 2500000,
     "donors": 1284,
@@ -663,6 +297,7 @@
     "img": "https://i.ibb.co/N2XnqzfF/849796-65687-siwzzsrvzy-1503382223.jpg"
   },
   {
+    "publishStatus": "published",
     "slug": "covid-oxygen-sewa",
     "title": "COVID Oxygen Sewa",
     "short": "COVID",
@@ -682,68 +317,6 @@
     ],
     "quote": "During India’s darkest hours when oxygen was running out, SikhAid operated 24/7 oxygen langars and mobile concentrator banks, saving thousands of precious lives without charging a single rupee.",
     "quoteAuthor": "COVID Emergency Response Unit",
-    "impactStats": [
-      {
-        "label": "Ration Kits Delivered",
-        "value": "50,000+",
-        "icon": "📦"
-      },
-      {
-        "label": "Oxygen Cylinders Refilled",
-        "value": "5,000+",
-        "icon": "🫁"
-      },
-      {
-        "label": "Survival Rate",
-        "value": "92%",
-        "icon": "✅"
-      },
-      {
-        "label": "Concentrators Deployed",
-        "value": "2,000+",
-        "icon": "🏥"
-      }
-    ],
-    "howItWorks": [
-      {
-        "step": 1,
-        "title": "Emergency Response",
-        "description": "Establish 24/7 helpline to receive and process emergency requests for oxygen and medical supplies."
-      },
-      {
-        "step": 2,
-        "title": "Resource Mobilization",
-        "description": "Procure and maintain inventory of oxygen concentrators, cylinders, medicines, and essential supplies."
-      },
-      {
-        "step": 3,
-        "title": "Rapid Delivery",
-        "description": "Deploy trained volunteers for contactless delivery of oxygen equipment and essential supplies to quarantined families."
-      },
-      {
-        "step": 4,
-        "title": "Recovery Support",
-        "description": "Provide ongoing support including equipment maintenance, refills, and recovery monitoring."
-      }
-    ],
-    "metrics": [
-      [
-        "50,000+",
-        "Ration Kits Delivered"
-      ],
-      [
-        "5,000+",
-        "Oxygen Cylinders Refilled"
-      ],
-      [
-        "92%",
-        "Survival Rate"
-      ],
-      [
-        "2,000+",
-        "Concentrators Deployed"
-      ]
-    ],
     "raised": 5000000,
     "goal": 5000000,
     "donors": 6200,
@@ -752,6 +325,7 @@
     "img": "https://i.ibb.co/n8bLzJWC/Oxygen-Main.png"
   },
   {
+    "publishStatus": "published",
     "slug": "udaan",
     "title": "Udaan",
     "short": "Udaan",
@@ -770,68 +344,6 @@
     ],
     "quote": "Udaan gives wings to young girls and marginalized women through vocational tailoring, digital skills, and financial literacy, helping them become confident, self-reliant pillars of their families.",
     "quoteAuthor": "Project Udaan Mentor",
-    "impactStats": [
-      {
-        "label": "Women Trained",
-        "value": "650+",
-        "icon": "👩"
-      },
-      {
-        "label": "Sewing Machines Donated",
-        "value": "200+",
-        "icon": "🧵"
-      },
-      {
-        "label": "Micro-Enterprises Started",
-        "value": "85+",
-        "icon": "💼"
-      },
-      {
-        "label": "Average Income Growth",
-        "value": "3.2x",
-        "icon": "📈"
-      }
-    ],
-    "howItWorks": [
-      {
-        "step": 1,
-        "title": "You Donate",
-        "description": "Sponsor a commercial sewing machine, cloth materials, or a 3-month certified tailoring course."
-      },
-      {
-        "step": 2,
-        "title": "Fund Allocated",
-        "description": "Purchasing top-brand sewing machinery, haberdashery tools, and hiring master trainers."
-      },
-      {
-        "step": 3,
-        "title": "Skill Center",
-        "description": "Women attend daily practical classes and learn product design, garment stitching, and accounting."
-      },
-      {
-        "step": 4,
-        "title": "Impact Report",
-        "description": "Graduation ceremonies, sample product catalogues, and individual earning reports."
-      }
-    ],
-    "metrics": [
-      [
-        "650+",
-        "Women Trained"
-      ],
-      [
-        "200+",
-        "Sewing Machines Donated"
-      ],
-      [
-        "85+",
-        "Micro-Enterprises Started"
-      ],
-      [
-        "3.2x",
-        "Average Income Growth"
-      ]
-    ],
     "raised": 420000,
     "goal": 800000,
     "donors": 340,
@@ -840,6 +352,7 @@
     "img": "/sikhaidLogo.png"
   },
   {
+    "publishStatus": "published",
     "slug": "nepal-flood-relief-2026",
     "title": "NEPAL FLOOD RELIEF 2026",
     "short": "NEPAL",
@@ -892,68 +405,6 @@
     ],
     "quote": "Your support provides emergency relief to families affected by Nepal’s flash floods including dry ration kits, clean drinking water, ready-to-eat meals, blankets, hygiene essentials, and other life-saving supplies.",
     "quoteAuthor": "SikhAid Disaster Response Cell",
-    "impactStats": [
-      {
-        "label": "Relief Camps Set Up",
-        "value": "14+",
-        "icon": "⛺"
-      },
-      {
-        "label": "Meals Served",
-        "value": "36,500+",
-        "icon": "🍜"
-      },
-      {
-        "label": "Families Reached",
-        "value": "2,940+",
-        "icon": "👨‍👩‍👧‍👦"
-      },
-      {
-        "label": "Relief Kits Delivered",
-        "value": "1,750+",
-        "icon": "📦"
-      }
-    ],
-    "howItWorks": [
-      {
-        "step": 1,
-        "title": "You Donate",
-        "description": "Choose any amount or sponsor essential relief items including clean water, ORS, ready-to-eat meals, dry ration, and emergency relief kits."
-      },
-      {
-        "step": 2,
-        "title": "Fund Allocated",
-        "description": "Every rupee is mapped to a tangible item."
-      },
-      {
-        "step": 3,
-        "title": "Seva at Nepal",
-        "description": "Our volunteer network is delivering emergency relief supplies across flood-affected communities in Nepal"
-      },
-      {
-        "step": 4,
-        "title": "Impact Report",
-        "description": "Photos, videos, and counts of devotees served are shared with every donor post-event."
-      }
-    ],
-    "metrics": [
-      [
-        "14+",
-        "Relief Camps Set Up"
-      ],
-      [
-        "36,500+",
-        "Meals Served"
-      ],
-      [
-        "2,940+",
-        "Families Reached"
-      ],
-      [
-        "1,750+",
-        "Relief Kits Delivered"
-      ]
-    ],
     "raised": 2265000,
     "goal": 3000000,
     "donors": 1912,
@@ -962,6 +413,7 @@
     "img": "https://firebasestorage.googleapis.com/v0/b/sikhaidlandingpage.firebasestorage.app/o/Nepal-flash-floods-image.webp?alt=media&token=9d9c43a3-2ca2-49b0-8125-3c7ed52fa044"
   },
   {
+    "publishStatus": "published",
     "slug": "assam-flood-relief-2026",
     "title": "ASSAM FLOOD RELIEF 2026",
     "short": "ASSAM",
@@ -971,8 +423,8 @@
     "group": "Emergency",
     "category": "Flood Relief",
     "location": "Assam",
-    "status": "Ongoing",
-    "urgent": false,
+    "status": "Active emergency",
+    "urgent": true,
     "blurb": "Assam is facing a devastating flood crisis, with relentless rainfall and overflowing rivers affecting communities across the state. Thousands of families have been displaced, homes have been damaged, livelihoods have been disrupted, and access to basic necessities has become increasingly difficult.",
     "story": [
       "Assam is facing a devastating flood crisis, with relentless rainfall and overflowing rivers affecting communities across the state. Thousands of families have been displaced, homes have been damaged, livelihoods have been disrupted, and access to basic necessities has become increasingly difficult.",
@@ -1031,68 +483,6 @@
     ],
     "quote": "Your Support funds dry ration and essential food supplies, clean drinking water, ready-to-eat meals, well purification kits, and rebuilding materials for displaced families returning home.",
     "quoteAuthor": "Assam Field Volunteer",
-    "impactStats": [
-      {
-        "label": "People Helped",
-        "value": "2,000+",
-        "icon": "👥"
-      },
-      {
-        "label": "Water Bottles Supplied",
-        "value": "43,000+",
-        "icon": "💧"
-      },
-      {
-        "label": "Medical Recoveries",
-        "value": "300+",
-        "icon": "🩺"
-      },
-      {
-        "label": "Life Jackets Deployed",
-        "value": "230+",
-        "icon": "🦺"
-      }
-    ],
-    "howItWorks": [
-      {
-        "description": "Choose any amount or sponsor a specific item water, ORS, Meals, Ready-to-Eat food.",
-        "step": 1,
-        "title": "You Donate"
-      },
-      {
-        "description": "Every rupee is mapped to a tangible item.",
-        "step": 2,
-        "title": "Fund Allocated"
-      },
-      {
-        "title": "Seva at Assam",
-        "step": 3,
-        "description": "Our volunteer network distributes supplies along the Assam flood route during the festival."
-      },
-      {
-        "title": "Impact Report",
-        "step": 4,
-        "description": "Photos, videos, and counts of devotees served are shared with every donor post-event."
-      }
-    ],
-    "metrics": [
-      [
-        "2,000+",
-        "People Helped"
-      ],
-      [
-        "43,000+",
-        "Water Bottles Supplied"
-      ],
-      [
-        "300+",
-        "Medical Recoveries"
-      ],
-      [
-        "230+",
-        "Life Jackets Deployed"
-      ]
-    ],
     "raised": 1410000,
     "goal": 2000000,
     "donors": 986,
@@ -1101,6 +491,7 @@
     "img": "https://i.ibb.co/h1CgrFcx/DSC-3853.webp"
   },
   {
+    "publishStatus": "published",
     "slug": "guru-nanak-dev-ji-chardi-kala-sports-academy",
     "title": "Guru Nanak Dev Ji Chardi Kala Sports Academy",
     "short": "Guru",
@@ -1119,68 +510,6 @@
     ],
     "quote": "Chardi Kala is a state of eternal optimism and strength. Through martial arts, boxing, and athletics, we channel youth energy away from substance abuse into champions for the state and country.",
     "quoteAuthor": "Head Coach, Chardi Kala Academy",
-    "impactStats": [
-      {
-        "label": "Academy Cadets",
-        "value": "350+",
-        "icon": "🥊"
-      },
-      {
-        "label": "State & National Medals",
-        "value": "42+",
-        "icon": "🏅"
-      },
-      {
-        "label": "Equipped Training Centers",
-        "value": "3",
-        "icon": "🏋️"
-      },
-      {
-        "label": "100% Subsidized Nutrition",
-        "value": "Active",
-        "icon": "🥗"
-      }
-    ],
-    "howItWorks": [
-      {
-        "step": 1,
-        "title": "Build the Foundation",
-        "description": "Finalize land development, ground leveling, and basic infrastructure such as boundary fencing, lighting, and safety measures. This creates a secure and professional environment where training can begin."
-      },
-      {
-        "step": 2,
-        "title": "Set Up Infrastructure & Equipment",
-        "description": "Install sports facilities including cricket nets, football ground, running track, gym setup, and shooting range. Procure high-quality sports equipment to ensure athletes receive professional-level training conditions."
-      },
-      {
-        "step": 3,
-        "title": "Appoint Coaches & Start Training",
-        "description": "Hire qualified coaches for each sport and begin structured training programs. Implement fitness routines, regular practice schedules, and mentorship to build discipline and skill development among athletes."
-      },
-      {
-        "step": 4,
-        "title": "Talent Development & Competitive Exposure",
-        "description": "Identify promising athletes and provide them with advanced training and exposure to district, state, and national-level competitions. Track performance, build career pathways, and develop future champions."
-      }
-    ],
-    "metrics": [
-      [
-        "350+",
-        "Academy Cadets"
-      ],
-      [
-        "42+",
-        "State & National Medals"
-      ],
-      [
-        "3",
-        "Equipped Training Centers"
-      ],
-      [
-        "Active",
-        "100% Subsidized Nutrition"
-      ]
-    ],
     "raised": 1150000,
     "goal": 2000000,
     "donors": 920,
@@ -1189,6 +518,7 @@
     "img": "https://i.ibb.co/HLx9CLTS/mobile-new.png"
   },
   {
+    "publishStatus": "published",
     "slug": "blanket-distribution",
     "title": "Blanket Distribution",
     "short": "Blanket",
@@ -1208,68 +538,6 @@
     ],
     "quote": "In the biting cold of North Indian winters, a heavy wool blanket is not just comfort — it is life-saving protection against deadly pneumonia for children and elderly individuals sleeping on pavements.",
     "quoteAuthor": "Winter Relief Seva Lead",
-    "impactStats": [
-      {
-        "label": "Blankets Distributed",
-        "value": "15,000+",
-        "icon": "🧥"
-      },
-      {
-        "label": "Families Benefited",
-        "value": "8,000+",
-        "icon": "👨‍👩‍👧‍👦"
-      },
-      {
-        "label": "Distribution Centers",
-        "value": "75+",
-        "icon": "📍"
-      },
-      {
-        "label": "Volunteer Hours",
-        "value": "2,400+",
-        "icon": "⏰"
-      }
-    ],
-    "howItWorks": [
-      {
-        "step": 1,
-        "title": "Need Assessment",
-        "description": "Survey vulnerable communities to identify families and individuals most in need of winter protection."
-      },
-      {
-        "step": 2,
-        "title": "Quality Procurement",
-        "description": "Source high-quality, warm blankets that provide adequate protection against harsh winter conditions."
-      },
-      {
-        "step": 3,
-        "title": "Strategic Distribution",
-        "description": "Organize distribution drives in urban slums, remote villages, and areas with high homeless populations."
-      },
-      {
-        "step": 4,
-        "title": "Follow-up Care",
-        "description": "Monitor the well-being of beneficiaries and provide additional support where needed during winter months."
-      }
-    ],
-    "metrics": [
-      [
-        "15,000+",
-        "Blankets Distributed"
-      ],
-      [
-        "8,000+",
-        "Families Benefited"
-      ],
-      [
-        "75+",
-        "Distribution Centers"
-      ],
-      [
-        "2,400+",
-        "Volunteer Hours"
-      ]
-    ],
     "raised": 1240000,
     "goal": 1500000,
     "donors": 1480,
@@ -1278,6 +546,7 @@
     "img": "https://i.ibb.co/zWNmNZhN/Blanket-Main.png"
   },
   {
+    "publishStatus": "published",
     "slug": "road-safety",
     "title": "Road Safety",
     "short": "Road",
@@ -1295,68 +564,6 @@
     ],
     "quote": "Every preventable highway tragedy steals a provider from their family. Our Road Safety initiative installs reflector tapes on rural carts, provides helmets, and trains first-responders.",
     "quoteAuthor": "Road Safety Initiative Team",
-    "impactStats": [
-      {
-        "label": "Vehicles Fitted with Reflectors",
-        "value": "12,000+",
-        "icon": "🚜"
-      },
-      {
-        "label": "Helmets Distributed",
-        "value": "1,500+",
-        "icon": "🪖"
-      },
-      {
-        "label": "First Responder Trainings",
-        "value": "40+",
-        "icon": "🚑"
-      },
-      {
-        "label": "Accident Drop in Zones",
-        "value": "28%",
-        "icon": "📉"
-      }
-    ],
-    "howItWorks": [
-      {
-        "step": 1,
-        "title": "You Donate",
-        "description": "Sponsor high-grade retroreflective tapes, safety helmets, and first-aid kits."
-      },
-      {
-        "step": 2,
-        "title": "Fund Allocated",
-        "description": "Procurement of highway safety materials and traffic police liaison drives."
-      },
-      {
-        "step": 3,
-        "title": "Night Patrols",
-        "description": "Volunteers paste luminous reflective tape on unlit tractor-trolleys, animal carts, and bicycles."
-      },
-      {
-        "step": 4,
-        "title": "Impact Report",
-        "description": "Photographic records of covered vehicles and highway safety incident statistics."
-      }
-    ],
-    "metrics": [
-      [
-        "12,000+",
-        "Vehicles Fitted with Reflectors"
-      ],
-      [
-        "1,500+",
-        "Helmets Distributed"
-      ],
-      [
-        "40+",
-        "First Responder Trainings"
-      ],
-      [
-        "28%",
-        "Accident Drop in Zones"
-      ]
-    ],
     "raised": 310000,
     "goal": 600000,
     "donors": 260,
@@ -1365,6 +572,7 @@
     "img": "/sikhaidLogo.png"
   },
   {
+    "publishStatus": "published",
     "slug": "langar-sewa",
     "title": "Langar Sewa",
     "short": "Langar",
@@ -1400,68 +608,6 @@
     ],
     "quote": "Your support can help provide freshly cooked, nutritious meals to communities in need. Every contribution helps cover the cost of ingredients, cooking, and distributing Langar at different locations, ensuring that warm meals reach those who need them most.",
     "quoteAuthor": "Langar Seva Volunteers",
-    "impactStats": [
-      {
-        "label": "Locations Served",
-        "value": "30+",
-        "icon": "📍"
-      },
-      {
-        "label": "Community Kitchens",
-        "value": "10+",
-        "icon": "🍛"
-      },
-      {
-        "label": "Meals Served Daily",
-        "value": "400+",
-        "icon": "🍱"
-      },
-      {
-        "label": "Lives Impacted",
-        "value": "5,000+",
-        "icon": "👱🏻"
-      }
-    ],
-    "howItWorks": [
-      {
-        "step": 1,
-        "title": "You Donate",
-        "description": "Choose any amount to support Langar Sewa and help sponsor freshly cooked meals that are prepared and served to communities in need."
-      },
-      {
-        "step": 2,
-        "title": "Fund Allocated",
-        "description": "Funds are allocated towards purchasing essential ingredients, cooking freshly prepared meals, and serving Langar directly to communities in need."
-      },
-      {
-        "step": 3,
-        "title": "Langar Sewa",
-        "description": "Freshly cooked meals are prepared and distributed across different locations, ensuring nutritious food reaches communities and individuals in need."
-      },
-      {
-        "step": 4,
-        "title": "Impact Report",
-        "description": "Photos, videos, and counts of devotees served are shared with every donor post-event."
-      }
-    ],
-    "metrics": [
-      [
-        "30+",
-        "Locations Served"
-      ],
-      [
-        "10+",
-        "Community Kitchens"
-      ],
-      [
-        "400+",
-        "Meals Served Daily"
-      ],
-      [
-        "5,000+",
-        "Lives Impacted"
-      ]
-    ],
     "raised": 2840000,
     "goal": 3500000,
     "donors": 2410,
@@ -1470,6 +616,7 @@
     "img": "https://i.ibb.co/3yK1BL5V/Communal-Kitchen-Roti-Making-Tradition.webp"
   },
   {
+    "publishStatus": "published",
     "slug": "sikh-aid-health-on-wheels",
     "title": "Sikh Aid Health on Wheels",
     "short": "Sikh",
@@ -1518,68 +665,6 @@
     ],
     "quote": "Healthcare is a fundamental human right. Health on Wheels breaks geographical and financial barriers by bringing trained doctors, diagnostic labs, and free essential medicines directly to tribal hamlets.",
     "quoteAuthor": "Medical Team Lead, SikhAid",
-    "impactStats": [
-      {
-        "label": "Village Medical Runs",
-        "value": "120+",
-        "icon": "🚐"
-      },
-      {
-        "label": "Free Consultations",
-        "value": "18,500+",
-        "icon": "🩺"
-      },
-      {
-        "label": "Free Medicines Dispensed",
-        "value": "50,000+",
-        "icon": "💊"
-      },
-      {
-        "label": "Diagnostic Tests Done",
-        "value": "8,200+",
-        "icon": "🩸"
-      }
-    ],
-    "howItWorks": [
-      {
-        "step": 1,
-        "title": "You Donate",
-        "description": "Sponsor ambulance fuel, doctor stipends, and life-saving chronic and emergency medicines."
-      },
-      {
-        "step": 2,
-        "title": "Fund Allocated",
-        "description": "Procurement of quality generic pharmaceuticals, testing strips, and medical equipment."
-      },
-      {
-        "step": 3,
-        "title": "Mobile Seva",
-        "description": "Our fully equipped ambulance travels deep into remote hamlets without local healthcare access."
-      },
-      {
-        "step": 4,
-        "title": "Impact Report",
-        "description": "Detailed camp logs, diagnostic screening reports, and patient recovery stories."
-      }
-    ],
-    "metrics": [
-      [
-        "120+",
-        "Village Medical Runs"
-      ],
-      [
-        "18,500+",
-        "Free Consultations"
-      ],
-      [
-        "50,000+",
-        "Free Medicines Dispensed"
-      ],
-      [
-        "8,200+",
-        "Diagnostic Tests Done"
-      ]
-    ],
     "raised": 920000,
     "goal": 1500000,
     "donors": 840,
@@ -1588,6 +673,7 @@
     "img": "https://franchiseindia.s3.ap-south-1.amazonaws.com/uploads/content/wi/art/5b9b68ada4849.jpeg"
   },
   {
+    "publishStatus": "published",
     "slug": "project-farmer-first",
     "title": "Project Farmer First",
     "short": "Project",
@@ -1637,68 +723,6 @@
     ],
     "quote": "The farmer feeds the entire nation, but when crisis strikes, who feeds the farmer? Project Farmer First provides certified seeds, bio-fertilizers, and emergency relief to keep our Annadatas standing tall.",
     "quoteAuthor": "Project Farmer First Coordinator",
-    "impactStats": [
-      {
-        "label": "Farmers Assisted",
-        "value": "1,200+",
-        "icon": "🌾"
-      },
-      {
-        "label": "Villages Covered",
-        "value": "50+",
-        "icon": "🚜"
-      },
-      {
-        "label": "Seeds Distributed",
-        "value": "10,000+ Kg",
-        "icon": "🌱"
-      },
-      {
-        "label": "Soil Health Tests",
-        "value": "300+",
-        "icon": "💧"
-      }
-    ],
-    "howItWorks": [
-      {
-        "step": 1,
-        "title": "You Donate",
-        "description": "Sponsor seed kits, tractor tillage assistance, or emergency farm debt relief packages."
-      },
-      {
-        "step": 2,
-        "title": "Fund Allocated",
-        "description": "Direct procurement of certified high-yield seed stocks and agricultural inputs without middle-men."
-      },
-      {
-        "step": 3,
-        "title": "Field Distribution",
-        "description": "On-ground handover to verified marginal farmers and women-led smallholdings."
-      },
-      {
-        "step": 4,
-        "title": "Impact Report",
-        "description": "Harvest reports, seasonal yield data, and photographic proof of cultivated farmland."
-      }
-    ],
-    "metrics": [
-      [
-        "1,200+",
-        "Farmers Assisted"
-      ],
-      [
-        "50+",
-        "Villages Covered"
-      ],
-      [
-        "10,000+ Kg",
-        "Seeds Distributed"
-      ],
-      [
-        "300+",
-        "Soil Health Tests"
-      ]
-    ],
     "raised": 1350000,
     "goal": 2200000,
     "donors": 1100,
@@ -1707,6 +731,7 @@
     "img": "https://www.tribuneindia.com/sortd-service/imaginary/v22-01/jpg/large/high?url=dGhldHJpYnVuZS1zb3J0ZC1wcm8tcHJvZC1zb3J0ZC9tZWRpYWZlZmM1MTIwLTMzYjItMTFmMS05ZGQ1LWQzMjE0NmQ0Njk2MC5qcGc="
   },
   {
+    "publishStatus": "published",
     "slug": "no-spot",
     "title": "No Spot",
     "short": "No",
@@ -1724,68 +749,6 @@
     ],
     "quote": "Menstrual hygiene is a matter of health, education, and human dignity. No Spot empowers young girls and women in rural areas by replacing unhygienic alternatives with safe, biodegradable sanitary pads and medical counseling.",
     "quoteAuthor": "No Spot Women’s Health Team",
-    "impactStats": [
-      {
-        "label": "Sanitary Pads Distributed",
-        "value": "1 Lakh+",
-        "icon": "🩸"
-      },
-      {
-        "label": "Women Beneficiaries",
-        "value": "25,000+",
-        "icon": "👩"
-      },
-      {
-        "label": "Awareness Workshops",
-        "value": "150+",
-        "icon": "📚"
-      },
-      {
-        "label": "Communities Reached",
-        "value": "50+",
-        "icon": "🏘️"
-      }
-    ],
-    "howItWorks": [
-      {
-        "step": 1,
-        "title": "Community Assessment",
-        "description": "Identify underserved communities with limited access to menstrual hygiene facilities and products."
-      },
-      {
-        "step": 2,
-        "title": "Infrastructure Development",
-        "description": "Install portable toilets and sanitation facilities in strategic locations for maximum accessibility."
-      },
-      {
-        "step": 3,
-        "title": "Distribution & Education",
-        "description": "Distribute sanitary pads, toiletries, and conduct awareness sessions on menstrual health and hygiene."
-      },
-      {
-        "step": 4,
-        "title": "Ongoing Support",
-        "description": "Provide continuous support through regular visits, maintenance of facilities, and educational workshops."
-      }
-    ],
-    "metrics": [
-      [
-        "1 Lakh+",
-        "Sanitary Pads Distributed"
-      ],
-      [
-        "25,000+",
-        "Women Beneficiaries"
-      ],
-      [
-        "150+",
-        "Awareness Workshops"
-      ],
-      [
-        "50+",
-        "Communities Reached"
-      ]
-    ],
     "raised": 680000,
     "goal": 1200000,
     "donors": 590,
@@ -1794,6 +757,7 @@
     "img": "https://i.ibb.co/7dVCJV2p/No-Spot-Main.png"
   },
   {
+    "publishStatus": "published",
     "slug": "project-chardikala",
     "title": "Project Chardikala",
     "short": "Project",
@@ -1814,68 +778,6 @@
     ],
     "quote": "Chardikala represents the eternal, undaunted Sikh spirit. We uplift rural Punjab through vocational skills, sports, anti-substance counseling, and family sustenance so communities flourish anew.",
     "quoteAuthor": "Chardikala Punjab Mission Lead",
-    "impactStats": [
-      {
-        "label": "Village Communities",
-        "value": "80+",
-        "icon": "🌾"
-      },
-      {
-        "label": "Lives Touched",
-        "value": "12,000+",
-        "icon": "🤝"
-      },
-      {
-        "label": "Skill Workshops",
-        "value": "45+",
-        "icon": "💡"
-      },
-      {
-        "label": "Rehab Counseling Centers",
-        "value": "12+",
-        "icon": "🛡️"
-      }
-    ],
-    "howItWorks": [
-      {
-        "step": 1,
-        "title": "You Donate",
-        "description": "Support community rehabilitation programs, vocational workshops, and youth counseling."
-      },
-      {
-        "step": 2,
-        "title": "Fund Allocated",
-        "description": "Deployed for skill trainers, learning materials, community center infrastructure, and logistics."
-      },
-      {
-        "step": 3,
-        "title": "Field Action",
-        "description": "Grassroots teams conduct de-addiction awareness, computer literacy, and elderly assistance."
-      },
-      {
-        "step": 4,
-        "title": "Impact Report",
-        "description": "Youth employment data, counseling logs, and verified village community testimonials."
-      }
-    ],
-    "metrics": [
-      [
-        "80+",
-        "Village Communities"
-      ],
-      [
-        "12,000+",
-        "Lives Touched"
-      ],
-      [
-        "45+",
-        "Skill Workshops"
-      ],
-      [
-        "12+",
-        "Rehab Counseling Centers"
-      ]
-    ],
     "raised": 670000,
     "goal": 1200000,
     "donors": 520,
@@ -1884,6 +786,7 @@
     "img": "https://i.ibb.co/93cBtgnH/CHARDIKALA-LOGO-7-01.jpg"
   },
   {
+    "publishStatus": "published",
     "slug": "other-sewa",
     "title": "Other Sewa",
     "short": "Other",
@@ -1903,68 +806,6 @@
     ],
     "quote": "Whenever a human being in our society cries out for help — whether medical emergencies, accident transports, or sudden bereavement — SikhAid answers the call guided by the timeless principle of Sarbat da Bhala.",
     "quoteAuthor": "General Seva Wing",
-    "impactStats": [
-      {
-        "label": "Students Supported",
-        "value": "3,500+",
-        "icon": "🎓"
-      },
-      {
-        "label": "Medical Camps Held",
-        "value": "120+",
-        "icon": "🏥"
-      },
-      {
-        "label": "Emergency Transports",
-        "value": "850+",
-        "icon": "🚑"
-      },
-      {
-        "label": "Blood Units Donated",
-        "value": "2,200+",
-        "icon": "🩸"
-      }
-    ],
-    "howItWorks": [
-      {
-        "step": 1,
-        "title": "Community Needs Assessment",
-        "description": "Identify diverse community needs through surveys and local partnerships across education, health, and emergency services."
-      },
-      {
-        "step": 2,
-        "title": "Program Development",
-        "description": "Design targeted interventions including education support, medical camps, and emergency response services."
-      },
-      {
-        "step": 3,
-        "title": "Service Delivery",
-        "description": "Implement programs through trained volunteers, medical professionals, and community partnerships."
-      },
-      {
-        "step": 4,
-        "title": "Impact Monitoring",
-        "description": "Track outcomes and continuously improve services based on community feedback and changing needs."
-      }
-    ],
-    "metrics": [
-      [
-        "3,500+",
-        "Students Supported"
-      ],
-      [
-        "120+",
-        "Medical Camps Held"
-      ],
-      [
-        "850+",
-        "Emergency Transports"
-      ],
-      [
-        "2,200+",
-        "Blood Units Donated"
-      ]
-    ],
     "raised": 1800000,
     "goal": 1800000,
     "donors": 1450,
