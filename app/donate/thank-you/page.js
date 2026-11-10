@@ -129,14 +129,14 @@ function ThankYouContent() {
                 <dt>Date &amp; Time</dt>
                 <dd>{paidOn(receiptData)}</dd>
               </div>
-              <div className="rcp-wide">
+              <div>
                 <dt>Donor</dt>
                 <dd>
                   {donor.name || 'Anonymous'}
                   {phoneEnd && <span className="rcp-phone">•••• {phoneEnd}</span>}
                 </dd>
               </div>
-              <div className="rcp-wide">
+              <div>
                 <dt>Cause / Campaign</dt>
                 <dd>{receiptData.cause}</dd>
               </div>
