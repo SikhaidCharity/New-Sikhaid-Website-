@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Photo from '@/components/Photo';
 import CampaignCard from '@/components/CampaignCard';
 import { campaigns, BREAKDOWN, IMG, SITE, fmt, pct, bySlug } from '@/lib/data';
+import { donateButtonStyle } from '@/lib/donate-color';
 
 export function getCampaignGallery(camp) {
   if (camp?.gallery && Array.isArray(camp.gallery) && camp.gallery.length > 0) {
@@ -389,7 +390,7 @@ export function CampaignDetail({ initialSlug }) {
               </div>
             </div>
             <div className="cd-band-cta">
-              <Link href={donateHref} className="btn btn-give" style={{ fontWeight: 700 }}>
+              <Link href={donateHref} className="btn btn-give" style={donateButtonStyle(campaign.donateColor, { fontWeight: 700 })}>
                 {campaign.ctaText || 'Donate Now'}
               </Link>
               <Link href={`${donateHref}?monthly=1`} className="btn btn-line" style={{ fontWeight: 700 }}>
@@ -752,7 +753,7 @@ export function CampaignDetail({ initialSlug }) {
         <Link
           href={donateHref}
           className="btn btn-give"
-          style={{ padding: '10px 22px', fontWeight: 700, borderRadius: '999px', fontSize: '14px' }}
+          style={donateButtonStyle(campaign.donateColor, { padding: '10px 22px', fontWeight: 700, borderRadius: '999px', fontSize: '14px' })}
         >
           {campaign.ctaText || 'Donate Now'} →
         </Link>

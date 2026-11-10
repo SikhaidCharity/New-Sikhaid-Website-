@@ -5,6 +5,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { saveDonation } from '@/lib/forms';
 import { bySlug, fmt } from '@/lib/data';
 import './DonationCard.css';
+import { donateCardStyle } from '@/lib/donate-color';
 
 const AMOUNTS = [701, 1701, 2701, 5701];
 const SUGGESTED_AMOUNT = 1701;
@@ -177,7 +178,7 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose }) {
   const tipLabel = `Support SikhAid (${tipPercent}%)`;
 
   return (
-    <div className="dc-backdrop">
+    <div className="dc-backdrop" style={donateCardStyle(campaign.donateColor)}>
       <div className="dc-card" role="dialog" aria-modal="true" aria-labelledby="dc-title">
         <header className="dc-head">
           <div>

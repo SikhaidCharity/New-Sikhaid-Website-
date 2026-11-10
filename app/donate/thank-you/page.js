@@ -7,6 +7,7 @@ import { fmt } from '@/lib/data';
 import { SITE } from '@/lib/site';
 import trust from '@/lib/content/trust-80g.json';
 import { donorPdfUrl } from '@/lib/forms';
+import { setPassword as setDonorPassword, signInAfterDonation } from '@/lib/donor-api';
 import './receipt.css';
 
 // As printed on the current sikhaid.ngo receipt.
@@ -55,25 +56,36 @@ function ThankYouContent() {
     setReceiptData(data);
   }, [searchParams]);
 
-  const handleSetPassword = (e) => {
+  // Every donor gets an account: sign them in to it straight away with this donation's private code.
+  const [account, setAccount] = useState(null); // { hasPassword } once signed in
+  useEffect(() => {
+    if (!receiptData?.downloadToken || !receiptData.receiptNo) return;
+    let live = true;
+    signInAfterDonation(receiptData.receiptNo, receiptData.downloadToken).then(
+      (donor) => live && setAccount(donor),
+      () => {}
+    );
+    return () => {
+      live = false;
+    };
+  }, [receiptData]);
+
+  const handleSetPassword = async (e) => {
     e.preventDefault();
-    if (!password || password.length < 6) {
-      setPasswordError('Password must be at least 6 characters long.');
+    if (!password || password.length < 8) {
+      setPasswordError('Password must be at least 8 characters long.');
       return;
     }
     if (password !== confirmPassword) {
       setPasswordError('Passwords do not match. Please re-enter.');
       return;
     }
-    const email = (receiptData?.donor?.email || '').toLowerCase().trim();
     try {
-      localStorage.setItem(`sa_user_password_${email}`, password);
-      localStorage.setItem('sa_auth_user', email);
-      localStorage.setItem('sa_donor_email', email);
+      await setDonorPassword(password);
       setPasswordSaved(true);
       setPasswordError('');
-    } catch (e) {
-      setPasswordError('Could not save password. Please try again.');
+    } catch (err) {
+      setPasswordError(err.message || 'Could not save password. Please try again.');
     }
   };
 
@@ -208,7 +220,7 @@ function ThankYouContent() {
         </aside>
 
           {/* For donors who ticked "Create my free account" */}
-          {receiptData.optAccount === true && (
+          {account && !account.hasPassword && (
             <div className="ty-account">
               <h2>Create Account Password</h2>
               <p>
@@ -224,7 +236,7 @@ function ThankYouContent() {
                   <div className="ty-pw">
                     <label className="field" htmlFor="new-pwd">
                       Create password *
-                      <input id="new-pwd" type="password" placeholder="At least 6 characters" value={password}
+                      <input id="new-pwd" type="password" placeholder="At least 8 characters" value={password}
                         onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" />
                     </label>
                     <label className="field" htmlFor="confirm-pwd">

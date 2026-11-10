@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Photo from '@/components/Photo';
 import { fmt, pct } from '@/lib/data';
+import { donateButtonStyle } from '@/lib/donate-color';
 
 export default function CampaignCard({ campaign }) {
   const p = pct(campaign);
@@ -76,7 +77,7 @@ export default function CampaignCard({ campaign }) {
           <Link className="btn btn-line" href={`/campaigns/${campaign.slug}`} style={{ fontWeight: 700 }}>
             Know more
           </Link>
-          <Link className="btn btn-give" href={`/donate/${campaign.slug}`} style={{ fontWeight: 700 }}>
+          <Link className="btn btn-give" href={`/donate/${campaign.slug}`} style={donateButtonStyle(campaign.donateColor, { fontWeight: 700 })}>
             Donate
           </Link>
         </div>

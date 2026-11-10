@@ -1,733 +1,352 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { fmt } from '@/lib/data';
+import {
+  downloadDonationPdf, getAccount, isSignedIn, saveProfile, setPassword, signOut,
+} from '@/lib/donor-api';
+
+const TABS = [
+  ['overview', 'Overview'],
+  ['history', 'Donations & receipts'],
+  ['monthly', 'Monthly giving'],
+  ['profile', 'Profile'],
+];
+
+// Indian financial year (April to March): "FY 2026–27".
+const fyOf = (iso) => {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return 'Earlier';
+  const start = d.getMonth() >= 3 ? d.getFullYear() : d.getFullYear() - 1;
+  return `FY ${start}–${String(start + 1).slice(-2)}`;
+};
+const dateText = (iso) =>
+  iso ? new Date(iso).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
+const initials = (name) => (name || 'SikhAid Donor').split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0].toUpperCase()).join('');
+const MANDATE = { active: 'Active', paused: 'Paused', cancelled: 'Cancelled', pending: 'Pending setup' };
 
 export default function AccountPage() {
-  const gifts = [
-    ['FY 2026–27', '22 Oct 2026', 'Bihar Flood Relief 2026', 2500, 'UPI', 'bihar-flood-relief-2026'],
-    ['FY 2026–27', '01 Oct 2026', 'Monthly giving', 1000, 'UPI AutoPay', null],
-    ['FY 2026–27', '19 Sep 2026', 'Nepal Flood Relief 2026', 5000, 'Visa ••4421', 'nepal-flood-relief-2026'],
-    ['FY 2026–27', '05 Sep 2026', 'Langar Sewa', 1100, 'UPI', 'langar-sewa'],
-    ['FY 2026–27', '01 Sep 2026', 'Monthly giving', 1000, 'UPI AutoPay', null],
-    ['FY 2026–27', '14 Aug 2026', 'Assam Flood Relief 2026', 3400, 'RuPay ••0917', 'assam-flood-relief-2026'],
-    ['FY 2025–26', '12 Mar 2026', 'Sikh Aid Health on Wheels', 5100, 'Net banking', 'sikh-aid-health-on-wheels'],
-    ['FY 2025–26', '20 Dec 2025', 'Langar Sewa', 2100, 'UPI', 'langar-sewa'],
-    ['FY 2024–25', '18 Nov 2024', 'Langar Sewa', 1000, 'UPI', 'langar-sewa'],
-  ];
-
-  const tabs = [
-    ['overview', 'Overview'],
-    ['history', 'Donations & receipts'],
-    ['monthly', 'Monthly giving'],
-    ['profile', 'Profile'],
-  ];
-
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState('overview');
-  const [selectedFy, setSelectedFy] = useState('FY 2026–27');
+  const [data, setData] = useState(null);
+  const [error, setError] = useState('');
+  const [selectedFy, setSelectedFy] = useState('All');
   const [selectedCamp, setSelectedCamp] = useState('All');
-  const [isPaused, setIsPaused] = useState(false);
-  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const [toastMsg, setToastMsg] = useState('');
-  const [profileEmail, setProfileEmail] = useState('priya@example.com');
-  const [newAccPwd, setNewAccPwd] = useState('');
-  const [confirmAccPwd, setConfirmAccPwd] = useState('');
+  const [downloading, setDownloading] = useState('');
 
-  const triggerToast = (msg) => {
+  const toast = (msg) => {
     setToastMsg(msg);
     setTimeout(() => setToastMsg(''), 3000);
   };
 
   useEffect(() => {
     const hash = window.location.hash.replace('#', '');
-    if (tabs.some((t) => t[0] === hash)) {
-      setActiveTab(hash);
+    // Opened at a tab, e.g. /account#history (set after the first render).
+    if (TABS.some(([id]) => id === hash)) Promise.resolve().then(() => setActiveTab(hash));
+    if (!isSignedIn()) {
+      router.replace('/login');
+      return;
     }
-    try {
-      const email = localStorage.getItem('sa_auth_user') || localStorage.getItem('sa_donor_email');
-      if (email) setProfileEmail(email);
-    } catch (e) {}
-  }, []);
+    getAccount().then(setData, (e) => {
+      if (e.status === 401) router.replace('/login');
+      else setError(e.message);
+    });
+  }, [router]);
 
-  const lifetimeDonated = gifts.reduce((s, g) => s + g[3], 0);
-  const fyDonated = gifts
-    .filter((g) => g[0] === 'FY 2026–27')
-    .reduce((s, g) => s + g[3], 0);
-
-  const years = ['FY 2026–27', 'FY 2025–26', 'FY 2024–25'];
-  const campaignsList = ['All', ...new Set(gifts.map((g) => g[2]))];
-
-  const filteredHistory = gifts.filter(
-    (g) =>
-      g[0] === selectedFy &&
-      (selectedCamp === 'All' || g[2] === selectedCamp)
+  const donations = useMemo(() => data?.donations || [], [data]);
+  const donor = data?.donor;
+  const years = useMemo(() => ['All', ...new Set(donations.map((d) => fyOf(d.createdAt)))], [donations]);
+  const causes = useMemo(() => ['All', ...new Set(donations.map((d) => d.cause))], [donations]);
+  const history = donations.filter(
+    (d) => (selectedFy === 'All' || fyOf(d.createdAt) === selectedFy) && (selectedCamp === 'All' || d.cause === selectedCamp)
   );
+  const monthly = donations.filter((d) => d.isMonthly);
+  const oneTime = donations.filter((d) => !d.isMonthly);
+  const lifetime = oneTime.reduce((s, d) => s + d.grandTotal, 0);
+  const thisFy = fyOf(new Date().toISOString());
+  const fyTotal = oneTime.filter((d) => fyOf(d.createdAt) === thisFy).reduce((s, d) => s + d.grandTotal, 0);
+  const certCount = oneTime.filter((d) => d.has80g).length;
 
-  const historyTotal = filteredHistory.reduce((s, g) => s + g[3], 0);
+  const download = async (d) => {
+    setDownloading(d.id);
+    try {
+      await downloadDonationPdf(d.id);
+    } catch (e) {
+      toast(e.message);
+    }
+    setDownloading('');
+  };
+
+  const logOut = () => {
+    signOut();
+    router.push('/');
+  };
+
+  if (error) {
+    return (
+      <main className="wrap" style={{ padding: '80px 20px', textAlign: 'center' }}>
+        <p>{error}</p>
+        <button type="button" className="btn btn-line" onClick={() => window.location.reload()}>Try again</button>
+      </main>
+    );
+  }
+  if (!data) {
+    return <main className="wrap" style={{ padding: '80px 20px', textAlign: 'center' }}>Loading your account…</main>;
+  }
+
+  const firstName = (donor.name || '').split(/\s+/)[0] || 'friend';
 
   return (
     <>
       <main className="wrap acc">
         <nav className="side" aria-label="Account" role="tablist">
           <div className="me">
-            <span className="av">PS</span>
+            <span className="av">{initials(donor.name)}</span>
             <span>
-              <b style={{ color: 'var(--ink)' }}>Priya Sharma</b>
+              <b style={{ color: 'var(--ink)' }}>{donor.name || 'SikhAid Donor'}</b>
               <br />
               <span style={{ fontSize: '13px', color: 'var(--muted)' }}>
-                Member since Mar 2024
+                {donor.firstDonationAt ? `Donor since ${new Date(donor.firstDonationAt).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' })}` : donor.email}
               </span>
             </span>
           </div>
-          {tabs.map((t) => (
-            <button
-              key={t[0]}
-              type="button"
-              role="tab"
-              aria-selected={activeTab === t[0]}
-              onClick={() => setActiveTab(t[0])}
-            >
-              {t[1]}
+          {TABS.map(([id, label]) => (
+            <button key={id} type="button" role="tab" aria-selected={activeTab === id} onClick={() => setActiveTab(id)}>
+              {label}
             </button>
           ))}
-          <Link
-            href="/"
-            style={{
-              padding: '12px',
-              fontWeight: 700,
-              fontSize: '15px',
-              color: 'var(--muted)',
-              textDecoration: 'none',
-            }}
-          >
-            Log out
-          </Link>
+          <button type="button" onClick={logOut} style={{ color: 'var(--muted)' }}>Log out</button>
         </nav>
 
         <div className="stack" style={{ gap: '22px', minWidth: 0 }}>
           {activeTab === 'overview' && (
             <>
-              <span className="sample">
-                Example account: your real giving appears here once you log in
-              </span>
               <div className="row between">
                 <div className="stack" style={{ gap: '4px' }}>
                   <span style={{ color: 'var(--muted)' }}>Sat Sri Akal,</span>
                   <h1 style={{ fontSize: 'clamp(30px, 4vw, 40px)' }}>
-                    Priya, here’s the good you’ve done
+                    {firstName}, here’s the good you’ve done
                   </h1>
                 </div>
-                <Link className="btn btn-give" href="/donate">
-                  Donate again
-                </Link>
+                <Link className="btn btn-give" href="/campaigns">Donate again</Link>
               </div>
 
               <div className="kpis">
                 <div className="kpi dark">
                   <span>Lifetime donated</span>
-                  <b>{fmt(lifetimeDonated)}</b>
-                  <span style={{ fontSize: '13px' }}>
-                    across {gifts.length} donations
-                  </span>
+                  <b>{fmt(lifetime)}</b>
+                  <span style={{ fontSize: '13px' }}>across {oneTime.length} donation{oneTime.length === 1 ? '' : 's'}</span>
                 </div>
                 <div className="kpi">
-                  <span style={{ color: 'var(--muted)' }}>Causes supported</span>
-                  <b>5</b>
-                  <span style={{ fontSize: '13px', color: 'var(--muted)' }}>
-                    Floods, langar, healthcare
-                  </span>
+                  <span style={{ color: 'var(--muted)' }}>This year ({thisFy})</span>
+                  <b>{fmt(fyTotal)}</b>
+                  <span style={{ fontSize: '13px', color: 'var(--muted)' }}>For your tax filing</span>
                 </div>
                 <div className="kpi">
-                  <span style={{ color: 'var(--muted)' }}>This financial year</span>
-                  <b>{fmt(fyDonated)}</b>
-                  <span style={{ fontSize: '13px', color: 'var(--muted)' }}>
-                    {fmt(fyDonated / 2)} eligible under 80G
-                  </span>
-                </div>
-                <div className="kpi">
-                  <span style={{ color: 'var(--muted)' }}>Monthly giving</span>
-                  <b style={{ color: isPaused ? 'var(--saffron-deep)' : 'var(--green)' }}>
-                    {isPaused ? 'Paused' : 'Active'}
-                  </b>
-                  <span style={{ fontSize: '13px', color: 'var(--muted)' }}>
-                    {fmt(1000)} · next debit 1 Nov
-                  </span>
+                  <span style={{ color: 'var(--muted)' }}>80G certificates</span>
+                  <b>{certCount}</b>
+                  <span style={{ fontSize: '13px', color: 'var(--muted)' }}>Donations of {fmt(data.min80g)} or more</span>
                 </div>
               </div>
 
-              <div className="box">
+              <div className="box stack" style={{ gap: '12px' }}>
                 <div className="row between">
-                  <h2 style={{ fontSize: '24px' }}>Your impact</h2>
-                  <span style={{ fontSize: '13px', color: 'var(--muted)' }}>
-                    Estimated from your gifts and campaign costs
-                  </span>
+                  <h2 style={{ fontSize: '20px' }}>Recent donations</h2>
+                  <button type="button" className="btn btn-line" onClick={() => setActiveTab('history')}>See all</button>
                 </div>
-                <div className="imp">
-                  <div>
-                    <b>640</b>hot langar meals
-                  </div>
-                  <div>
-                    <b>9</b>family relief kits
-                  </div>
-                  <div>
-                    <b>3</b>medical camp days
-                  </div>
-                  <div>
-                    <b>1</b>boat run to cut-off villages
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid g2">
-                <div className="box">
-                  <div className="row between">
-                    <h2 style={{ fontSize: '22px' }}>Recent donations</h2>
-                    <button
-                      className="more"
-                      style={{ border: 0, background: 'none', cursor: 'pointer' }}
-                      type="button"
-                      onClick={() => setActiveTab('history')}
-                    >
-                      View all →
-                    </button>
-                  </div>
-                  {gifts.slice(0, 4).map((g, i) => (
-                    <div
-                      key={i}
-                      className="row"
-                      style={{
-                        flexWrap: 'nowrap',
-                        borderBottom: '1px solid var(--line)',
-                        paddingBottom: '12px',
-                      }}
-                    >
-                      <span style={{ flex: 1, minWidth: 0 }}>
-                        <b style={{ color: 'var(--ink)' }}>{g[2]}</b>
-                        <br />
-                        <span style={{ fontSize: '13px', color: 'var(--muted)' }}>
-                          {g[1]} · {g[4]}
-                        </span>
-                      </span>
-                      <b className="num" style={{ color: 'var(--ink)' }}>
-                        {fmt(g[3])}
-                      </b>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="box">
-                  <h2 style={{ fontSize: '22px' }}>From causes you support</h2>
-                  <Link
-                    href="/campaign#bihar-flood-relief-2026"
-                    style={{ textDecoration: 'none' }}
-                  >
-                    <span className="eyebrow" style={{ fontSize: '12px' }}>
-                      Bihar · 20 Oct
-                    </span>
-                    <br />
-                    <b style={{ color: 'var(--ink)' }}>Second relief camp opens</b>
-                  </Link>
-                  <Link href="/campaign#langar-sewa" style={{ textDecoration: 'none' }}>
-                    <span className="eyebrow" style={{ fontSize: '12px' }}>
-                      Langar Sewa · 16 Oct
-                    </span>
-                    <br />
-                    <b style={{ color: 'var(--ink)' }}>
-                      Kitchen reaches 2,000 meals a day
-                    </b>
-                  </Link>
-                  <div
-                    style={{
-                      background: 'var(--indigo-soft)',
-                      borderRadius: '14px',
-                      padding: '16px',
-                    }}
-                    className="stack"
-                  >
-                    <b style={{ color: 'var(--ink)' }}>Add your birthday</b>
-                    <span style={{ fontSize: '14px', color: 'var(--muted)' }}>
-                      We’ll send a note on your day showing what your giving
-                      achieved that year.
-                    </span>
-                    <button
-                      className="more"
-                      type="button"
-                      style={{
-                        border: 0,
-                        background: 'none',
-                        cursor: 'pointer',
-                        padding: 0,
-                        alignSelf: 'flex-start',
-                      }}
-                      onClick={() => setActiveTab('profile')}
-                    >
-                      Add date of birth →
-                    </button>
-                  </div>
-                </div>
+                <DonationTable rows={donations.slice(0, 5)} onDownload={download} downloading={downloading} />
               </div>
             </>
           )}
 
           {activeTab === 'history' && (
             <>
-              <div className="row between">
-                <h1 style={{ fontSize: 'clamp(28px, 4vw, 38px)' }}>
-                  Donations &amp; receipts
-                </h1>
-                <div className="row">
-                  <label className="field" htmlFor="fy">
-                    Financial year
-                    <select
-                      id="fy"
-                      value={selectedFy}
-                      onChange={(e) => setSelectedFy(e.target.value)}
-                    >
-                      {years.map((y) => (
-                        <option key={y} value={y}>
-                          {y}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label className="field" htmlFor="cp">
-                    Campaign
-                    <select
-                      id="cp"
-                      value={selectedCamp}
-                      onChange={(e) => setSelectedCamp(e.target.value)}
-                    >
-                      {campaignsList.map((c) => (
-                        <option key={c} value={c}>
-                          {c}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                </div>
+              <h1 style={{ fontSize: 'clamp(28px, 4vw, 36px)' }}>Donations & receipts</h1>
+              <div className="row" style={{ gap: '12px', flexWrap: 'wrap' }}>
+                <label className="field" style={{ minWidth: '180px' }}>
+                  Year
+                  <select value={selectedFy} onChange={(e) => setSelectedFy(e.target.value)}>
+                    {years.map((y) => <option key={y} value={y}>{y === 'All' ? 'All years' : y}</option>)}
+                  </select>
+                </label>
+                <label className="field" style={{ minWidth: '220px' }}>
+                  Campaign
+                  <select value={selectedCamp} onChange={(e) => setSelectedCamp(e.target.value)}>
+                    {causes.map((c) => <option key={c} value={c}>{c === 'All' ? 'All campaigns' : c}</option>)}
+                  </select>
+                </label>
               </div>
-
-              <div className="statement">
-                <div className="stack" style={{ gap: '4px' }}>
-                  <b
-                    style={{
-                      fontFamily: 'var(--display)',
-                      fontSize: '22px',
-                      color: '#fff',
-                    }}
-                  >
-                    Annual 80G statement · {selectedFy}
-                  </b>
-                  <span>
-                    {filteredHistory.length} donations · {fmt(historyTotal)} total
-                    · one PDF for your tax filing
-                  </span>
-                </div>
-                <button
-                  className="btn btn-give"
-                  type="button"
-                  onClick={() =>
-                    triggerToast(
-                      'Your annual statement PDF will download on the live site.'
-                    )
-                  }
-                >
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    aria-hidden="true"
-                    style={{ verticalAlign: 'middle', marginRight: '6px' }}
-                  >
-                    <path d="M12 3v12M7 10l5 5 5-5M5 21h14" />
-                  </svg>
-                  Download statement
-                </button>
-              </div>
-
-              <div className="box" style={{ padding: '8px 8px 16px' }}>
-                <div className="table-box">
-                  <table className="data">
-                    <thead>
-                      <tr>
-                        <th scope="col">Date</th>
-                        <th scope="col">Campaign</th>
-                        <th scope="col">Amount</th>
-                        <th scope="col">Payment</th>
-                        <th scope="col">Receipt</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredHistory.length > 0 ? (
-                        filteredHistory.map((g, i) => (
-                          <tr key={i}>
-                            <td
-                              style={{
-                                color: 'var(--muted)',
-                                whiteSpace: 'nowrap',
-                              }}
-                            >
-                              {g[1]}
-                            </td>
-                            <td>
-                              {g[5] ? (
-                                <Link
-                                  href={`/campaign#${g[5]}`}
-                                  style={{
-                                    fontWeight: 800,
-                                    color: 'var(--ink)',
-                                    textDecoration: 'none',
-                                  }}
-                                >
-                                  {g[2]}
-                                  <br />
-                                  <span
-                                    style={{
-                                      fontSize: '13px',
-                                      color: 'var(--muted)',
-                                    }}
-                                  >
-                                    See what it funded →
-                                  </span>
-                                </Link>
-                              ) : (
-                                <b style={{ color: 'var(--ink)' }}>{g[2]}</b>
-                              )}
-                            </td>
-                            <td>
-                              <b style={{ color: 'var(--ink)' }}>{fmt(g[3])}</b>
-                            </td>
-                            <td style={{ color: 'var(--muted)' }}>{g[4]}</td>
-                            <td>
-                              <button
-                                className="dl"
-                                type="button"
-                                onClick={() =>
-                                  triggerToast(
-                                    'Your receipt PDF will download on the live site.'
-                                  )
-                                }
-                              >
-                                <svg
-                                  width="16"
-                                  height="16"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="2.3"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  aria-hidden="true"
-                                >
-                                  <path d="M12 3v12M7 10l5 5 5-5M5 21h14" />
-                                </svg>
-                                80G PDF
-                              </button>
-                            </td>
-                          </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td colSpan={5} style={{ color: 'var(--muted)' }}>
-                            No donations match these filters.
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
+              <p style={{ color: 'var(--muted)', margin: 0 }}>
+                {history.length} donation{history.length === 1 ? '' : 's'} · <b style={{ color: 'var(--ink)' }}>{fmt(history.reduce((s, d) => s + d.grandTotal, 0))}</b>
+              </p>
+              <div className="box">
+                <DonationTable rows={history} onDownload={download} downloading={downloading} />
               </div>
             </>
           )}
 
           {activeTab === 'monthly' && (
             <>
-              <h1 style={{ fontSize: 'clamp(28px, 4vw, 38px)' }}>
-                Monthly giving
-              </h1>
-              <div className="box">
-                <div
-                  className="row between"
-                  style={{ alignItems: 'flex-start' }}
-                >
-                  <div className="stack" style={{ gap: '6px' }}>
-                    <div className="row" style={{ gap: '10px' }}>
-                      <b style={{ fontSize: '20px', color: 'var(--ink)' }}>
-                        {fmt(1000)} / month · Where it’s needed most
-                      </b>
-                      <span className={`pill ${isPaused ? 'off' : 'on'}`}>
-                        {isPaused ? 'Paused' : 'Active'}
-                      </span>
-                    </div>
-                    <span style={{ color: 'var(--muted)' }}>
-                      {isPaused
-                        ? 'Paused. No debits until you resume.'
-                        : 'UPI AutoPay · next debit 1 Nov 2026 · giving since Mar 2025'}
-                    </span>
-                  </div>
-                  <div className="row">
-                    <button
-                      className="btn btn-line"
-                      type="button"
-                      onClick={() =>
-                        triggerToast(
-                          'Choose a new amount on the next screen of the live site.'
-                        )
-                      }
-                    >
-                      Change amount
-                    </button>
-                    <button
-                      className="btn btn-line"
-                      type="button"
-                      onClick={() => {
-                        setIsPaused(!isPaused);
-                        triggerToast(
-                          !isPaused
-                            ? 'Monthly gift paused'
-                            : 'Monthly gift resumed'
-                        );
-                      }}
-                    >
-                      {isPaused ? 'Resume' : 'Pause'}
-                    </button>
-                    <button
-                      className="btn"
-                      type="button"
-                      style={{ color: 'var(--red)', background: 'none' }}
-                      onClick={() => setShowCancelConfirm(true)}
-                    >
-                      Cancel
-                    </button>
-                  </div>
+              <h1 style={{ fontSize: 'clamp(28px, 4vw, 36px)' }}>Monthly giving</h1>
+              {monthly.length === 0 ? (
+                <div className="box stack" style={{ gap: '12px' }}>
+                  <p style={{ margin: 0, color: 'var(--muted)' }}>You don’t have a monthly donation yet.</p>
+                  <Link className="btn btn-give" href="/campaigns" style={{ alignSelf: 'flex-start' }}>Start giving monthly</Link>
                 </div>
-
-                {showCancelConfirm && (
-                  <div
-                    className="note"
-                    style={{ background: 'var(--red-soft)', color: '#7A2F28' }}
-                  >
-                    Cancel your monthly gift? Relief kits for the next emergency
-                    depend on monthly givers.
-                    <div className="row" style={{ marginTop: '10px' }}>
-                      <button
-                        className="btn btn-dark"
-                        type="button"
-                        onClick={() => setShowCancelConfirm(false)}
-                      >
-                        Keep giving
-                      </button>
-                      <button
-                        className="btn btn-line"
-                        type="button"
-                        onClick={() => {
-                          setShowCancelConfirm(false);
-                          triggerToast(
-                            'Monthly gift cancelled. Thank you for your seva.'
-                          );
-                        }}
-                      >
-                        Yes, cancel
-                      </button>
-                    </div>
+              ) : (
+                <div className="box">
+                  <div className="table-box">
+                    <table className="data">
+                      <thead>
+                        <tr>
+                          <th scope="col">Started</th>
+                          <th scope="col">Campaign</th>
+                          <th scope="col">Monthly amount</th>
+                          <th scope="col">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {monthly.map((d) => (
+                          <tr key={d.id}>
+                            <td style={{ color: 'var(--muted)', whiteSpace: 'nowrap' }}>{dateText(d.createdAt)}</td>
+                            <td><b style={{ color: 'var(--ink)' }}>{d.cause}</b></td>
+                            <td><b>{fmt(d.grandTotal)}</b></td>
+                            <td>{MANDATE[d.mandateStatus] || 'Pending setup'}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
-                )}
-
-                <p style={{ fontSize: '14px', color: 'var(--muted)' }}>
-                  We email and SMS you 3 days before every renewal.
-                </p>
-              </div>
-
-              <div className="box" style={{ background: 'var(--saffron-soft)' }}>
-                <b style={{ color: 'var(--ink)', fontSize: '18px' }}>
-                  Start another monthly gift
-                </b>
-                <span style={{ color: 'var(--muted)' }}>
-                  Pick a specific campaign, like Langar Sewa or Health on Wheels.
-                </span>
-                <Link
-                  className="btn btn-give"
-                  href="/donate#monthly"
-                  style={{ alignSelf: 'flex-start' }}
-                >
-                  Add a monthly gift
-                </Link>
-              </div>
+                  <p style={{ color: 'var(--muted)', fontSize: '14px', marginBottom: 0 }}>
+                    To pause or cancel, contact us and we’ll update it the same day.
+                  </p>
+                </div>
+              )}
             </>
           )}
 
-          {activeTab === 'profile' && (
-            <>
-              <h1 style={{ fontSize: 'clamp(28px, 4vw, 38px)' }}>Profile</h1>
-              <form
-                className="box"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  triggerToast('Profile saved');
-                }}
-              >
-                <div className="grid g2" style={{ gap: '14px' }}>
-                  <label className="field" htmlFor="pName">
-                    Full name
-                    <input
-                      id="pName"
-                      type="text"
-                      defaultValue="Priya Sharma"
-                      autoComplete="name"
-                    />
-                  </label>
-                  <label className="field" htmlFor="pEmail">
-                    Email
-                    <input
-                      id="pEmail"
-                      type="email"
-                      defaultValue={profileEmail}
-                      autoComplete="email"
-                      onChange={(e) => setProfileEmail(e.target.value)}
-                    />
-                  </label>
-                  <label className="field" htmlFor="pPhone">
-                    Mobile
-                    <input
-                      id="pPhone"
-                      type="tel"
-                      defaultValue="+91 98XXX XXXXX"
-                      autoComplete="tel"
-                    />
-                  </label>
-                  <label className="field" htmlFor="pPan">
-                    PAN (for 80G receipts)
-                    <input
-                      id="pPan"
-                      type="text"
-                      defaultValue="ABCPS1234K"
-                      style={{ textTransform: 'uppercase' }}
-                      maxLength={10}
-                    />
-                  </label>
-                  <label className="field" htmlFor="pDob">
-                    Date of birth (for your birthday impact note)
-                    <input id="pDob" type="date" />
-                  </label>
-                </div>
-                <div className="stack" style={{ gap: '10px' }}>
-                  <label className="check">
-                    <input type="checkbox" defaultChecked />
-                    Email me campaign updates
-                  </label>
-                  <label className="check">
-                    <input type="checkbox" defaultChecked />
-                    WhatsApp updates
-                  </label>
-                  <label className="check">
-                    <input type="checkbox" />
-                    Show my name on donor walls
-                  </label>
-                </div>
-                <button
-                  className="btn btn-dark"
-                  type="submit"
-                  style={{ alignSelf: 'flex-start' }}
-                >
-                  Save changes
-                </button>
-              </form>
-
-              {/* Password & Security Card (Image 5 & Flow requirement) */}
-              <div className="box" style={{ marginTop: '10px' }}>
-                <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '14px' }}>
-                  <span style={{ fontSize: '24px' }}>🔐</span>
-                  <div>
-                    <h2 style={{ fontSize: '20px', fontWeight: 800, margin: 0, color: 'var(--ink)' }}>
-                      Account Password & Security
-                    </h2>
-                    <p style={{ fontSize: '13.5px', color: 'var(--muted)', margin: 0 }}>
-                      Set or update your password to log in directly without waiting for an OTP.
-                    </p>
-                  </div>
-                </div>
-
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    if (!newAccPwd || newAccPwd.length < 6) {
-                      triggerToast('Password must be at least 6 characters');
-                      return;
-                    }
-                    if (newAccPwd !== confirmAccPwd) {
-                      triggerToast('Passwords do not match');
-                      return;
-                    }
-                    const cleanEmail = profileEmail.toLowerCase().trim();
-                    localStorage.setItem(`sa_user_password_${cleanEmail}`, newAccPwd);
-                    localStorage.setItem('sa_auth_user', cleanEmail);
-                    triggerToast('Password saved successfully!');
-                    setNewAccPwd('');
-                    setConfirmAccPwd('');
-                  }}
-                  style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}
-                >
-                  <div className="grid g2" style={{ gap: '14px' }}>
-                    <label className="field" htmlFor="new-acc-pwd">
-                      New password
-                      <input
-                        id="new-acc-pwd"
-                        type="password"
-                        placeholder="At least 6 characters"
-                        value={newAccPwd}
-                        onChange={(e) => setNewAccPwd(e.target.value)}
-                        autoComplete="new-password"
-                      />
-                    </label>
-                    <label className="field" htmlFor="confirm-acc-pwd">
-                      Confirm new password
-                      <input
-                        id="confirm-acc-pwd"
-                        type="password"
-                        placeholder="Repeat your password"
-                        value={confirmAccPwd}
-                        onChange={(e) => setConfirmAccPwd(e.target.value)}
-                        autoComplete="new-password"
-                      />
-                    </label>
-                  </div>
-                  <button className="btn btn-dark" type="submit" style={{ alignSelf: 'flex-start' }}>
-                    Update Password
-                  </button>
-                </form>
-              </div>
-            </>
-          )}
+          {activeTab === 'profile' && <Profile donor={donor} onSaved={(d) => { setData((x) => ({ ...x, donor: d })); toast('Profile saved'); }} onPassword={() => { setData((x) => ({ ...x, donor: { ...x.donor, hasPassword: true } })); toast('Password saved'); }} />}
         </div>
       </main>
+      {toastMsg && <div className="toast" role="status" style={{ position: 'fixed', bottom: '24px', left: '50%', transform: 'translateX(-50%)', background: 'var(--ink)', color: '#fff', padding: '12px 20px', borderRadius: '12px', fontWeight: 700, zIndex: 50 }}>{toastMsg}</div>}
+    </>
+  );
+}
 
-      {toastMsg && (
-        <div
-          role="status"
-          aria-live="polite"
-          style={{
-            position: 'fixed',
-            bottom: '24px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            background: 'var(--ink)',
-            color: '#fff',
-            padding: '12px 24px',
-            borderRadius: '999px',
-            fontWeight: 700,
-            zIndex: 9999,
-            boxShadow: 'var(--shadow)',
-          }}
-        >
-          {toastMsg}
+function DonationTable({ rows, onDownload, downloading }) {
+  if (rows.length === 0) return <p style={{ color: 'var(--muted)', margin: 0 }}>No donations to show.</p>;
+  return (
+    <div className="table-box">
+      <table className="data">
+        <thead>
+          <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Campaign</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Receipt</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((d) => (
+            <tr key={d.id}>
+              <td style={{ color: 'var(--muted)', whiteSpace: 'nowrap' }}>{dateText(d.createdAt)}</td>
+              <td>
+                {d.causeSlug ? (
+                  <Link href={`/campaigns/${d.causeSlug}`} style={{ fontWeight: 800, color: 'var(--ink)', textDecoration: 'none' }}>{d.cause}</Link>
+                ) : (
+                  <b style={{ color: 'var(--ink)' }}>{d.cause}</b>
+                )}
+                <br />
+                <span style={{ fontSize: '13px', color: 'var(--muted)' }}>{d.isMonthly ? 'Monthly' : 'One-time'} · {d.receiptNo}</span>
+              </td>
+              <td style={{ whiteSpace: 'nowrap' }}><b>{fmt(d.grandTotal)}</b></td>
+              <td>
+                {d.isMonthly ? (
+                  <span style={{ color: 'var(--muted)', fontSize: '13px' }}>Sent each month</span>
+                ) : (
+                  <button type="button" className="dl" onClick={() => onDownload(d)} disabled={downloading === d.id}>
+                    {downloading === d.id ? 'Preparing…' : d.has80g ? 'Receipt + 80G' : 'Receipt'}
+                  </button>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function Profile({ donor, onSaved, onPassword }) {
+  const [form, setForm] = useState({ name: donor.name, phone: donor.phone, pan: donor.pan, address: donor.address });
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  const [pwd, setPwd] = useState('');
+  const [pwd2, setPwd2] = useState('');
+  const [pwdError, setPwdError] = useState('');
+  const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
+
+  const save = async (e) => {
+    e.preventDefault();
+    setBusy(true);
+    setError('');
+    try {
+      const { donor: saved } = await saveProfile(form);
+      onSaved(saved);
+    } catch (err) {
+      setError(err.message);
+    }
+    setBusy(false);
+  };
+
+  const savePassword = async (e) => {
+    e.preventDefault();
+    if (pwd.length < 8) return setPwdError('Password must be at least 8 characters long.');
+    if (pwd !== pwd2) return setPwdError('Passwords do not match.');
+    try {
+      await setPassword(pwd);
+      setPwd('');
+      setPwd2('');
+      setPwdError('');
+      onPassword();
+    } catch (err) {
+      setPwdError(err.message);
+    }
+  };
+
+  return (
+    <>
+      <h1 style={{ fontSize: 'clamp(28px, 4vw, 36px)' }}>Profile</h1>
+      <form className="box stack" style={{ gap: '14px' }} onSubmit={save}>
+        <p style={{ margin: 0, color: 'var(--muted)', fontSize: '14px' }}>
+          These details go on your receipts and 80G certificates. Your PAN is needed to claim 80G.
+        </p>
+        <div className="grid g2">
+          <label className="field">Full name<input value={form.name || ''} onChange={(e) => set('name', e.target.value)} /></label>
+          <label className="field">Email<input value={donor.email || 'Not given'} disabled /></label>
+          <label className="field">Mobile<input inputMode="numeric" value={form.phone || ''} onChange={(e) => set('phone', e.target.value.replace(/[^0-9]/g, '').slice(0, 10))} /></label>
+          <label className="field">PAN<input maxLength={10} value={form.pan || ''} placeholder="ABCDE1234F" onChange={(e) => set('pan', e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))} /></label>
         </div>
-      )}
+        <label className="field">Address<textarea rows={2} value={form.address || ''} onChange={(e) => set('address', e.target.value)} /></label>
+        {error && <p role="alert" style={{ color: 'var(--red)', fontWeight: 700, margin: 0 }}>{error}</p>}
+        <button className="btn btn-dark" type="submit" disabled={busy} style={{ alignSelf: 'flex-start' }}>{busy ? 'Saving…' : 'Save profile'}</button>
+      </form>
+
+      <form className="box stack" style={{ gap: '14px' }} onSubmit={savePassword}>
+        <h2 style={{ fontSize: '20px' }}>{donor.hasPassword ? 'Change password' : 'Set a password'}</h2>
+        <p style={{ margin: 0, color: 'var(--muted)', fontSize: '14px' }}>
+          {donor.email ? `Log in with ${donor.email} and this password.` : 'Add an email to your donations to log in with a password.'}
+        </p>
+        <div className="grid g2">
+          <label className="field">New password<input type="password" autoComplete="new-password" value={pwd} onChange={(e) => setPwd(e.target.value)} /></label>
+          <label className="field">Confirm password<input type="password" autoComplete="new-password" value={pwd2} onChange={(e) => setPwd2(e.target.value)} /></label>
+        </div>
+        {pwdError && <p role="alert" style={{ color: 'var(--red)', fontWeight: 700, margin: 0 }}>{pwdError}</p>}
+        <button className="btn btn-give" type="submit" style={{ alignSelf: 'flex-start' }}>Save password</button>
+      </form>
     </>
   );
 }
