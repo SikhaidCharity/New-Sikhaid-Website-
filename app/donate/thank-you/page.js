@@ -8,8 +8,8 @@ import { SITE } from '@/lib/site';
 import trust from '@/lib/content/trust-80g.json';
 import './receipt.css';
 
-// Shown on the receipt until the trust's registration number is filled in (Admin → 80G).
-const REGD_NO = trust.registrationNo || '4123009581';
+// As printed on the current sikhaid.ngo receipt.
+const REGD_NO = '4123009581';
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 // "10-Nov-2026 · 17:49"

@@ -1,14 +1,15 @@
 {
   "trustName": "SikhAid Charitable Trust",
-  "address": "",
-  "pan": "",
-  "registrationNo": "",
+  "address": "Mangraj Lane, House No. 222, Cuttack, Odisha - 753001",
+  "pan": "ABBTS2625R",
+  "registrationNo": "ABBTS2625R26HY02",
   "registrationDate": "",
   "validity": "",
-  "deductionNote": "Donations to SikhAid Charitable Trust are eligible for deduction under Section 80G of the Income Tax Act, 1961, subject to the limits in the Act.",
+  "deductionNote": "This donation is eligible for deduction under Section 80G of the Income Tax Act, 1961.",
   "signatoryName": "",
-  "signatoryTitle": "Authorised Signatory",
+  "signatoryTitle": "Authorized Signatory",
   "signatureImage": "",
   "minAmount": 2000,
-  "autoSendWhatsApp": true
+  "autoSendWhatsApp": true,
+  "trustRegNo": "40392100359/2021"
 }
