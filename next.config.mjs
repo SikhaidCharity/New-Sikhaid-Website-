@@ -5,6 +5,8 @@ const nextConfig = {
     remotePatterns: [
       { protocol: 'https', hostname: 'www.sikhaid.ngo' },
       { protocol: 'https', hostname: 'i.ibb.co' },
+      // Images uploaded in the admin (Firebase Storage, v2/ folder).
+      { protocol: 'https', hostname: 'firebasestorage.googleapis.com', pathname: '/v0/b/sikhaidlandingpage.firebasestorage.app/o/**' },
     ],
   },
   // The donation card lives on the campaign page, so old donate URLs land there with it open.
