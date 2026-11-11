@@ -390,7 +390,7 @@ export function CampaignDetail({ initialSlug }) {
               </div>
             </div>
             <div className="cd-band-cta">
-              <Link href={donateHref} className="btn btn-give" style={donateButtonStyle(campaign.donateColor, { fontWeight: 700 })}>
+              <Link href={donateHref} className="btn btn-give" style={donateButtonStyle(campaign.donateColor, { fontWeight: 700 }, campaign.donateStyle)}>
                 {campaign.ctaText || 'Donate Now'}
               </Link>
               <Link href={`${donateHref}?monthly=1`} className="btn btn-line" style={{ fontWeight: 700 }}>
@@ -753,7 +753,7 @@ export function CampaignDetail({ initialSlug }) {
         <Link
           href={donateHref}
           className="btn btn-give"
-          style={donateButtonStyle(campaign.donateColor, { padding: '10px 22px', fontWeight: 700, borderRadius: '999px', fontSize: '14px' })}
+          style={donateButtonStyle(campaign.donateColor, { padding: '10px 22px', fontWeight: 700, borderRadius: '999px', fontSize: '14px' }, campaign.donateStyle)}
         >
           {campaign.ctaText || 'Donate Now'} →
         </Link>

@@ -1,6 +1,8 @@
 .dc-backdrop {
-  /* One solid colour for the selected amount and the payment button. A campaign can set its own. */
+  /* The selected amount and the payment button. Solid blue unless the campaign picks its own
+     colour or the gradient style (lib/donate-color.js sets these). */
   --dc-accent: #1650a8;
+  --dc-fill: var(--dc-accent);
   --dc-on-accent: #fff;
   --dc-error: var(--red);
   --dc-text: var(--ink);
@@ -125,8 +127,8 @@
   border-color: var(--dc-accent);
 }
 .dc-amount[aria-pressed='true'] {
-  border-color: var(--dc-accent);
-  background: var(--dc-accent);
+  border-color: transparent;
+  background: var(--dc-fill) border-box;
   color: var(--dc-on-accent);
 }
 .dc-suggested {
@@ -496,7 +498,7 @@
   padding: 8px 16px;
   border: 0;
   border-radius: 14px;
-  background: var(--dc-accent);
+  background: var(--dc-fill);
   color: var(--dc-on-accent);
   font-family: var(--body);
   font-size: 17px;

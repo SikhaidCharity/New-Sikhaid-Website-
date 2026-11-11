@@ -178,7 +178,7 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose }) {
   const tipLabel = `Support SikhAid (${tipPercent}%)`;
 
   return (
-    <div className="dc-backdrop" style={donateCardStyle(campaign.donateColor)}>
+    <div className="dc-backdrop" style={donateCardStyle(campaign.donateColor, campaign.donateStyle)}>
       <div className="dc-card" role="dialog" aria-modal="true" aria-labelledby="dc-title">
         <header className="dc-head">
           <div>

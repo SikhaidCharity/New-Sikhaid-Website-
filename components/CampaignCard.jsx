@@ -77,7 +77,7 @@ export default function CampaignCard({ campaign }) {
           <Link className="btn btn-line" href={`/campaigns/${campaign.slug}`} style={{ fontWeight: 700 }}>
             Know more
           </Link>
-          <Link className="btn btn-give" href={`/donate/${campaign.slug}`} style={donateButtonStyle(campaign.donateColor, { fontWeight: 700 })}>
+          <Link className="btn btn-give" href={`/donate/${campaign.slug}`} style={donateButtonStyle(campaign.donateColor, { fontWeight: 700 }, campaign.donateStyle)}>
             Donate
           </Link>
         </div>
