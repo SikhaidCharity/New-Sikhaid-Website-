@@ -1,7 +1,7 @@
 .dc-backdrop {
-  /* The selected amount and the payment button. Solid blue unless the campaign picks its own
+  /* The selected amount and the payment button. Solid navy unless the campaign picks its own
      colour or the gradient style (lib/donate-color.js sets these). */
-  --dc-accent: #1650a8;
+  --dc-accent: #121a4a; /* the heading navy */
   --dc-fill: var(--dc-accent);
   --dc-on-accent: #fff;
   --dc-error: var(--red);
