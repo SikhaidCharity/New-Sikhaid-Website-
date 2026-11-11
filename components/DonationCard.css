@@ -1,6 +1,6 @@
 .dc-backdrop {
-  --dc-accent: var(--indigo);
-  --dc-gradient: linear-gradient(120deg, #0a1f5c 0%, #1650a8 60%, #3f8fdd 100%);
+  /* One solid colour for the selected amount and the payment button. A campaign can set its own. */
+  --dc-accent: #1650a8;
   --dc-on-accent: #fff;
   --dc-error: var(--red);
   --dc-text: var(--ink);
@@ -125,8 +125,8 @@
   border-color: var(--dc-accent);
 }
 .dc-amount[aria-pressed='true'] {
-  border-color: transparent;
-  background: var(--dc-gradient) border-box;
+  border-color: var(--dc-accent);
+  background: var(--dc-accent);
   color: var(--dc-on-accent);
 }
 .dc-suggested {
@@ -496,7 +496,7 @@
   padding: 8px 16px;
   border: 0;
   border-radius: 14px;
-  background: var(--dc-gradient);
+  background: var(--dc-accent);
   color: var(--dc-on-accent);
   font-family: var(--body);
   font-size: 17px;
