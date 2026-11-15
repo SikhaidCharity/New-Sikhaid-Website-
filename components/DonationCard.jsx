@@ -6,6 +6,8 @@ import { saveDonation } from '@/lib/forms';
 import { bySlug, fmt } from '@/lib/data';
 import './DonationCard.css';
 import { donateCardStyle } from '@/lib/donate-color';
+import { CURRENCIES, CURRENCY_CODES, currencyOf, formatMoney, isCurrency, toInr } from '@/lib/currency';
+import { useRates } from '@/lib/fx-client';
 
 const AMOUNTS = [701, 1701, 2701, 5701];
 const SUGGESTED_AMOUNT = 1701;
@@ -34,8 +36,22 @@ const PAYMENT_METHODS = [
   ['wallet', 'Wallets', 'Paytm, Mobikwik and more'],
 ];
 
+// Donors abroad pay by card or PayPal in their own currency.
+const INTERNATIONAL_METHODS = [
+  ['card', 'Credit or debit card', 'Visa, Mastercard, American Express'],
+  ['paypal', 'PayPal', 'Pay with your PayPal account'],
+];
+// Phone country code shown first for each currency; donors can change it.
+const DIAL_CODES = { USD: '+1', CAD: '+1', GBP: '+44', EUR: '+49', AUD: '+61', AED: '+971' };
+
 const DONATE_LINK = /^\/donate(?:\/([^/]+))?(?:\/checkout)?\/?$/i;
 const CAMPAIGN_PATH = /^\/campaigns?\/([^/]+)/;
+
+// The international donation page: one campaign, shown in the donor's own currency.
+export const INTERNATIONAL_PATH = '/international-donation';
+export const INTERNATIONAL_SLUG = 'blanket-distribution'; // Winter Sewa
+const slugForPath = (pathname) =>
+  pathname === INTERNATIONAL_PATH ? INTERNATIONAL_SLUG : pathname?.match(CAMPAIGN_PATH)?.[1];
 
 function readStoredUtm() {
   try {
@@ -53,29 +69,34 @@ function newDownloadToken() {
   return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
 }
 
-function DonationCard({ campaign, initialAmount, initialMonthly, onClose }) {
+function DonationCard({ campaign, initialAmount, initialMonthly, onClose, currency, onCurrency }) {
   const router = useRouter();
+  // On the international page everything is in the donor's own currency (USD, EUR, GBP, CAD, AUD, AED).
+  const intl = currency ? currencyOf(currency) : null;
+  const rates = useRates();
+  const money = (n) => (intl ? formatMoney(n, intl.code) : fmt(n));
   // Each campaign can set its own amounts in the admin panel.
-  const amounts = campaign.donationAmounts?.length ? campaign.donationAmounts : AMOUNTS;
-  const suggestedAmount = campaign.suggestedAmount || SUGGESTED_AMOUNT;
-  const minAmount = campaign.minAmount || MIN_AMOUNT;
+  const amounts = intl ? intl.amounts : campaign.donationAmounts?.length ? campaign.donationAmounts : AMOUNTS;
+  const suggestedAmount = intl ? intl.suggested : campaign.suggestedAmount || SUGGESTED_AMOUNT;
+  const minAmount = intl ? intl.min : campaign.minAmount || MIN_AMOUNT;
   const startAmount = initialAmount >= minAmount ? initialAmount : suggestedAmount;
 
   const [step, setStep] = useState('details');
   const [amountText, setAmountText] = useState(String(startAmount));
   const [isMonthly, setIsMonthly] = useState(initialMonthly);
   const [tipPercent, setTipPercent] = useState(DEFAULT_TIP);
-  const [donor, setDonor] = useState({ name: '', email: '', phone: '', pan: '' });
+  const [donor, setDonor] = useState({ name: '', email: '', phone: '', pan: '', dial: intl ? DIAL_CODES[intl.code] : '+91' });
   const [createAccount, setCreateAccount] = useState(true);
   const [whatsappUpdates, setWhatsappUpdates] = useState(true);
-  const [method, setMethod] = useState('upi');
+  const [method, setMethod] = useState(intl ? 'card' : 'upi');
   const [errors, setErrors] = useState({});
 
   const amount = parseInt(amountText, 10) || 0;
   const tipFor = (percent) => Math.round((amount * percent) / 100);
   const tipAmount = tipFor(tipPercent);
   const total = amount + tipAmount;
-  const panRequired = total >= PAN_REQUIRED_FROM;
+  // PAN is for Indian income tax only, so it isn't asked on the international page.
+  const panRequired = !intl && total >= PAN_REQUIRED_FROM;
   const suffix = isMonthly ? '/month' : '';
 
   useEffect(() => {
@@ -99,7 +120,7 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose }) {
   const validate = () => {
     const found = {};
     const pan = donor.pan.trim();
-    if (amount < minAmount) found.amount = `Please enter an amount of ${fmt(minAmount)} or more.`;
+    if (amount < minAmount) found.amount = `Please enter an amount of ${money(minAmount)} or more.`;
     if (!donor.name.trim()) found.name = 'Please enter your full name.';
     if (!donor.email.trim()) {
       found.email = 'Please enter your email address.';
@@ -108,9 +129,10 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose }) {
     }
     if (!donor.phone.trim()) {
       found.phone = 'Please enter your mobile number.';
-    } else if (!/^[0-9]{10}$/.test(donor.phone)) {
-      found.phone = 'Please enter your 10-digit mobile number.';
+    } else if (intl ? !/^[0-9]{6,14}$/.test(donor.phone) : !/^[0-9]{10}$/.test(donor.phone)) {
+      found.phone = intl ? 'Please enter your mobile number (digits only, without the country code).' : 'Please enter your 10-digit mobile number.';
     }
+    if (intl && !/^\+[0-9]{1,4}$/.test(donor.dial)) found.phone = 'Please check the country code (e.g. +44).';
     if (panRequired && !pan) {
       found.pan = `PAN is mandatory for donations of ${fmt(PAN_REQUIRED_FROM)} or more.`;
     } else if (pan && !PAN_PATTERN.test(pan)) {
@@ -132,14 +154,17 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose }) {
 
   const handlePay = () => {
     const now = new Date();
-    const receiptNo = `SA/80G/26-27/${String(Math.floor(now.getTime() / 1000) % 1000000).padStart(6, '0')}`;
+    const receiptNo = `SA/${intl ? 'INTL' : '80G'}/26-27/${String(Math.floor(now.getTime() / 1000) % 1000000).padStart(6, '0')}`;
     const utm = readStoredUtm();
     const donorRecord = {
       name: donor.name.trim(),
       email: donor.email.trim(),
-      phone: donor.phone,
-      pan: donor.pan.trim(),
+      phone: intl ? `${donor.dial} ${donor.phone}` : donor.phone,
+      pan: intl ? '' : donor.pan.trim(),
     };
+    // International gifts are kept in rupees for the admin's totals, with the donor's own currency alongside.
+    const rate = intl ? rates[intl.code] : 1;
+    const inINR = (n) => (intl ? toInr(n, intl.code, rates) : n);
     const donation = {
       receiptNo,
       // Private code that lets this donor download their receipt and 80G certificate later.
@@ -147,9 +172,17 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose }) {
       paidAt: now.toISOString(),
       date: now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
       time: now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }),
-      amount,
-      tipAmt: tipAmount,
-      grandTotal: total,
+      amount: inINR(amount),
+      tipAmt: inINR(tipAmount),
+      grandTotal: inINR(total),
+      ...(intl && {
+        international: true,
+        currency: intl.code,
+        foreignAmount: amount,
+        foreignTip: tipAmount,
+        foreignTotal: total,
+        fxRate: rate,
+      }),
       cause: campaign.title,
       causeSlug: campaign.slug,
       isMonthly,
@@ -157,7 +190,7 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose }) {
       donor: donorRecord,
       optAccount: createAccount,
       optWa: whatsappUpdates,
-      taxDeductible: Math.round(amount * 0.5),
+      taxDeductible: intl ? 0 : Math.round(amount * 0.5),
       utm,
     };
 
@@ -171,7 +204,7 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose }) {
     } catch (e) {}
     saveDonation(donation);
 
-    const query = new URLSearchParams({ receipt: receiptNo, amt: String(amount), camp: campaign.title, ...utm });
+    const query = new URLSearchParams({ receipt: receiptNo, amt: String(amount), camp: campaign.title, ...(intl && { currency: intl.code }), ...utm });
     router.push(`/donate/thank-you?${query.toString()}`);
   };
 
@@ -204,7 +237,26 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose }) {
           {step === 'details' ? (
             <>
               <section>
-                <h3 className="dc-h">Choose an Amount</h3>
+                <div className="dc-amount-head">
+                  <h3 className="dc-h">Choose an Amount</h3>
+                  {intl && (
+                    <select
+                      className="dc-currency"
+                      aria-label="Currency"
+                      value={intl.code}
+                      onChange={(e) => {
+                        const next = currencyOf(e.target.value);
+                        setAmountText(String(next.suggested));
+                        setDonor((d) => ({ ...d, dial: DIAL_CODES[next.code] }));
+                        onCurrency?.(next.code);
+                      }}
+                    >
+                      {CURRENCY_CODES.map((code) => (
+                        <option key={code} value={code}>{code} · {CURRENCIES[code].name}</option>
+                      ))}
+                    </select>
+                  )}
+                </div>
                 <div className="dc-amounts">
                   {amounts.map((value) => (
                     <button
@@ -218,17 +270,17 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose }) {
                       }}
                     >
                       {value === suggestedAmount && <span className="dc-suggested">Suggested ✨</span>}
-                      {fmt(value)}
+                      {money(value)}
                     </button>
                   ))}
                 </div>
                 <div className={`dc-amount-input ${errors.amount ? 'has-error' : ''}`}>
-                  <span aria-hidden="true">₹</span>
+                  <span aria-hidden="true">{intl ? intl.symbol.trim() : '₹'}</span>
                   <input
                     id="dc-amount"
                     type="text"
                     inputMode="numeric"
-                    aria-label="Donation amount in rupees"
+                    aria-label={intl ? `Donation amount in ${intl.code}` : 'Donation amount in rupees'}
                     placeholder={`Minimum ${minAmount}`}
                     value={amountText}
                     onChange={(e) => {
@@ -280,7 +332,7 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose }) {
                   </div>
                 </div>
                 <div className="dc-tip-amount">
-                  {fmt(tipAmount)}
+                  {money(tipAmount)}
                 </div>
               </div>
 
@@ -319,14 +371,26 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose }) {
                 <label className="dc-field" htmlFor="dc-phone">
                   Phone Number *
                   <span className="dc-phone" aria-invalid={Boolean(errors.phone)}>
-                    <span className="dc-phone-code">+91</span>
+                    {intl ? (
+                      <input
+                        className="dc-phone-dial"
+                        type="text"
+                        inputMode="tel"
+                        aria-label="Country code"
+                        maxLength={5}
+                        value={donor.dial}
+                        onChange={(e) => updateDonor('dial', `+${e.target.value.replace(/[^0-9]/g, '')}`)}
+                      />
+                    ) : (
+                      <span className="dc-phone-code">+91</span>
+                    )}
                     <input
                       id="dc-phone"
                       type="tel"
                       required
                       autoComplete="tel-national"
                       inputMode="numeric"
-                      maxLength={10}
+                      maxLength={intl ? 14 : 10}
                       placeholder="Enter number here..."
                       aria-required="true"
                       value={donor.phone}
@@ -335,6 +399,7 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose }) {
                   </span>
                   {errors.phone && <span className="dc-error">{errors.phone}</span>}
                 </label>
+                {!intl && (
                 <label className="dc-field" htmlFor="dc-pan">
                   <span className="dc-label-row">
                     PAN Number{panRequired ? ' *' : ''}
@@ -357,6 +422,7 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose }) {
                   />
                   {errors.pan && <span className="dc-error">{errors.pan}</span>}
                 </label>
+                )}
                 <label className="dc-check">
                   <input
                     type="checkbox"
@@ -382,7 +448,7 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose }) {
               </button>
               <h3 className="dc-h">Choose a Payment Method</h3>
               <div className="dc-methods" role="radiogroup" aria-label="Payment method">
-                {PAYMENT_METHODS.map(([id, name, hint]) => (
+                {(intl ? INTERNATIONAL_METHODS : PAYMENT_METHODS).map(([id, name, hint]) => (
                   <button
                     key={id}
                     type="button"
@@ -401,7 +467,7 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose }) {
               </div>
               {isMonthly && (
                 <p className="dc-note">
-                  You are setting up a UPI AutoPay or card mandate of {fmt(total)} every month. We remind you
+                  You are setting up {intl ? 'a card mandate' : 'a UPI AutoPay or card mandate'} of {money(total)} every month. We remind you
                   3 days before each debit, and you can pause or cancel from your account.
                 </p>
               )}
@@ -420,15 +486,15 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose }) {
             <dl>
               <div>
                 <dt>Your donation</dt>
-                <dd>{fmt(amount)}{suffix}</dd>
+                <dd>{money(amount)}{suffix}</dd>
               </div>
               <div>
                 <dt>{tipLabel}</dt>
-                <dd>{fmt(tipAmount)}</dd>
+                <dd>{money(tipAmount)}</dd>
               </div>
               <div className="dc-summary-total">
                 <dt>Total</dt>
-                <dd>{fmt(total)}{suffix}</dd>
+                <dd>{money(total)}{suffix}</dd>
               </div>
             </dl>
           </details>
@@ -438,7 +504,7 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose }) {
             onClick={step === 'details' ? handleContinue : handlePay}
           >
             {step === 'details' ? 'Continue to Payment' : 'Pay Securely'}
-            <span className="dc-cta-total">{fmt(total)}{suffix}</span>
+            <span className="dc-cta-total">{money(total)}{suffix}</span>
           </button>
           <p className="dc-protect">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -458,7 +524,10 @@ function DonationCardHost() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const pageSlug = pathname?.match(CAMPAIGN_PATH)?.[1] || searchParams.get('slug');
+  const pageSlug = slugForPath(pathname) || searchParams.get('slug');
+  // Only the international page uses other currencies; ?currency=GBP picks one (ads link with it).
+  const currencyParam = searchParams.get('currency')?.toUpperCase();
+  const currency = pathname === INTERNATIONAL_PATH ? (isCurrency(currencyParam) ? currencyParam : 'USD') : null;
   const donateParam = searchParams.get('donate');
   const isOpen = donateParam !== null;
   const campaign = bySlug(donateParam) || bySlug(pageSlug) || GENERAL_FUND;
@@ -488,7 +557,7 @@ function DonationCardHost() {
       if (url.hash === '#monthly' || url.searchParams.get('monthly')) params.set('monthly', '1');
 
       const linkCampaign = bySlug(linkSlug);
-      const currentSlug = window.location.pathname.match(CAMPAIGN_PATH)?.[1] || params.get('slug');
+      const currentSlug = slugForPath(window.location.pathname) || params.get('slug');
 
       if (linkCampaign && linkCampaign.slug !== currentSlug) {
         params.delete('slug');
@@ -534,6 +603,12 @@ function DonationCardHost() {
       initialAmount={parseInt(searchParams.get('amount') || searchParams.get('amt'), 10) || 0}
       initialMonthly={searchParams.get('monthly') === '1'}
       onClose={closeCard}
+      currency={currency}
+      onCurrency={(code) => {
+        const params = new URLSearchParams(window.location.search);
+        params.set('currency', code);
+        window.history.replaceState(null, '', `${window.location.pathname}?${params.toString()}`);
+      }}
     />
   );
 }

@@ -252,7 +252,10 @@ export function getCampaignUpdates(camp) {
   ];
 }
 
-export function CampaignDetail({ initialSlug }) {
+// `money` shows rupee amounts another way (the international page shows them in the donor's currency).
+// `toolbar` appears just above the progress band. `international` drops the Indian campaign list and
+// the India-only badges (80G, UPI).
+export function CampaignDetail({ initialSlug, money = fmt, toolbar = null, international = false }) {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -376,10 +379,11 @@ export function CampaignDetail({ initialSlug }) {
 
       {/* ─── 2. MAIN CONTENT: full-width stats band, then the story ─── */}
       <div>
+        {toolbar}
         <section className="cd-band" id="give" aria-label="Campaign progress and donation">
           <div className="cd-band-inner">
             <div className="cd-band-stat cd-band-raised">
-              <b className="cd-raised">{fmt(campaign.raised)}</b>
+              <b className="cd-raised">{money(campaign.raised)}</b>
               <span>
                 Raised from {campaign.donors.toLocaleString('en-IN')} {campaign.donors === 1 ? 'donor' : 'donors'}
               </span>
@@ -400,9 +404,19 @@ export function CampaignDetail({ initialSlug }) {
           </div>
         </section>
         <div className="cd-trust-row">
-          <span>✓ 80G Tax Receipt</span>
-          <span>✓ 256-bit SSL</span>
-          <span>✓ All UPI &amp; Cards</span>
+          {international ? (
+            <>
+              <span>✓ Pay in your currency</span>
+              <span>✓ 256-bit SSL</span>
+              <span>✓ Cards &amp; PayPal</span>
+            </>
+          ) : (
+            <>
+              <span>✓ 80G Tax Receipt</span>
+              <span>✓ 256-bit SSL</span>
+              <span>✓ All UPI &amp; Cards</span>
+            </>
+          )}
         </div>
 
         <div className="cd-wrap cd-content" style={{ paddingTop: 0, paddingBottom: '80px' }}>
@@ -665,14 +679,27 @@ export function CampaignDetail({ initialSlug }) {
                     q: 'How does SikhAid verify relief delivery?',
                     a: 'Every relief shipment, langar cook, and medicine distribution is photo-documented and tagged with GPS coordinates. Our ground coordinators maintain physical sign-off registers verified by village sarpanches.'
                   },
-                  {
-                    q: 'When do I get my 80G tax receipt?',
-                    a: 'Immediately upon successful donation, your 80G compliant receipt and 10BE tax exemption certificate are generated and dispatched to your email and WhatsApp.'
-                  },
-                  {
-                    q: 'Can I donate via UPI, Netbanking, or International cards?',
-                    a: 'Yes. We support all Indian UPI apps (GPay, PhonePe, Paytm), Netbanking across all Indian banks, debit/credit cards, and international payment gateways.'
-                  },
+                  ...(international
+                    ? [
+                        {
+                          q: 'Can I donate in my own currency?',
+                          a: 'Yes. Choose USD, EUR, GBP, CAD, AUD or AED at the top of the page or in the donation card, and pay by international card or PayPal. Your bank converts the amount to rupees for us.'
+                        },
+                        {
+                          q: 'Will I get a receipt?',
+                          a: 'Yes. A donation receipt is emailed to you straight after your gift. Indian 80G tax certificates apply only to Indian taxpayers, so they are not issued for gifts made from abroad.'
+                        },
+                      ]
+                    : [
+                        {
+                          q: 'When do I get my 80G tax receipt?',
+                          a: 'Immediately upon successful donation, your 80G compliant receipt and 10BE tax exemption certificate are generated and dispatched to your email and WhatsApp.'
+                        },
+                        {
+                          q: 'Can I donate via UPI, Netbanking, or International cards?',
+                          a: 'Yes. We support all Indian UPI apps (GPay, PhonePe, Paytm), Netbanking across all Indian banks, debit/credit cards, and international payment gateways.'
+                        },
+                      ]),
                   {
                     q: 'Can I visit the relief site or volunteer?',
                     a: 'Yes, absolutely. SikhAid welcomes vetted volunteers. You can connect with our ground team via email at help@sikhaid.ngo to join the active volunteer roster.'
@@ -721,6 +748,7 @@ export function CampaignDetail({ initialSlug }) {
       </div>
 
       {/* ─── OTHER CAMPAIGNS ─── */}
+      {!international && (
       <section className="band alt" aria-labelledby="xs-h" style={{ paddingBlock: '48px' }}>
         <div className="wrap">
           <div className="sec-head">
@@ -743,11 +771,12 @@ export function CampaignDetail({ initialSlug }) {
           </div>
         </div>
       </section>
+      )}
 
       {/* ─── MOBILE DOCK ─── */}
       <div className="cd-mobile-dock">
         <div>
-          <b style={{ fontSize: '16px' }}>{fmt(campaign.raised)}</b>
+          <b style={{ fontSize: '16px' }}>{money(campaign.raised)}</b>
           <span style={{ fontSize: '11px', color: 'var(--muted)' }}> Raised</span>
         </div>
         <Link

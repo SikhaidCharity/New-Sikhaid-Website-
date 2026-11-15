@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { fmt } from '@/lib/data';
+import { formatMoney } from '@/lib/currency';
 import { SITE } from '@/lib/site';
 import trust from '@/lib/content/trust-80g.json';
 import { donorPdfUrl } from '@/lib/forms';
@@ -99,6 +100,9 @@ function ThankYouContent() {
 
   const donor = receiptData.donor || {};
   const total = receiptData.grandTotal || receiptData.amount;
+  // Donors on the international page see their own currency, and get no 80G (it is for Indian taxpayers).
+  const intl = receiptData.international && receiptData.currency;
+  const paidText = intl ? formatMoney(receiptData.foreignTotal, receiptData.currency) : fmt(total);
   const firstName = (donor.name || '').trim().split(/\s+/)[0] || 'friend';
   const phoneEnd = lastFour(donor.phone);
   const paymentId = receiptData.razorpayPaymentId || receiptData.receiptNo;
@@ -131,7 +135,7 @@ function ThankYouContent() {
           <div className="rcp-body">
             <div className="rcp-amount">
               <span>Amount Paid</span>
-              <b>{fmt(total)}</b>
+              <b>{paidText}</b>
               <small>Secured via Razorpay</small>
             </div>
 
@@ -166,7 +170,9 @@ function ThankYouContent() {
             </dl>
 
             <p className="rcp-note">
-              For 80G certificate call/WhatsApp {SITE.phone} — receipt will be sent.
+              {intl
+                ? `Questions about your donation? Call or WhatsApp ${SITE.phone}.`
+                : `For 80G certificate call/WhatsApp ${SITE.phone} — receipt will be sent.`}
             </p>
           </div>
 
@@ -182,7 +188,7 @@ function ThankYouContent() {
         <aside className="ty-panel">
           <h2>Thank you, {firstName}! 🙏</h2>
           <p>
-            Your contribution of <b>{fmt(total)}</b> has been received. Your support funds food security,
+            Your contribution of <b>{paidText}</b> has been received. Your support funds food security,
             medical camps, and disaster relief across India.
           </p>
           <div className="ty-impact">Your support saves lives and brings hope to families.</div>
@@ -195,7 +201,7 @@ function ThankYouContent() {
             </svg>
             Download Official Receipt
           </button>
-          {total >= MIN_80G && receiptData.downloadToken && (
+          {!intl && total >= MIN_80G && receiptData.downloadToken && (
             <a className="ty-btn ty-btn-80g" href={donorPdfUrl(receiptData.receiptNo, receiptData.downloadToken)}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
