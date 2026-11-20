@@ -50,8 +50,11 @@ const CAMPAIGN_PATH = /^\/campaigns?\/([^/]+)/;
 // The international donation page: one campaign, shown in the donor's own currency.
 export const INTERNATIONAL_PATH = '/international-donation';
 export const INTERNATIONAL_SLUG = 'blanket-distribution'; // Winter Sewa
-const slugForPath = (pathname) =>
-  pathname === INTERNATIONAL_PATH ? INTERNATIONAL_SLUG : pathname?.match(CAMPAIGN_PATH)?.[1];
+// Campaign landing pages reached only by link: the card opens on the page for that campaign.
+const LANDING_PAGES = { [INTERNATIONAL_PATH]: INTERNATIONAL_SLUG, '/nospotindia': 'no-spot' };
+const slugForPath = (pathname) => LANDING_PAGES[pathname?.replace(/\/$/, '')] || pathname?.match(CAMPAIGN_PATH)?.[1];
+// A landing page can dress the card in its own colours (only there; the campaign's own pages keep theirs).
+const LANDING_THEMES = { '/nospotindia': { donateColor: '#A3375F', donateStyle: 'solid' } };
 
 function readStoredUtm() {
   try {
@@ -530,7 +533,9 @@ function DonationCardHost() {
   const currency = pathname === INTERNATIONAL_PATH ? (isCurrency(currencyParam) ? currencyParam : 'USD') : null;
   const donateParam = searchParams.get('donate');
   const isOpen = donateParam !== null;
-  const campaign = bySlug(donateParam) || bySlug(pageSlug) || GENERAL_FUND;
+  const found = bySlug(donateParam) || bySlug(pageSlug) || GENERAL_FUND;
+  const theme = LANDING_THEMES[pathname?.replace(/\/$/, '')];
+  const campaign = theme ? { ...found, ...theme } : found;
 
   // Remember UTM tags so they survive moving between pages and reach the donation record.
   useEffect(() => {

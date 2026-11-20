@@ -9,7 +9,7 @@ export default function Footer({ withCta = true }) {
   const pathname = usePathname();
 
   // Hide CTA band on checkout, campaign detail, account, login pages, and homepage as requested
-  const noCtaPages = ['/donate', '/campaign', '/account', '/login'];
+  const noCtaPages = ['/donate', '/campaign', '/account', '/login', '/nospotindia'];
   const isHomePage = pathname === '/' || pathname === '' || pathname === '/index.html';
   const showCta = withCta && !isHomePage && !noCtaPages.some((p) => pathname?.startsWith(p));
 
