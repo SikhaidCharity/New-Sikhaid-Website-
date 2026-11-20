@@ -129,6 +129,40 @@
 .ns-cta-inner { display: grid; gap: 28px; justify-items: center; }
 .ns-cta h2 { color: #fff; font-size: clamp(24px, 3.2vw, 36px); line-height: 1.25; max-width: 760px; }
 
+
+/* You remember: moments every woman knows */
+.ns-moments { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-top: 34px; }
+.ns-moment { position: relative; background: #fff; border: 1px solid var(--ns-line); border-radius: 24px 24px 24px 6px; padding: 28px 26px 26px; }
+.ns-moment::before { content: ''; position: absolute; top: 26px; left: 0; width: 4px; height: 28px; border-radius: 0 4px 4px 0; background: var(--ns-berry); }
+.ns-moment h3 { font-size: 20px; margin-bottom: 10px; }
+.ns-moment p { color: var(--ns-muted); line-height: 1.7; }
+.ns-moments-end { margin-top: 30px; font: 600 clamp(20px, 2.4vw, 26px)/1.4 var(--display); color: var(--ns-berry); text-align: center; }
+
+/* Your week, and hers */
+.ns-compare { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; margin-top: 34px; border-radius: 26px; overflow: hidden; box-shadow: 0 18px 44px rgba(78, 31, 61, .1); }
+.ns-compare-col { padding: 32px; }
+.ns-compare-col h3 { font-size: 22px; margin-bottom: 18px; }
+.ns-compare-col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; }
+.ns-compare-col li { display: flex; gap: 12px; align-items: flex-start; line-height: 1.55; }
+.ns-mark { flex: none; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; }
+.ns-compare-you { background: #fff; }
+.ns-compare-you .ns-mark { background: #E6F3EC; color: #1E6B40; }
+.ns-compare-her { background: var(--ns-plum); color: #F6E7EE; }
+.ns-compare-her h3 { color: #fff; }
+.ns-compare-her .ns-mark { background: rgba(232, 163, 183, .2); color: var(--ns-rose); }
+.ns-compare-cta { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 16px 24px; margin-top: 30px; text-align: center; }
+.ns-compare-cta p { font-weight: 600; color: var(--ns-plum); font-size: 18px; }
+
+/* Every month */
+.ns-monthly { background: linear-gradient(120deg, var(--ns-berry-deep), var(--ns-berry)); color: #FCEFF4; padding: 64px 0; }
+.ns-monthly-inner { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 48px; align-items: center; }
+.ns-monthly h2 { color: #fff; font-size: clamp(26px, 3.4vw, 38px); line-height: 1.2; margin-bottom: 14px; }
+.ns-monthly p { line-height: 1.7; margin-bottom: 24px; max-width: 560px; }
+.ns-kicker-light { color: var(--ns-rose); }
+.ns-cycle { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; width: 100%; max-width: 300px; justify-self: center; }
+.ns-cycle i { aspect-ratio: 1; border-radius: 50%; border: 2px solid rgba(255, 255, 255, .45); }
+.ns-cycle i.is-on { background: #fff; border-color: #fff; }
+
 /* Sticky Donate: floating button on larger screens, bar along the bottom on phones */
 .ns-sticky { position: fixed; right: 24px; bottom: 24px; z-index: 40; display: flex; align-items: center; gap: 14px; padding: 8px 8px 8px 20px; background: #fff; border: 1px solid var(--ns-line); border-radius: 999px; box-shadow: 0 16px 40px rgba(78, 31, 61, .2); color: var(--ns-muted); font-size: 14px; opacity: 0; transform: translateY(16px); pointer-events: none; transition: opacity .25s, transform .25s; }
 .ns-sticky.is-shown { opacity: 1; transform: none; pointer-events: auto; }
@@ -138,7 +172,9 @@
 @media (max-width: 960px) {
   .ns-hero-grid, .ns-split, .ns-quote-grid { grid-template-columns: minmax(0, 1fr); gap: 36px; }
   .ns-facts-grid, .ns-tiers { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .ns-story { grid-template-columns: minmax(0, 1fr); }
+  .ns-story, .ns-moments { grid-template-columns: minmax(0, 1fr); }
+  .ns-monthly-inner { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .ns-cycle { justify-self: start; max-width: 260px; }
   .ns-pillars, .ns-help { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .ns-split-media img { aspect-ratio: 4 / 3; }
 }
@@ -152,7 +188,9 @@
   .ns-facts-grid b { font-size: 19px; }
   .ns-tiers { grid-template-columns: minmax(0, 1fr); }
   .ns-raised { margin: -40px 12px 0; }
-  .ns-pillars, .ns-help { grid-template-columns: minmax(0, 1fr); }
+  .ns-pillars, .ns-help, .ns-compare { grid-template-columns: minmax(0, 1fr); }
+  .ns-compare-col { padding: 26px 22px; }
+  .ns-monthly { padding: 48px 0; }
   .ns-gallery { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .ns-sticky { left: 0; right: 0; bottom: 0; justify-content: space-between; border-radius: 0; border-width: 1px 0 0; padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px)); box-shadow: 0 -8px 24px rgba(78, 31, 61, .12); }
   .ns-sticky-btn { min-height: 46px; padding: 0 22px; }

@@ -1,4 +1,6 @@
 // /nospotindia: the No Spot campaign landing page (menstrual health and dignity).
+// Written for women donors: it speaks from one woman to another, starting from what every woman
+// already knows about periods, then shows what the same week looks like for a girl without pads.
 // Reached only by its link (ads, WhatsApp, emails): not in the menus, and kept out of search results.
 // Every Donate button goes to the live site's No Spot donation page (sikhaid.ngo), which takes real
 // Razorpay payments and records the Meta "Purchase" through the same GTM. The ad's UTM tags go along.
@@ -10,13 +12,13 @@ import KeepUtm from './KeepUtm';
 import './no-spot.css';
 
 export const metadata = {
-  title: 'No Spot: Dignity for Every Period | SikhAid Charitable Trust',
+  title: 'No Spot: Every Woman Knows. Not Every Girl Has a Pad. | SikhAid',
   description:
-    'Help girls and women in rural India manage their periods safely. Your gift provides sanitary pads, awareness workshops and clean facilities.',
+    'You know what a period feels like. Many girls in rural India still manage theirs with old cloth. Help SikhAid give them safe pads, answers and dignity.',
   robots: { index: false, follow: false },
   openGraph: {
-    title: 'No Spot: Dignity for Every Period',
-    description: 'Safe sanitary pads, honest conversations and clean facilities for girls and women across India.',
+    title: 'Every woman knows. Not every girl has a pad.',
+    description: 'From one woman to another: help girls in rural India get through their periods with dignity.',
     images: ['/nospotindia/hero.jpg'],
   },
 };
@@ -30,7 +32,29 @@ const PHOTOS = {
   distribution: '/nospotindia/distribution.jpg',
 };
 
-// "Our story": mission, vision and approach.
+// "You remember": moments every woman recognises.
+const MOMENTS = [
+  { title: 'The first time', text: 'The confusion. The fear that something was wrong. Maybe someone sat you down and explained. Maybe no one did.' },
+  { title: 'The school day', text: 'Checking the back of your uniform. Tying a sweater round your waist. Counting the hours until home.' },
+  { title: 'The quiet ask', text: '“Do you have a pad?” Whispered to a friend, a stranger in the washroom, a colleague. Women always help.' },
+];
+
+// The same period, two different lives.
+const COMPARE = {
+  you: [
+    'Pads in the cupboard, and money to buy more',
+    'A clean bathroom with a door that locks',
+    'Someone to ask when something feels wrong',
+    'School, work and life carry on as usual',
+  ],
+  her: [
+    'Old cloth, washed and used again and again',
+    'No toilet nearby, so she waits until dark',
+    'No one to explain, so she believes she is impure',
+    'Days of school missed, every single month',
+  ],
+};
+
 const STORY = [
   {
     label: 'Our mission',
@@ -49,31 +73,17 @@ const STORY = [
   },
 ];
 
-const ISSUE = [
-  { title: 'The silence', text: 'In many homes, periods are still something to hide. Girls grow up without being told what is happening to their bodies, or that it is normal.' },
-  { title: 'The gap', text: 'Safe pads cost money many families cannot spare, and clean, private toilets are often missing. Old cloth, used again and again, becomes the only option.' },
-  { title: 'The cost', text: 'Infections, missed school days and lost wages. A natural part of life ends up holding girls and women back, every single month.' },
-];
-
-// Four pillars of the work.
 const PILLARS = [
-  { icon: 'pad', title: 'Access', text: 'Biodegradable sanitary pads and hygiene essentials, handed out every month to girls and women who need them.' },
-  { icon: 'talk', title: 'Awareness', text: 'Workshops that replace shame with knowledge, for girls, mothers and whole communities.' },
-  { icon: 'home', title: 'Hygiene', text: 'Sanitation drives and portable toilets, so every woman has a clean, private place to go.' },
-  { icon: 'care', title: 'Care', text: 'Health counselling for period problems, and a safe space to ask questions no one else will answer.' },
-];
-
-// "Stronger together": ways to help.
-const HELP = [
-  { title: 'Give once', text: 'Every gift buys pads, kits and workshops for girls who need them now.', href: DONATE, cta: 'Donate' },
-  { title: 'Give monthly', text: 'Periods come every month. A monthly gift keeps a girl supplied all year.', href: MONTHLY, cta: 'Give monthly' },
-  { title: 'Volunteer', text: 'Join distribution drives and awareness sessions with the SikhAid team.', href: '/volunteering', cta: 'Volunteer' },
-  { title: 'Spread the word', text: 'Talking about periods openly is how the silence ends. Share this page.', share: true },
+  { icon: 'pad', title: 'Pads, every month', text: 'Biodegradable sanitary pads and hygiene essentials, handed out every month, not just once.' },
+  { icon: 'talk', title: 'Answers, not shame', text: 'Workshops where girls and their mothers learn what a period is, and that it is normal.' },
+  { icon: 'home', title: 'A door to close', text: 'Sanitation drives and portable toilets, so she has a clean, private place to change.' },
+  { icon: 'care', title: 'Someone to ask', text: 'Health counselling for pain and problems, from women she can talk to openly.' },
 ];
 
 const FAQ = [
-  { q: 'Where does my donation go?', a: 'To No Spot’s work with girls and women in the urban slums of Pune and remote villages of Odisha: sanitary pads and toiletries, awareness workshops, sanitation drives and health counselling.' },
-  { q: 'Will I get a receipt and tax benefit?', a: 'Yes. Every donor gets a receipt on WhatsApp. Donations of ₹2,000 or more also get an 80G certificate, so you can claim tax benefit in India.' },
+  { q: 'Who are the girls and women you help?', a: 'Schoolgirls, mothers and working women in the urban slums of Pune and remote villages of Odisha, many of whom have never used a sanitary pad.' },
+  { q: 'Where does my donation go?', a: 'To No Spot: sanitary pads and toiletries, awareness workshops, sanitation drives and health counselling.' },
+  { q: 'Will I get a receipt and tax benefit?', a: 'Yes. You get a receipt on WhatsApp. Donations of ₹2,000 or more also get an 80G certificate, so you can claim tax benefit in India.' },
   { q: 'Can I give every month?', a: 'Yes. Tap “Give monthly” to set up a fixed amount each month, with auto-debit you can cancel anytime.' },
   { q: 'Are the pads safe?', a: 'No Spot gives out biodegradable sanitary pads, along with guidance on how to use and dispose of them safely.' },
 ];
@@ -83,6 +93,8 @@ function Icon({ name }) {
   if (name === 'pad') return <svg {...common}><rect x="7" y="2.5" width="10" height="19" rx="5" /><path d="M10 8.5h4M10 12h4M10 15.5h4" /></svg>;
   if (name === 'talk') return <svg {...common}><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12z" /><path d="M8.5 11h.01M12 11h.01M15.5 11h.01" /></svg>;
   if (name === 'home') return <svg {...common}><path d="M3 10.5 12 3l9 7.5" /><path d="M5 9.5V21h14V9.5" /><path d="M10 21v-6h4v6" /></svg>;
+  if (name === 'check') return <svg {...common} width={20} height={20}><path d="M20 6 9 17l-5-5" /></svg>;
+  if (name === 'cross') return <svg {...common} width={20} height={20}><path d="M18 6 6 18M6 6l12 12" /></svg>;
   return <svg {...common}><path d="M12 21s-7.5-4.6-9.3-9.4C1.5 8.3 3.6 4.5 7.3 4.5c2 0 3.4 1.1 4.7 2.8 1.3-1.7 2.7-2.8 4.7-2.8 3.7 0 5.8 3.8 4.6 7.1C19.5 16.4 12 21 12 21z" /></svg>;
 }
 
@@ -101,29 +113,76 @@ export default function NoSpotPage() {
       <section className="ns-hero">
         <div className="wrap ns-hero-grid">
           <div className="ns-hero-copy">
-            <p className="ns-eyebrow">No Spot · A SikhAid women’s health mission</p>
+            <p className="ns-eyebrow">From one woman to another</p>
             <h1>
-              Periods are natural.
-              <span> Missing school because of one shouldn’t be.</span>
+              Every woman knows what a period feels like.
+              <span> Not every girl has a pad.</span>
             </h1>
             <p className="ns-lead">
-              Across rural Odisha and the slums of Pune, many girls and women still manage their periods with old cloth,
-              in silence. No Spot brings safe sanitary pads, honest conversations and clean facilities, so no one has to
-              hide, miss school or lose a day’s work.
+              You’ve had the cramps, the stained-uniform panic, the whispered “do you have a pad?”. Now imagine it every
+              month with only old cloth, no door to close and no one to explain. For many girls in rural Odisha and the
+              slums of Pune, that is still every month.
             </p>
             <div className="ns-actions">
-              <a className="ns-btn ns-btn-main" href={DONATE}>Donate pads</a>
-              <a className="ns-btn ns-btn-soft" href={MONTHLY}>Give monthly</a>
+              <a className="ns-btn ns-btn-main" href={DONATE}>Give her a pad</a>
+              <a className="ns-btn ns-btn-soft" href={MONTHLY}>Stand with her every month</a>
             </div>
             <p className="ns-note">Receipt on WhatsApp · 80G certificate for ₹2,000 or more</p>
           </div>
           <div className="ns-hero-media">
-            <img src={PHOTOS.hero} alt="SikhAid volunteers with women at a No Spot session" />
+            <img src={PHOTOS.hero} alt="SikhAid volunteers with women and girls at a No Spot session" />
             <div className="ns-raised" aria-label="Raised so far">
               <span className="ns-raised-label">Raised so far</span>
               <b>{raised}</b>
-              <span className="ns-raised-sub">from {donors} donors · every rupee goes to No Spot</span>
+              <span className="ns-raised-sub">from {donors} donors standing with her</span>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* You remember */}
+      <section className="ns-band">
+        <div className="wrap">
+          <p className="ns-kicker">You remember</p>
+          <h2 className="ns-h2">Every woman has a period story</h2>
+          <div className="ns-moments">
+            {MOMENTS.map((m) => (
+              <article key={m.title} className="ns-moment">
+                <h3>{m.title}</h3>
+                <p>{m.text}</p>
+              </article>
+            ))}
+          </div>
+          <p className="ns-moments-end">Now imagine going through all of it with nothing.</p>
+        </div>
+      </section>
+
+      {/* Same period, two lives */}
+      <section className="ns-band ns-band-soft">
+        <div className="wrap">
+          <p className="ns-kicker">The same period</p>
+          <h2 className="ns-h2">Your week, and hers</h2>
+          <div className="ns-compare">
+            <div className="ns-compare-col ns-compare-you">
+              <h3>Your period</h3>
+              <ul>
+                {COMPARE.you.map((t) => (
+                  <li key={t}><span className="ns-mark"><Icon name="check" /></span>{t}</li>
+                ))}
+              </ul>
+            </div>
+            <div className="ns-compare-col ns-compare-her">
+              <h3>Her period</h3>
+              <ul>
+                {COMPARE.her.map((t) => (
+                  <li key={t}><span className="ns-mark"><Icon name="cross" /></span>{t}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          <div className="ns-compare-cta">
+            <p>You can close this gap for a girl, starting this month.</p>
+            <a className="ns-btn ns-btn-main" href={DONATE}>Close the gap</a>
           </div>
         </div>
       </section>
@@ -133,7 +192,7 @@ export default function NoSpotPage() {
         <div className="wrap ns-facts-grid">
           <div><b>1 lakh+</b><span>sanitary pads given out every month</span></div>
           <div><b>{raised}</b><span>raised so far for No Spot</span></div>
-          <div><b>{donors}</b><span>donors standing with them</span></div>
+          <div><b>{donors}</b><span>donors standing with her</span></div>
           <div><b>Pune &amp; Odisha</b><span>urban slums and remote villages</span></div>
         </div>
       </section>
@@ -155,43 +214,44 @@ export default function NoSpotPage() {
         </div>
       </section>
 
-      {/* The issue */}
+      {/* What she gets */}
       <section className="ns-band ns-band-soft">
         <div className="wrap ns-split">
           <div className="ns-split-media">
-            <img src={PHOTOS.workshop} alt="A No Spot awareness workshop with girls" loading="lazy" />
+            <img src={PHOTOS.workshop} alt="Girls at a No Spot awareness session" loading="lazy" />
           </div>
           <div>
-            <p className="ns-kicker">The issue</p>
-            <h2 className="ns-h2">A period should never cost a girl her dignity</h2>
-            <div className="ns-issue">
-              {ISSUE.map((w, i) => (
-                <div key={w.title} className="ns-issue-row">
-                  <span className="ns-num">0{i + 1}</span>
+            <p className="ns-kicker">What your gift gives her</p>
+            <h2 className="ns-h2">Everything you had, that she doesn’t</h2>
+            <ul className="ns-work">
+              {PILLARS.map((p) => (
+                <li key={p.title}>
+                  <span className="ns-icon"><Icon name={p.icon} /></span>
                   <div>
-                    <h3>{w.title}</h3>
-                    <p>{w.text}</p>
+                    <h3>{p.title}</h3>
+                    <p>{p.text}</p>
                   </div>
-                </div>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
         </div>
       </section>
 
-      {/* Pillars */}
-      <section className="ns-band">
-        <div className="wrap">
-          <p className="ns-kicker">What No Spot does</p>
-          <h2 className="ns-h2">Four ways we bring dignity back</h2>
-          <div className="ns-pillars">
-            {PILLARS.map((p) => (
-              <article key={p.title} className="ns-pillar">
-                <span className="ns-icon"><Icon name={p.icon} /></span>
-                <h3>{p.title}</h3>
-                <p>{p.text}</p>
-              </article>
-            ))}
+      {/* Monthly */}
+      <section className="ns-monthly">
+        <div className="wrap ns-monthly-inner">
+          <div className="ns-cycle" aria-hidden="true">
+            {Array.from({ length: 28 }, (_, i) => <i key={i} className={i < 5 ? 'is-on' : ''} />)}
+          </div>
+          <div>
+            <p className="ns-kicker ns-kicker-light">Every month</p>
+            <h2>Her period comes every month. Your support can too.</h2>
+            <p>
+              A one-time gift helps today. A monthly gift means she never has to go back to cloth. Choose any amount,
+              cancel anytime.
+            </p>
+            <a className="ns-btn ns-btn-light" href={MONTHLY}>Give monthly</a>
           </div>
         </div>
       </section>
@@ -201,7 +261,7 @@ export default function NoSpotPage() {
         <section className="ns-band ns-band-blush" id="give">
           <div className="wrap">
             <p className="ns-kicker">Your gift at work</p>
-            <h2 className="ns-h2">Choose what you’d like to give</h2>
+            <h2 className="ns-h2">Pick what feels right to you</h2>
             <div className="ns-tiers">
               {tiers.map((t) => (
                 <a key={t.amt} className="ns-tier" href={DONATE}>
@@ -220,7 +280,7 @@ export default function NoSpotPage() {
       {/* Voice */}
       <section className="ns-quote-band">
         <div className="wrap ns-quote-grid">
-          <img src={PHOTOS.distribution} alt="SikhAid volunteers with No Spot sanitary pads" loading="lazy" />
+          <img src={PHOTOS.distribution} alt="Women volunteers of SikhAid with No Spot sanitary pads" loading="lazy" />
           <figure>
             <blockquote>
               {camp.quote ||
@@ -231,19 +291,32 @@ export default function NoSpotPage() {
         </div>
       </section>
 
-      {/* Stronger together */}
+      {/* Women helping women */}
       <section className="ns-band">
         <div className="wrap">
-          <p className="ns-kicker">Stronger together</p>
-          <h2 className="ns-h2">We can’t end period poverty alone</h2>
+          <p className="ns-kicker">Women helping women</p>
+          <h2 className="ns-h2">We’ve always handed each other a pad. This is the same thing.</h2>
           <div className="ns-help">
-            {HELP.map((h) => (
-              <article key={h.title} className="ns-card ns-help-card">
-                <h3>{h.title}</h3>
-                <p>{h.text}</p>
-                {h.share ? <ShareButton className="ns-btn ns-btn-soft" /> : <a className={`ns-btn ${h.href === DONATE ? 'ns-btn-main' : 'ns-btn-soft'}`} href={h.href}>{h.cta}</a>}
-              </article>
-            ))}
+            <article className="ns-card ns-help-card">
+              <h3>Give once</h3>
+              <p>Pads, kits and workshops for girls who need them now.</p>
+              <a className="ns-btn ns-btn-main" href={DONATE}>Donate</a>
+            </article>
+            <article className="ns-card ns-help-card">
+              <h3>Give monthly</h3>
+              <p>Keep a girl supplied all year, not just for one cycle.</p>
+              <a className="ns-btn ns-btn-soft" href={MONTHLY}>Give monthly</a>
+            </article>
+            <article className="ns-card ns-help-card">
+              <h3>Volunteer</h3>
+              <p>Join distribution drives and sit with girls at awareness sessions.</p>
+              <a className="ns-btn ns-btn-soft" href="/volunteering">Volunteer</a>
+            </article>
+            <article className="ns-card ns-help-card">
+              <h3>Tell your girls</h3>
+              <p>Send this to your sisters, friends and mothers’ group. Talking openly is how the silence ends.</p>
+              <ShareButton className="ns-btn ns-btn-soft" />
+            </article>
           </div>
         </div>
       </section>
@@ -274,9 +347,9 @@ export default function NoSpotPage() {
       {/* Closing call */}
       <section className="ns-cta">
         <div className="wrap ns-cta-inner">
-          <h2>Help a girl get through her period with dignity, this month and every month.</h2>
+          <h2>Somewhere, a girl is getting her first period this month. Let it be with a pad, and an answer.</h2>
           <div className="ns-actions ns-actions-center">
-            <a className="ns-btn ns-btn-light" href={DONATE}>Donate now</a>
+            <a className="ns-btn ns-btn-light" href={DONATE}>Give her a pad</a>
             <ShareButton className="ns-btn ns-btn-ghost" />
           </div>
         </div>
