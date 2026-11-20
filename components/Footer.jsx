@@ -267,8 +267,8 @@ export default function Footer({ withCta = true }) {
 
           <div className="foot-base">
             <span>
-              © 2026 SikhAid Charitable Trust · 80G Reg. No. [80G NUMBER] · Trust
-              Reg. No. [TRUST NUMBER]
+              © 2026 SikhAid Charitable Trust · 80G Reg. No. ABBTS2625R26HY02 · Trust
+              Reg. No. 40392100359/2021
             </span>
             <span className="row" style={{ gap: '8px' }}>
               Secure payments by Razorpay

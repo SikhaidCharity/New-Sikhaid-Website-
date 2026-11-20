@@ -4,14 +4,9 @@ import Link from 'next/link';
 import Photo from '@/components/Photo';
 
 export default function AboutPage() {
-  const docs = [
-    ['80G certificate', 'PDF'],
-    ['12A certificate', 'PDF'],
-    ['Trust deed', 'PDF'],
-    ['Annual report 2025–26', 'PDF'],
-    ['Audited financials 2025–26', 'PDF'],
-    ['Campaign utilisation reports', 'One per campaign'],
-  ];
+  // Downloadable documents. Each needs a real file before it is shown: { title, note, href }.
+  // Until then the cards stay hidden (e.g. 80G certificate, 12A certificate, trust deed, annual report).
+  const docs = [];
 
   return (
     <>
@@ -299,7 +294,7 @@ export default function AboutPage() {
                 </span>
               </li>
               <li>
-                <b className="y">[YEAR]</b>
+                <b className="y">Then</b>
                 <b style={{ color: 'var(--ink)' }}>Langar Aid &amp; No Spot</b>
                 <span style={{ color: 'var(--muted)' }}>
                   Community kitchens and women&apos;s health drives expand to new
@@ -390,7 +385,7 @@ export default function AboutPage() {
                   Verified, registered, accountable
                 </h2>
                 <p className="lead" style={{ fontSize: '15.5px', maxWidth: '640px', margin: '6px auto 0' }}>
-                  Every document a donor or CSR partner may need, open to view and download.
+                  Our registration details for donors and CSR partners. For copies of our certificates, write to help@sikhaid.ngo.
                 </p>
               </div>
             </div>
@@ -400,31 +395,24 @@ export default function AboutPage() {
               <dl className="reg-inline">
                 <div className="reg-item">
                   <dt>Trust registration</dt>
-                  <dd>[TRUST REG. NO.]</dd>
+                  <dd>40392100359/2021</dd>
                 </div>
                 <div className="reg-item">
                   <dt>80G registration</dt>
-                  <dd>[80G REG. NO.]</dd>
-                </div>
-                <div className="reg-item">
-                  <dt>12A registration</dt>
-                  <dd>[12A REG. NO.]</dd>
+                  <dd>ABBTS2625R26HY02</dd>
                 </div>
                 <div className="reg-item">
                   <dt>Trust PAN</dt>
-                  <dd>[TRUST PAN]</dd>
-                </div>
-                <div className="reg-item">
-                  <dt>CSR-1</dt>
-                  <dd>[CSR-1 NO.]</dd>
+                  <dd>ABBTS2625R</dd>
                 </div>
               </dl>
             </div>
 
             {/* Download PDF Cards in One Line Below */}
+            {docs.length > 0 && (
             <div className="docs-single-line" id="docs">
               {docs.map((d, i) => (
-                <a className="doc-card-compact" href="#compliance" key={i}>
+                <a className="doc-card-compact" href={d.href} target="_blank" rel="noreferrer" key={i}>
                   <span className="ic">
                     <svg
                       width="18"
@@ -441,12 +429,13 @@ export default function AboutPage() {
                     </svg>
                   </span>
                   <div className="doc-text">
-                    <b>{d[0]}</b>
-                    <span>{d[1]}</span>
+                    <b>{d.title}</b>
+                    <span>{d.note}</span>
                   </div>
                 </a>
               ))}
             </div>
+            )}
           </div>
         </section>
       </main>
