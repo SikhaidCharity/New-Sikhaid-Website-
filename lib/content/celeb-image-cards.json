@@ -2,8 +2,9 @@
   {
     "id": "badshah",
     "name": "Badshah",
-    "image": "/personalities/badshah.webp",
-    "active": true
+    "image": "https://firebasestorage.googleapis.com/v0/b/sikhaidlandingpage.firebasestorage.app/o/v2%2Fuploads%2F1795083350774-f2ae321a.jpg?alt=media&token=eafb5a9b-3465-40d4-b541-ca3bda743523",
+    "active": true,
+    "updatedAt": "2026-11-19T10:15:54.547Z"
   },
   {
     "id": "harbhajan",
@@ -52,5 +53,13 @@
     "name": "Banita Sandhu",
     "image": "/personalities/banita-sandhu.webp",
     "active": true
+  },
+  {
+    "name": "Gururandhawa",
+    "image": "https://firebasestorage.googleapis.com/v0/b/sikhaidlandingpage.firebasestorage.app/o/v2%2Fuploads%2F1795083317514-f43a3c07.jpg?alt=media&token=a06ad837-fc84-42b3-be3f-9504560eeb2f",
+    "active": true,
+    "id": "c5530bc02ff30aba",
+    "createdAt": "2026-11-19T10:15:22.471Z",
+    "updatedAt": "2026-11-19T10:15:22.471Z"
   }
 ]
