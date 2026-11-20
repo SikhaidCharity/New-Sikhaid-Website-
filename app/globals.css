@@ -6364,3 +6364,10 @@ input[type="number"] {
   .hero-slides-desktop { display: none; }
   .hero-slides-mobile { display: block; }
 }
+
+/* Login: mobile number / email tabs */
+.login-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; border-radius: 12px; background: var(--bg-alt); }
+.login-tabs button { min-height: 42px; border: 0; border-radius: 9px; background: transparent; font: inherit; font-weight: 700; font-size: 14px; color: var(--muted); cursor: pointer; }
+.login-tabs button[aria-selected="true"] { background: #fff; color: var(--ink); box-shadow: 0 2px 8px rgba(18, 26, 74, .1); }
+.link-btn { border: 0; padding: 0; background: none; font: inherit; font-weight: 700; color: var(--indigo); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.link-btn:disabled { opacity: .5; cursor: default; }
