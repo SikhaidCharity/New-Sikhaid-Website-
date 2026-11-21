@@ -233,17 +233,20 @@ export default function Footer({ withCta = true }) {
           </div>
 
           <div className="foot-base">
-            <span>
-              © 2026 SikhAid Charitable Trust · 80G Reg. No. ABBTS2625R26HY02 · Trust
-              Reg. No. 40392100359/2021
-            </span>
-            <span className="row" style={{ gap: '8px' }}>
-              Secure payments by Razorpay
-              <span className="pay-chip">UPI</span>
-              <span className="pay-chip">RuPay</span>
-              <span className="pay-chip">Visa</span>
-              <span className="pay-chip">Mastercard</span>
-            </span>
+            <p className="foot-legal">
+              <span>© 2026 SikhAid Charitable Trust</span>
+              <span>80G Reg. No. ABBTS2625R26HY02</span>
+              <span>Trust Reg. No. 40392100359/2021</span>
+            </p>
+            <div className="foot-pay">
+              <span>Secure payments by Razorpay</span>
+              <span className="foot-chips">
+                <span className="pay-chip">UPI</span>
+                <span className="pay-chip">RuPay</span>
+                <span className="pay-chip">Visa</span>
+                <span className="pay-chip">Mastercard</span>
+              </span>
+            </div>
           </div>
         </div>
       </footer>

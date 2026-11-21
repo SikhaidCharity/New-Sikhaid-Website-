@@ -333,6 +333,21 @@ button { font-family: inherit; }
 .socials { display: flex; gap: 10px; }
 .socials a { width: 44px; height: 44px; border-radius: 12px; background: rgba(255,255,255,.1); display: grid; place-items: center; }
 .foot-base { border-top: 1px solid rgba(255,255,255,.14); padding-block: 22px 28px; display: flex; flex-wrap: wrap; gap: 14px; justify-content: space-between; align-items: center; font-size: 13px; }
+.foot-legal { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 0; }
+.foot-legal span + span::before { content: '·'; margin: 0 8px; opacity: .6; }
+.foot-pay { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.foot-chips { display: flex; gap: 6px; }
+/* Phones: links in two even columns (Legal & trust under them, also in two columns), and the
+   bottom line stacked: registration numbers one per line, then the payment logos in one row. */
+@media (max-width: 560px) {
+  .site-footer .cols { gap: 32px 20px; padding-block: 48px 28px; }
+  .site-footer .cols > :last-child { grid-column: 1 / -1; }
+  .site-footer .cols > :last-child ul { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 20px; }
+  .foot-base { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .foot-legal { flex-direction: column; align-items: flex-start; }
+  .foot-legal span + span::before { content: none; }
+  .foot-pay { flex-direction: column; align-items: flex-start; }
+}
 .pay-chip { border: 1px solid rgba(255,255,255,.25); border-radius: 6px; padding: 3px 9px; font-weight: 800; color: #fff; font-size: 12px; }
 
 /* ---------- campaign card (beautiful, minimalist, uncluttered) ---------- */

@@ -9,8 +9,9 @@ import { donateCardStyle } from '@/lib/donate-color';
 import { CURRENCIES, CURRENCY_CODES, currencyOf, formatMoney, isCurrency, toInr } from '@/lib/currency';
 import { useRates } from '@/lib/fx-client';
 
-const AMOUNTS = [701, 1701, 2701, 5701];
-const SUGGESTED_AMOUNT = 1701;
+const AMOUNTS = [500, 1500, 2500, 5000];
+const SUGGESTED_AMOUNT = 500;
+const OLD_AMOUNTS = '701,1701,2701,5701';
 const MIN_AMOUNT = 100;
 const TIP_SLABS = [
   { value: 0, label: 'No thanks' },
@@ -79,8 +80,10 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose, curren
   const rates = useRates();
   const money = (n) => (intl ? formatMoney(n, intl.code) : fmt(n));
   // Each campaign can set its own amounts in the admin panel.
-  const amounts = intl ? intl.amounts : campaign.donationAmounts?.length ? campaign.donationAmounts : AMOUNTS;
-  const suggestedAmount = intl ? intl.suggested : campaign.suggestedAmount || SUGGESTED_AMOUNT;
+  // A campaign still on the old standard amounts (₹701 / 1,701 / 2,701 / 5,701) gets the current ones.
+  const custom = campaign.donationAmounts?.length && campaign.donationAmounts.join() !== OLD_AMOUNTS;
+  const amounts = intl ? intl.amounts : custom ? campaign.donationAmounts : AMOUNTS;
+  const suggestedAmount = intl ? intl.suggested : (custom && campaign.suggestedAmount) || SUGGESTED_AMOUNT;
   const minAmount = intl ? intl.min : campaign.minAmount || MIN_AMOUNT;
   const startAmount = initialAmount >= minAmount ? initialAmount : suggestedAmount;
 
