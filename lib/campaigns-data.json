@@ -531,30 +531,31 @@
   {
     "publishStatus": "published",
     "slug": "blanket-distribution",
-    "title": "Blanket Distribution",
-    "short": "Blanket",
-    "subtitle": "Shielding Vulnerable Families from Winter's Harsh Embrace",
-    "tagText": "Winter Relief Mission",
+    "title": "Mission Garmahat",
+    "short": "Garmahat",
+    "subtitle": "Warmth for elders and children this winter",
+    "tagText": "Winter Seva for Elders & Children",
     "type": "community",
     "group": "Emergency",
     "category": "Winter Relief",
     "location": "North India",
     "status": "Ongoing",
     "urgent": false,
-    "blurb": "Winter relief campaign providing high-quality blankets to impoverished families, elderly, and homeless individuals across India.",
+    "blurb": "Mission Garmahat brings heavy blankets and winter warmth to the elders and children who face the cold with nothing, on pavements, in slums and in remote villages across North India.",
     "story": [
-      "Each winter, SikhAid launches its Blanket Seva campaign to shield the most vulnerable - impoverished families, the elderly, and the homeless - from the biting cold. Through carefully organized distribution drives, high-quality blankets are delivered across urban slums and remote villages.",
-      "This annual campaign ensures no one is left to face harsh nights without protection. These initiatives not only bring warmth but also foster solidarity and compassion, reminding communities that seva never sleeps, even in the coldest months.",
-      "Our teams work tirelessly during winter months, conducting door-to-door distributions in slums, organizing community distribution points, and ensuring that the most vulnerable populations receive adequate winter protection when they need it most."
+      "Every winter, the cold is hardest on the oldest and the youngest. Elders with weak lungs and aching joints, and small children with thin clothes, spend freezing nights on pavements, under flyovers and in homes with no door to keep the wind out. For them a cold wave is not an inconvenience. It brings pneumonia, hypothermia and nights without sleep.",
+      "Mission Garmahat is SikhAid's winter seva for them. Our volunteers go out on night cold-wave drives and door to door in slums and villages, wrapping elders and children in heavy blankets and handing families shawls, caps and socks. We look for those who are easy to miss: the grandmother sleeping alone at the bus stand, the children huddled beside a dying fire.",
+      "Garmahat means warmth, and that is what every gift carries. A blanket given in December is used every night until spring, and often for winters after. Your support lets us reach more elders and children before the coldest nights arrive, so that no one has to face the winter alone."
     ],
-    "quote": "In the biting cold of North Indian winters, a heavy wool blanket is not just comfort — it is life-saving protection against deadly pneumonia for children and elderly individuals sleeping on pavements.",
-    "quoteAuthor": "Winter Relief Seva Lead",
+    "quote": "For an elderly man on a pavement or a child in a slum, a heavy blanket on a cold-wave night is not comfort. It is protection from pneumonia, from hypothermia, and from a night that might not end well.",
+    "quoteAuthor": "Mission Garmahat Seva Team",
     "raised": 1240000,
     "goal": 1500000,
     "donors": 1480,
     "days": null,
     "tone": "#4A4A6A",
-    "img": "https://i.ibb.co/zWNmNZhN/Blanket-Main.png"
+    "img": "https://i.ibb.co/zWNmNZhN/Blanket-Main.png",
+    "updatedAt": "2026-11-21T04:28:00.768Z"
   },
   {
     "publishStatus": "published",

@@ -49,7 +49,7 @@ const CAMPAIGN_PATH = /^\/campaigns?\/([^/]+)/;
 
 // The international donation page: one campaign, shown in the donor's own currency.
 export const INTERNATIONAL_PATH = '/international-donation';
-export const INTERNATIONAL_SLUG = 'blanket-distribution'; // Winter Sewa
+export const INTERNATIONAL_SLUG = 'blanket-distribution'; // Mission Garmahat (winter blankets)
 // Campaign landing pages reached only by link: the card opens on the page for that campaign.
 const LANDING_PAGES = { [INTERNATIONAL_PATH]: INTERNATIONAL_SLUG, '/nospotindia': 'no-spot' };
 const slugForPath = (pathname) => LANDING_PAGES[pathname?.replace(/\/$/, '')] || pathname?.match(CAMPAIGN_PATH)?.[1];

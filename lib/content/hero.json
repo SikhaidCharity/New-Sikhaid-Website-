@@ -1,7 +1,7 @@
 {
   "mediaType": "video",
   "videoUrl": "/assets/langar-hero-2026.mp4",
-  "posterUrl": "/assets/langar-hero-2026.jpg",
+  "posterUrl": "",
   "desktopImages": [],
   "mobileImages": [],
   "line1": "Langar For All. Seva For All.",
@@ -10,6 +10,6 @@
   "scrollText": "Scroll down",
   "scrollLink": "#emergencies",
   "showSoundButton": true,
-  "overlayOpacity": 100,
+  "overlayOpacity": 40,
   "slideSeconds": 5
 }

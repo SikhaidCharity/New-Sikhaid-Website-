@@ -1,4 +1,4 @@
-// /international-donation: the Winter Sewa campaign for donors abroad, in their own currency.
+// /international-donation: the Mission Garmahat (winter blankets) campaign for donors abroad, in their own currency.
 // Reached only by its link (ads, emails): not in the menus, and kept out of search results.
 import { Suspense } from 'react';
 import { headers } from 'next/headers';
@@ -6,8 +6,8 @@ import { currencyForCountry, isCurrency } from '@/lib/currency';
 import InternationalCampaign from './InternationalCampaign';
 
 export const metadata = {
-  title: 'Winter Sewa: Donate from Abroad | SikhAid Charitable Trust',
-  description: 'Keep families warm this winter. Donate to SikhAid’s Winter Sewa in your own currency.',
+  title: 'Mission Garmahat: Donate from Abroad | SikhAid Charitable Trust',
+  description: 'Keep elders and children warm this winter. Donate to SikhAid’s Mission Garmahat in your own currency.',
   robots: { index: false, follow: false },
 };
 

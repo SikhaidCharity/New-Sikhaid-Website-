@@ -3023,17 +3023,18 @@ dl.reg dd { margin: 0; font-weight: 800; color: var(--ink); }
 .search { flex: 1 1 260px; display: flex; align-items: center; gap: 10px; border: 1.5px solid #D3D7E6; border-radius: 12px; padding: 0 14px; min-height: 48px; }
 .search input { border: 0; outline: none; flex: 1; min-width: 0; font: inherit; font-size: 15px; background: transparent; color: var(--ink); }
 .search:focus-within { border-color: var(--indigo); }
-.hero-stats { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 14px; margin: 20px auto 0; width: 100%; max-width: 920px; }
+.hero-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin: 20px auto 0; width: 100%; max-width: 920px; }
+@media (max-width: 720px) { .hero-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .hero-stats div {
   background: rgba(255, 255, 255, 0.06);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 16px;
-  padding: 18px 24px;
+  padding: 18px 10px;
   text-align: center;
-  min-width: 145px;
-  flex: 1 1 140px;
+  min-width: 0;
+  container-type: inline-size;
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
   transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
 }
@@ -3045,7 +3046,9 @@ dl.reg dd { margin: 0; font-weight: 800; color: var(--ink); }
 .hero-stats b {
   display: block;
   font-family: var(--display);
-  font-size: 32px;
+  /* Sized to the card's own width, so a long amount never spills out. */
+  font-size: clamp(15px, 17cqi, 32px);
+  white-space: nowrap;
   color: var(--saffron);
   font-variant-numeric: tabular-nums;
   font-weight: 700;

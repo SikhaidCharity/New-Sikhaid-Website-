@@ -6,6 +6,9 @@ import Photo from '@/components/Photo';
 import CampaignCard from '@/components/CampaignCard';
 import { campaigns, completed, fmt, pct } from '@/lib/data';
 
+// Big rupee amounts in short Indian form for the stat cards: ₹2.04 Cr, ₹45.6 L.
+const shortInr = (n) => (n >= 1e7 ? `₹${(n / 1e7).toFixed(2)} Cr` : n >= 1e5 ? `₹${(n / 1e5).toFixed(1)} L` : fmt(n));
+
 export default function CampaignsPage() {
   const [query, setQuery] = useState('');
   const [filterGroup, setFilterGroup] = useState('All');
@@ -87,7 +90,7 @@ export default function CampaignsPage() {
               <b>{activeEmergencies}</b>Live emergencies
             </div>
             <div>
-              <b>{fmt(totalRaised)}</b>Raised this season
+              <b>{shortInr(totalRaised)}</b>Raised this season
             </div>
             <div>
               <b>{totalDonors.toLocaleString('en-IN')}</b>Generous donors
