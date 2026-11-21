@@ -60,12 +60,8 @@ export default function HomePage() {
   const [campFilter, setCampFilter] = useState('All');
   const campScrollerRef = useRef(null);
 
-  // Order set in Admin > Home Page. Campaigns not in that list follow at the end.
-  const rank = (c) => {
-    const i = (home.campaignOrder || []).indexOf(c.slug);
-    return i === -1 ? Number.MAX_SAFE_INTEGER : i;
-  };
-  const orderedCampaigns = [...campaigns].sort((a, b) => rank(a) - rank(b));
+  // The order set in Admin → Campaigns (Website order), the same as the Campaigns page.
+  const orderedCampaigns = campaigns;
 
   const filteredCampaigns = orderedCampaigns.filter((c) => {
     if (campFilter === 'All') return true;

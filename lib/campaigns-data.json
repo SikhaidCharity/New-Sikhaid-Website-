@@ -39,7 +39,8 @@
     "minAmount": 100,
     "ctaText": "Donate Now",
     "donateColor": "#1A237E",
-    "updatedAt": "2026-11-11T07:19:02.629Z"
+    "updatedAt": "2026-11-11T07:19:02.629Z",
+    "statsFrom": "2026-11-21T05:21:20.985Z"
   },
   {
     "publishStatus": "published",
@@ -96,7 +97,8 @@
     "donors": 430,
     "days": null,
     "tone": "#3F6B3A",
-    "img": "https://adamfletcher.net/wp-content/uploads/2020/04/f6d34-youthempowerment.jpg"
+    "img": "https://adamfletcher.net/wp-content/uploads/2020/04/f6d34-youthempowerment.jpg",
+    "statsFrom": "2026-11-21T05:21:20.985Z"
   },
   {
     "publishStatus": "published",
@@ -132,67 +134,8 @@
     "donors": 2650,
     "days": 14,
     "tone": "#2B4D6F",
-    "img": "https://i.ibb.co/B20Q7cBV/Hero1.jpg"
-  },
-  {
-    "publishStatus": "published",
-    "slug": "rath-yatra-seva-2026",
-    "title": "Rath Yatra Seva 2026",
-    "short": "Rath",
-    "subtitle": "Serving Humanity During the World's Largest Spiritual Gathering",
-    "tagText": "Seva Mission",
-    "type": "hunger",
-    "group": "Hunger",
-    "category": "Seva",
-    "location": "Puri, Odisha",
-    "status": "Completed",
-    "urgent": false,
-    "blurb": "Free meals, drinking water, ORS, and medical assistance for 3,00,000+ devotees during the sacred Rath Yatra in Puri.",
-    "story": [
-      "Every year, millions of devotees from across India and around the world gather in Puri, Odisha, to witness the divine Rath Yatra of Lord Jagannath, Lord Balabhadra, and Devi Subhadra. This sacred festival is not just a religious celebration; it is a symbol of faith, devotion, unity, and service to humanity.",
-      "For the past several years, SikhAid Charitable Trust has been actively serving devotees during Rath Yatra by providing free meals, drinking water, ORS, refreshments, and emergency support to pilgrims who travel long distances to seek the blessings of Mahaprabhu Jagannath.",
-      "Our Mission for Rath Yatra 2026",
-      "In 2026, we aim to expand our service efforts and support more than 3,00,000 devotees throughout the festival period. The intense summer heat, long walking distances, and overcrowded routes often leave devotees dehydrated and exhausted. Through this campaign, we seek to ensure that every pilgrim has access to clean drinking water, nutritious food, and essential refreshments.",
-      "What We Will Distribute",
-      "Drinking Water Bottles — Safe and clean packaged drinking water. Donation: ₹9 per bottle",
-      "ORS Tetra Packs — Electrolyte drinks to prevent dehydration and heat exhaustion. Donation: ₹25 per pack",
-      "Packed Meals — Fresh, hygienically packed food for devotees and volunteers. Donation: ₹35 per meal",
-      "2,00,000+ water bottles distributed",
-      "50,000+ ORS packs distributed",
-      "50,000+ packed meals served",
-      "Service to 3,00,000+ devotees",
-      "Volunteer network across major routes in Puri",
-      "Why Your Support Matters",
-      "A small contribution can make a significant difference:",
-      "1 Crate (32 Bottles) — ₹250",
-      "Sponsors 1 crate (32 bottles) of clean, cold drinking water.",
-      "Impact: Quenches the thirst of 32 tired devotees walking under the summer heat.",
-      "Provides 10 rehydrating ORS packs to prevent exhaustion.",
-      "Impact: Protects 10 pilgrims from heatstroke, keeping them energized and safe.",
-      "10 Packed Meals — ₹350",
-      "Sponsors 10 nutritious, freshly packed vegetarian meals.",
-      "Impact: Feeds 10 hungry devotees with a warm, sanitary meal served with dignity.",
-      "5 Crates (160 Bottles) — ₹1,250",
-      "Sponsors 5 crates (160 bottles) for a devotee transit point.",
-      "Impact: Provides large-scale hydration support, keeping 160 travelers refreshed.",
-      "100 Packed Meals — ₹3,500",
-      "Feeds 100 devotees with hot packed meals at a Seva Station.",
-      "Impact: Enables large-scale community kitchen (Langar) distribution for 100 people.",
-      "Transparency & Accountability",
-      "SikhAid Charitable Trust is committed to maintaining complete transparency. Donors will receive regular updates, photographs, videos, and impact reports showcasing the utilization of funds and the number of devotees served.",
-      "Become a Part of This Divine Service",
-      "Rath Yatra is an opportunity to serve humanity and participate in a tradition that has inspired millions for centuries. Whether your contribution is large or small, it helps us provide comfort, nourishment, and care to devotees visiting Puri for this sacred festival.",
-      "Donate Today. Serve Devotees. Celebrate Humanity.",
-      "Together, let's ensure that no devotee goes thirsty or hungry during Rath Yatra 2026."
-    ],
-    "quote": "Every ₹9 sponsors a clean water bottle, every ₹25 sponsors an ORS pack, every ₹35 sponsors a meal. Serving millions of thirsty, exhausted pilgrims in scorching heat is pure, selfless Seva.",
-    "quoteAuthor": "Puri Annapurna Seva Jatha",
-    "raised": 2500000,
-    "goal": 2500000,
-    "donors": 3200,
-    "days": null,
-    "tone": "#8A5A2B",
-    "img": "https://i.ibb.co/rR52qRhx/Chat-GPT-Image-Jun-5-2026-09-28-48-PM.webp"
+    "img": "https://i.ibb.co/B20Q7cBV/Hero1.jpg",
+    "statsFrom": "2026-11-21T05:21:20.985Z"
   },
   {
     "publishStatus": "published",
@@ -249,7 +192,8 @@
     "donors": 710,
     "days": null,
     "tone": "#38736B",
-    "img": "https://cf-images.assettype.com/down-to-earth%2Fimport%2Flibrary%2Flarge%2F2018-03-28%2F0.15608900_1522239934_toilets---vikas-choudhary.jpg?w=1024&auto=format%2Ccompress&fit=max"
+    "img": "https://cf-images.assettype.com/down-to-earth%2Fimport%2Flibrary%2Flarge%2F2018-03-28%2F0.15608900_1522239934_toilets---vikas-choudhary.jpg?w=1024&auto=format%2Ccompress&fit=max",
+    "statsFrom": "2026-11-21T05:21:20.985Z"
   },
   {
     "publishStatus": "published",
@@ -305,35 +249,8 @@
     "donors": 1284,
     "days": 12,
     "tone": "#3E5872",
-    "img": "https://i.ibb.co/N2XnqzfF/849796-65687-siwzzsrvzy-1503382223.jpg"
-  },
-  {
-    "publishStatus": "published",
-    "slug": "covid-oxygen-sewa",
-    "title": "COVID Oxygen Sewa",
-    "short": "COVID",
-    "subtitle": "Breathing Life into Hope During the Pandemic",
-    "tagText": "Pandemic Relief Mission",
-    "type": "health",
-    "group": "Healthcare",
-    "category": "Pandemic Relief",
-    "location": "Pan-India",
-    "status": "Completed",
-    "urgent": false,
-    "blurb": "Critical pandemic relief providing oxygen concentrators, cylinders, and essential supplies to home quarantined patients.",
-    "story": [
-      "At the height of the pandemic, SikhAid emerged as a vital lifeline delivering 2,000+ oxygen concentrators and 5,000+ cylinders to home quarantined patients, with a 79% request fulfillment rate. Their support extended beyond oxygen, achieving a 92% success rate in delivering groceries and medicines to families in isolation.",
-      "During the brutal second wave, 50,000+ ration kits were distributed nationwide, proving that even in crisis, seva never stopped. This initiative represented SikhAid's commitment to preserving life and dignity during one of humanity's most challenging periods.",
-      "Our rapid response network mobilized volunteers, medical professionals, and logistics teams to ensure that no family faced the pandemic alone. The initiative showcased the power of community solidarity in times of unprecedented crisis."
-    ],
-    "quote": "During India’s darkest hours when oxygen was running out, SikhAid operated 24/7 oxygen langars and mobile concentrator banks, saving thousands of precious lives without charging a single rupee.",
-    "quoteAuthor": "COVID Emergency Response Unit",
-    "raised": 5000000,
-    "goal": 5000000,
-    "donors": 6200,
-    "days": null,
-    "tone": "#5C5030",
-    "img": "https://i.ibb.co/n8bLzJWC/Oxygen-Main.png"
+    "img": "https://i.ibb.co/N2XnqzfF/849796-65687-siwzzsrvzy-1503382223.jpg",
+    "statsFrom": "2026-11-21T05:21:20.985Z"
   },
   {
     "publishStatus": "published",
@@ -360,7 +277,8 @@
     "donors": 340,
     "days": null,
     "tone": "#8C4358",
-    "img": "/sikhaidLogo.png"
+    "img": "/sikhaidLogo.png",
+    "statsFrom": "2026-11-21T05:21:20.985Z"
   },
   {
     "publishStatus": "published",
@@ -421,7 +339,8 @@
     "donors": 1912,
     "days": 18,
     "tone": "#34506E",
-    "img": "https://firebasestorage.googleapis.com/v0/b/sikhaidlandingpage.firebasestorage.app/o/Nepal-flash-floods-image.webp?alt=media&token=9d9c43a3-2ca2-49b0-8125-3c7ed52fa044"
+    "img": "https://firebasestorage.googleapis.com/v0/b/sikhaidlandingpage.firebasestorage.app/o/Nepal-flash-floods-image.webp?alt=media&token=9d9c43a3-2ca2-49b0-8125-3c7ed52fa044",
+    "statsFrom": "2026-11-21T05:21:20.985Z"
   },
   {
     "publishStatus": "published",
@@ -499,7 +418,8 @@
     "donors": 986,
     "days": 21,
     "tone": "#46607A",
-    "img": "https://i.ibb.co/h1CgrFcx/DSC-3853.webp"
+    "img": "https://i.ibb.co/h1CgrFcx/DSC-3853.webp",
+    "statsFrom": "2026-11-21T05:21:20.985Z"
   },
   {
     "publishStatus": "published",
@@ -526,7 +446,8 @@
     "donors": 920,
     "days": null,
     "tone": "#1E4D6B",
-    "img": "https://i.ibb.co/HLx9CLTS/mobile-new.png"
+    "img": "https://i.ibb.co/HLx9CLTS/mobile-new.png",
+    "statsFrom": "2026-11-21T05:21:20.985Z"
   },
   {
     "publishStatus": "published",
@@ -551,14 +472,15 @@
     "quoteAuthor": "Mission Garmahat Seva Team",
     "raised": 154078,
     "goal": 1500000,
-    "donors": 1480,
+    "donors": 153,
     "days": null,
     "tone": "#4A4A6A",
     "img": "https://i.ibb.co/zWNmNZhN/Blanket-Main.png",
-    "updatedAt": "2026-11-21T05:01:33.810Z",
+    "updatedAt": "2026-11-21T05:20:45.824Z",
     "previousSlugs": [
       "blanket-distribution"
-    ]
+    ],
+    "statsFrom": "2026-11-21T05:21:20.985Z"
   },
   {
     "publishStatus": "published",
@@ -584,7 +506,8 @@
     "donors": 260,
     "days": null,
     "tone": "#4A5B73",
-    "img": "/sikhaidLogo.png"
+    "img": "/sikhaidLogo.png",
+    "statsFrom": "2026-11-21T05:21:20.985Z"
   },
   {
     "publishStatus": "published",
@@ -628,7 +551,8 @@
     "donors": 2410,
     "days": null,
     "tone": "#7A4E26",
-    "img": "https://i.ibb.co/3yK1BL5V/Communal-Kitchen-Roti-Making-Tradition.webp"
+    "img": "https://i.ibb.co/3yK1BL5V/Communal-Kitchen-Roti-Making-Tradition.webp",
+    "statsFrom": "2026-11-21T05:21:20.985Z"
   },
   {
     "publishStatus": "published",
@@ -685,7 +609,8 @@
     "donors": 840,
     "days": null,
     "tone": "#2E6B68",
-    "img": "https://franchiseindia.s3.ap-south-1.amazonaws.com/uploads/content/wi/art/5b9b68ada4849.jpeg"
+    "img": "https://franchiseindia.s3.ap-south-1.amazonaws.com/uploads/content/wi/art/5b9b68ada4849.jpeg",
+    "statsFrom": "2026-11-21T05:21:20.985Z"
   },
   {
     "publishStatus": "published",
@@ -743,7 +668,8 @@
     "donors": 1100,
     "days": null,
     "tone": "#5C6F40",
-    "img": "https://www.tribuneindia.com/sortd-service/imaginary/v22-01/jpg/large/high?url=dGhldHJpYnVuZS1zb3J0ZC1wcm8tcHJvZC1zb3J0ZC9tZWRpYWZlZmM1MTIwLTMzYjItMTFmMS05ZGQ1LWQzMjE0NmQ0Njk2MC5qcGc="
+    "img": "https://www.tribuneindia.com/sortd-service/imaginary/v22-01/jpg/large/high?url=dGhldHJpYnVuZS1zb3J0ZC1wcm8tcHJvZC1zb3J0ZC9tZWRpYWZlZmM1MTIwLTMzYjItMTFmMS05ZGQ1LWQzMjE0NmQ0Njk2MC5qcGc=",
+    "statsFrom": "2026-11-21T05:21:20.985Z"
   },
   {
     "publishStatus": "published",
@@ -769,7 +695,8 @@
     "donors": 590,
     "days": null,
     "tone": "#8C3B5E",
-    "img": "https://i.ibb.co/7dVCJV2p/No-Spot-Main.png"
+    "img": "https://i.ibb.co/7dVCJV2p/No-Spot-Main.png",
+    "statsFrom": "2026-11-21T05:21:20.985Z"
   },
   {
     "publishStatus": "published",
@@ -798,7 +725,98 @@
     "donors": 520,
     "days": null,
     "tone": "#7B5E28",
-    "img": "https://i.ibb.co/93cBtgnH/CHARDIKALA-LOGO-7-01.jpg"
+    "img": "https://i.ibb.co/93cBtgnH/CHARDIKALA-LOGO-7-01.jpg",
+    "statsFrom": "2026-11-21T05:21:20.985Z"
+  },
+  {
+    "publishStatus": "published",
+    "slug": "rath-yatra-seva-2026",
+    "title": "Rath Yatra Seva 2026",
+    "short": "Rath",
+    "subtitle": "Serving Humanity During the World's Largest Spiritual Gathering",
+    "tagText": "Seva Mission",
+    "type": "hunger",
+    "group": "Hunger",
+    "category": "Seva",
+    "location": "Puri, Odisha",
+    "status": "Completed",
+    "urgent": false,
+    "blurb": "Free meals, drinking water, ORS, and medical assistance for 3,00,000+ devotees during the sacred Rath Yatra in Puri.",
+    "story": [
+      "Every year, millions of devotees from across India and around the world gather in Puri, Odisha, to witness the divine Rath Yatra of Lord Jagannath, Lord Balabhadra, and Devi Subhadra. This sacred festival is not just a religious celebration; it is a symbol of faith, devotion, unity, and service to humanity.",
+      "For the past several years, SikhAid Charitable Trust has been actively serving devotees during Rath Yatra by providing free meals, drinking water, ORS, refreshments, and emergency support to pilgrims who travel long distances to seek the blessings of Mahaprabhu Jagannath.",
+      "Our Mission for Rath Yatra 2026",
+      "In 2026, we aim to expand our service efforts and support more than 3,00,000 devotees throughout the festival period. The intense summer heat, long walking distances, and overcrowded routes often leave devotees dehydrated and exhausted. Through this campaign, we seek to ensure that every pilgrim has access to clean drinking water, nutritious food, and essential refreshments.",
+      "What We Will Distribute",
+      "Drinking Water Bottles — Safe and clean packaged drinking water. Donation: ₹9 per bottle",
+      "ORS Tetra Packs — Electrolyte drinks to prevent dehydration and heat exhaustion. Donation: ₹25 per pack",
+      "Packed Meals — Fresh, hygienically packed food for devotees and volunteers. Donation: ₹35 per meal",
+      "2,00,000+ water bottles distributed",
+      "50,000+ ORS packs distributed",
+      "50,000+ packed meals served",
+      "Service to 3,00,000+ devotees",
+      "Volunteer network across major routes in Puri",
+      "Why Your Support Matters",
+      "A small contribution can make a significant difference:",
+      "1 Crate (32 Bottles) — ₹250",
+      "Sponsors 1 crate (32 bottles) of clean, cold drinking water.",
+      "Impact: Quenches the thirst of 32 tired devotees walking under the summer heat.",
+      "Provides 10 rehydrating ORS packs to prevent exhaustion.",
+      "Impact: Protects 10 pilgrims from heatstroke, keeping them energized and safe.",
+      "10 Packed Meals — ₹350",
+      "Sponsors 10 nutritious, freshly packed vegetarian meals.",
+      "Impact: Feeds 10 hungry devotees with a warm, sanitary meal served with dignity.",
+      "5 Crates (160 Bottles) — ₹1,250",
+      "Sponsors 5 crates (160 bottles) for a devotee transit point.",
+      "Impact: Provides large-scale hydration support, keeping 160 travelers refreshed.",
+      "100 Packed Meals — ₹3,500",
+      "Feeds 100 devotees with hot packed meals at a Seva Station.",
+      "Impact: Enables large-scale community kitchen (Langar) distribution for 100 people.",
+      "Transparency & Accountability",
+      "SikhAid Charitable Trust is committed to maintaining complete transparency. Donors will receive regular updates, photographs, videos, and impact reports showcasing the utilization of funds and the number of devotees served.",
+      "Become a Part of This Divine Service",
+      "Rath Yatra is an opportunity to serve humanity and participate in a tradition that has inspired millions for centuries. Whether your contribution is large or small, it helps us provide comfort, nourishment, and care to devotees visiting Puri for this sacred festival.",
+      "Donate Today. Serve Devotees. Celebrate Humanity.",
+      "Together, let's ensure that no devotee goes thirsty or hungry during Rath Yatra 2026."
+    ],
+    "quote": "Every ₹9 sponsors a clean water bottle, every ₹25 sponsors an ORS pack, every ₹35 sponsors a meal. Serving millions of thirsty, exhausted pilgrims in scorching heat is pure, selfless Seva.",
+    "quoteAuthor": "Puri Annapurna Seva Jatha",
+    "raised": 2500000,
+    "goal": 2500000,
+    "donors": 3200,
+    "days": null,
+    "tone": "#8A5A2B",
+    "img": "https://i.ibb.co/rR52qRhx/Chat-GPT-Image-Jun-5-2026-09-28-48-PM.webp",
+    "statsFrom": "2026-11-21T05:21:20.985Z"
+  },
+  {
+    "publishStatus": "published",
+    "slug": "covid-oxygen-sewa",
+    "title": "COVID Oxygen Sewa",
+    "short": "COVID",
+    "subtitle": "Breathing Life into Hope During the Pandemic",
+    "tagText": "Pandemic Relief Mission",
+    "type": "health",
+    "group": "Healthcare",
+    "category": "Pandemic Relief",
+    "location": "Pan-India",
+    "status": "Completed",
+    "urgent": false,
+    "blurb": "Critical pandemic relief providing oxygen concentrators, cylinders, and essential supplies to home quarantined patients.",
+    "story": [
+      "At the height of the pandemic, SikhAid emerged as a vital lifeline delivering 2,000+ oxygen concentrators and 5,000+ cylinders to home quarantined patients, with a 79% request fulfillment rate. Their support extended beyond oxygen, achieving a 92% success rate in delivering groceries and medicines to families in isolation.",
+      "During the brutal second wave, 50,000+ ration kits were distributed nationwide, proving that even in crisis, seva never stopped. This initiative represented SikhAid's commitment to preserving life and dignity during one of humanity's most challenging periods.",
+      "Our rapid response network mobilized volunteers, medical professionals, and logistics teams to ensure that no family faced the pandemic alone. The initiative showcased the power of community solidarity in times of unprecedented crisis."
+    ],
+    "quote": "During India’s darkest hours when oxygen was running out, SikhAid operated 24/7 oxygen langars and mobile concentrator banks, saving thousands of precious lives without charging a single rupee.",
+    "quoteAuthor": "COVID Emergency Response Unit",
+    "raised": 5000000,
+    "goal": 5000000,
+    "donors": 6200,
+    "days": null,
+    "tone": "#5C5030",
+    "img": "https://i.ibb.co/n8bLzJWC/Oxygen-Main.png",
+    "statsFrom": "2026-11-21T05:21:20.985Z"
   },
   {
     "publishStatus": "published",
@@ -826,6 +844,7 @@
     "donors": 1450,
     "days": null,
     "tone": "#4A5B73",
-    "img": "https://i.ibb.co/F4YZrjZR/174.png"
+    "img": "https://i.ibb.co/F4YZrjZR/174.png",
+    "statsFrom": "2026-11-21T05:21:20.985Z"
   }
 ]

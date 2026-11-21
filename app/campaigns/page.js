@@ -33,9 +33,8 @@ export default function CampaignsPage() {
             .includes(q))
     );
 
-    return list.slice().sort((a, b) => {
-      return (b.urgent - a.urgent) || (a.days || 99) - (b.days || 99);
-    });
+    // The order set in Admin → Campaigns (Website order).
+    return list;
   }, [query, filterGroup]);
 
   return (
