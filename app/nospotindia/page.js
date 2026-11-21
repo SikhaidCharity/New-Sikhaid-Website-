@@ -2,14 +2,14 @@
 // Written for women donors: it speaks from one woman to another, starting from what every woman
 // already knows about periods, then shows what the same week looks like for a girl without pads.
 // Reached only by its link (ads, WhatsApp, emails): not in the menus, and kept out of search results.
-// Every Donate button goes to the live site's No Spot donation page (sikhaid.ngo), which takes real
-// Razorpay payments and records the Meta "Purchase" through the same GTM. The ad's UTM tags go along.
+// Every Donate button opens this website's own donation card (themed to match the page) for the No Spot
+// campaign, which records the gift in the admin and sends the Meta "Purchase" through GTM. The ad's UTM
+// tags are remembered and saved with the donation.
 import { CAMPAIGN_IMPACT_TIERS, bySlug, fmt } from '@/lib/data';
 import Gtm from '@/components/Gtm';
 import LiveNumber from '@/components/LiveNumber';
 import ShareButton from './ShareButton';
 import StickyDonate from './StickyDonate';
-import KeepUtm from './KeepUtm';
 import './no-spot.css';
 
 export const metadata = {
@@ -24,8 +24,8 @@ export const metadata = {
   },
 };
 
-const DONATE = 'https://www.sikhaid.ngo/donate/no-spot';
-const MONTHLY = `${DONATE}?type=monthly`;
+const DONATE = '/donate';
+const MONTHLY = '/donate#monthly';
 // Kept on the site itself (public/nospotindia), so the page never depends on an outside image host.
 const PHOTOS = {
   hero: '/nospotindia/hero.jpg',
@@ -266,7 +266,7 @@ export default function NoSpotPage() {
             <h2 className="ns-h2">Pick what feels right to you</h2>
             <div className="ns-tiers">
               {tiers.map((t) => (
-                <a key={t.amt} className="ns-tier" href={DONATE}>
+                <a key={t.amt} className="ns-tier" href={`/donate?amount=${t.amt}`}>
                   <b className="ns-tier-amt">{fmt(t.amt)}</b>
                   <h3>{t.title}</h3>
                   <p>{t.desc}</p>
@@ -358,7 +358,6 @@ export default function NoSpotPage() {
       </section>
 
       <StickyDonate href={DONATE} raised={raised} />
-      <KeepUtm />
     </div>
   );
 }

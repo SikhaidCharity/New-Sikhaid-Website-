@@ -315,6 +315,20 @@ export function CampaignDetail({ initialSlug, money = fmt, toolbar = null, inter
   }, []);
   const bar = barShown ? raisedShare(campaign, liveStats, allCampaigns) : 0;
   const breakdown = BREAKDOWN[campaign.type] || BREAKDOWN.flood;
+  // Admin → Campaigns: "Show money raised". When it is off, the band shows why donors can trust SikhAid
+  // instead of the amount and bar (and the small trust line under the band is dropped, as it would repeat).
+  const showRaised = !campaign.hideRaised;
+  const trustFacts = international
+    ? [
+        { icon: '🛡️', title: 'Registered charity', text: 'Audited every year' },
+        { icon: '🌍', title: 'Pay in your currency', text: 'Cards and PayPal' },
+        { icon: '📩', title: 'Receipt by email', text: 'Right after you give' },
+      ]
+    : [
+        { icon: '🧾', title: '80G tax benefit', text: 'Certificate for every eligible gift' },
+        { icon: '💬', title: 'Receipt on WhatsApp', text: 'Right after you give' },
+        { icon: '🛡️', title: 'Registered NGO', text: 'Audited every year' },
+      ];
 
   const [openFaq, setOpenFaq] = useState(null);
   const [toastMessage, setToastMessage] = useState('');
@@ -422,17 +436,30 @@ export function CampaignDetail({ initialSlug, money = fmt, toolbar = null, inter
         {toolbar}
         <section className="cd-band" id="give" aria-label="Campaign progress and donation">
           <div className="cd-band-inner">
-            <div className="cd-band-stat cd-band-raised">
-              <b className="cd-raised">{money(campaign.raised)}</b>
-              <span>
-                Raised from {campaign.donors.toLocaleString('en-IN')} {campaign.donors === 1 ? 'donor' : 'donors'}
-              </span>
-            </div>
-            <div className="cd-band-progress">
-              <div className="cd-bar-track" role="img" aria-label={`${money(campaign.raised)} raised`}>
-                <div className="cd-bar-fill" style={{ width: `${bar}%` }}></div>
+            {showRaised ? (
+              <>
+              <div className="cd-band-stat cd-band-raised">
+                <b className="cd-raised">{money(campaign.raised)}</b>
+                <span>
+                  Raised from {campaign.donors.toLocaleString('en-IN')} {campaign.donors === 1 ? 'donor' : 'donors'}
+                </span>
               </div>
-            </div>
+              <div className="cd-band-progress">
+                <div className="cd-bar-track" role="img" aria-label={`${money(campaign.raised)} raised`}>
+                  <div className="cd-bar-fill" style={{ width: `${bar}%` }}></div>
+                </div>
+              </div>
+              </>
+            ) : (
+              <ul className="cd-band-facts" aria-label="Why donors trust SikhAid">
+                {trustFacts.map((f) => (
+                  <li key={f.title}>
+                    <span className="cd-fact-icon" aria-hidden="true">{f.icon}</span>
+                    <span><b>{f.title}</b><small>{f.text}</small></span>
+                  </li>
+                ))}
+              </ul>
+            )}
             <div className="cd-band-cta">
               <Link href={donateHref} className="btn btn-give" style={donateButtonStyle(campaign.donateColor, { fontWeight: 700 }, campaign.donateStyle)}>
                 {campaign.ctaText || 'Donate Now'}
@@ -443,6 +470,7 @@ export function CampaignDetail({ initialSlug, money = fmt, toolbar = null, inter
             </div>
           </div>
         </section>
+        {showRaised && (
         <div className="cd-trust-row">
           {international ? (
             <>
@@ -458,6 +486,7 @@ export function CampaignDetail({ initialSlug, money = fmt, toolbar = null, inter
             </>
           )}
         </div>
+        )}
 
         <div className="cd-wrap cd-content" style={{ paddingTop: 0, paddingBottom: '80px' }}>
           <div className="cd-story">
@@ -817,10 +846,17 @@ export function CampaignDetail({ initialSlug, money = fmt, toolbar = null, inter
 
       {/* ─── MOBILE DOCK ─── */}
       <div className="cd-mobile-dock">
-        <div>
-          <b style={{ fontSize: '16px' }}>{money(campaign.raised)}</b>
-          <span style={{ fontSize: '11px', color: 'var(--muted)' }}> raised from {campaign.donors.toLocaleString('en-IN')} {campaign.donors === 1 ? 'donor' : 'donors'}</span>
-        </div>
+        {showRaised ? (
+          <div>
+            <b style={{ fontSize: '16px' }}>{money(campaign.raised)}</b>
+            <span style={{ fontSize: '11px', color: 'var(--muted)' }}> raised from {campaign.donors.toLocaleString('en-IN')} {campaign.donors === 1 ? 'donor' : 'donors'}</span>
+          </div>
+        ) : (
+          <div style={{ fontSize: '13px', fontWeight: 800, color: 'var(--ink)', lineHeight: 1.35, whiteSpace: 'nowrap', minWidth: 0 }}>
+            {international ? 'Secure payment' : '80G tax benefit'}
+            <span style={{ display: 'block', fontSize: '11px', fontWeight: 600, color: 'var(--muted)' }}>{international ? 'In your currency' : 'Receipt on WhatsApp'}</span>
+          </div>
+        )}
         <Link
           href={donateHref}
           className="btn btn-give"

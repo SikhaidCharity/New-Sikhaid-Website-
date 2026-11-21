@@ -6205,6 +6205,53 @@ input[type="number"] {
   justify-content: center;
   white-space: nowrap;
 }
+/* Trust points in the band, for campaigns whose raised amount is hidden (Admin → Campaigns) */
+.cd-band-facts {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cd-band-facts li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.cd-fact-icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--bg-alt);
+  font-size: 19px;
+}
+.cd-band-facts b {
+  display: block;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--ink);
+  line-height: 1.25;
+}
+.cd-band-facts small {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--muted);
+  line-height: 1.3;
+}
+@media (min-width: 1041px) {
+  .cd-band-facts { grid-column: 1 / 3; gap: clamp(16px, 2.6vw, 40px); }
+}
+@media (max-width: 640px) {
+  .cd-band-facts { grid-template-columns: 1fr; gap: 8px; }
+  .cd-fact-icon { width: 34px; height: 34px; font-size: 16px; }
+}
 .cd-trust-row {
   display: flex;
   flex-wrap: wrap;
