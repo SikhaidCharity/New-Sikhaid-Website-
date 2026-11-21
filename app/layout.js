@@ -4,6 +4,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import DonationCard from '@/components/DonationCard';
 import SiteChrome from '@/components/SiteChrome';
+import Gtm from '@/components/Gtm';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -29,6 +30,8 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" data-scroll-behavior="smooth" className={`${poppins.variable} ${inter.variable}`}>
       <body>
+        {/* Google Tag Manager on every page: Meta Pixel and Google Ads (same container as sikhaid.ngo). */}
+        <Gtm />
         <SiteChrome header={<Header />} footer={<Footer />} donationCard={<DonationCard />}>
           {children}
         </SiteChrome>

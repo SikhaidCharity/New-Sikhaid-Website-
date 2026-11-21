@@ -6,7 +6,6 @@
 // campaign, which records the gift in the admin and sends the Meta "Purchase" through GTM. The ad's UTM
 // tags are remembered and saved with the donation.
 import { CAMPAIGN_IMPACT_TIERS, bySlug, fmt } from '@/lib/data';
-import Gtm from '@/components/Gtm';
 import LiveNumber from '@/components/LiveNumber';
 import ShareButton from './ShareButton';
 import StickyDonate from './StickyDonate';
@@ -109,7 +108,6 @@ export default function NoSpotPage() {
   return (
     <div className="ns">
       {/* Google Tag Manager → Meta Pixel and Google Ads, for ads pointing at this page */}
-      <Gtm />
 
       {/* Hero */}
       <section className="ns-hero">
