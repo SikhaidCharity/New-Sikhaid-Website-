@@ -252,7 +252,10 @@ export default function HomePage() {
               loop
               muted={isMuted}
               playsInline
-              poster={hero.posterUrl || IMG.food}
+              // The video's own first frame while it loads (videos in public/assets have a matching .jpg),
+              // so the page never flashes a different photo before the video starts.
+              poster={hero.posterUrl || (hero.videoUrl?.startsWith('/assets/') ? hero.videoUrl.replace(/\.mp4$/, '.jpg') : IMG.food)}
+              preload="auto"
               src={hero.videoUrl}
             />
           )}
@@ -357,8 +360,8 @@ export default function HomePage() {
           <div className="sec-head">
             <div className="stack">
               <span className="eyebrow">Our Campaigns</span>
-              <h2 className="h-sec" id="camp-h">Choose A Cause Close To Your Heart</h2>
-              <p className="lead">Support In Any Way Possible</p>
+              <h2 className="h-sec" id="camp-h">Support In Any Way Possible</h2>
+              <p className="lead">Choose a cause close to your heart.</p>
             </div>
           </div>
 
