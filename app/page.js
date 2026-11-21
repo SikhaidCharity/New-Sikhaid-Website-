@@ -358,7 +358,7 @@ export default function HomePage() {
             <div className="stack">
               <span className="eyebrow">Our Campaigns</span>
               <h2 className="h-sec" id="camp-h">Choose A Cause Close To Your Heart</h2>
-              <p className="lead">Every campaign shows how much has been raised, how many people have given, and what is still needed.</p>
+              <p className="lead">Support In Any Way Possible</p>
             </div>
           </div>
 
