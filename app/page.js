@@ -4,12 +4,11 @@ import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import Photo from '@/components/Photo';
 import CampaignCard from '@/components/CampaignCard';
-import { useLiveStats, withLive } from '@/lib/live-stats';
 import Lightbox from '@/components/Lightbox';
 import IndiaMap from '@/components/IndiaMap';
 import ImpactDashboard from '@/components/ImpactDashboard';
 import CelebritySupportSection from '@/components/CelebritySupportSection';
-import { IMG, allCampaigns, campaigns, fmt } from '@/lib/data';
+import { IMG, allCampaigns, campaigns } from '@/lib/data';
 import hero from '@/lib/content/hero.json';
 import home from '@/lib/content/home.json';
 
@@ -40,7 +39,6 @@ function HeroSlides({ images, seconds, className }) {
 }
 
 export default function HomePage() {
-  const liveStats = useLiveStats();
   const nepal = campaigns.find((c) => c.slug === 'nepal-flood-relief-2026');
 
   // Hero video sound control
@@ -341,9 +339,6 @@ export default function HomePage() {
                       {c.location} · {c.status}
                     </span>
                     <b style={{ color: 'var(--ink)', fontSize: '16px', lineHeight: 1.3 }}>{c.title}</b>
-                    <span style={{ fontSize: '13.5px', color: 'var(--muted)' }}>
-                      {fmt(withLive(c, liveStats).raised)} raised from {withLive(c, liveStats).donors.toLocaleString('en-IN')} donors
-                    </span>
                     <span style={{ fontSize: '14px', fontWeight: 800, color: 'var(--red)' }}>
                       Donate &amp; know more →
                     </span>
