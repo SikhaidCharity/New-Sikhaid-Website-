@@ -1,13 +1,13 @@
 'use client';
 
-import { raisedShare, useLiveStats, withLive } from '@/lib/live-stats';
+import { useLiveStats, withLive } from '@/lib/live-stats';
 
 import { useState, useEffect, useRef, useMemo, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Photo from '@/components/Photo';
 import CampaignCard from '@/components/CampaignCard';
-import { allCampaigns, campaigns, BREAKDOWN, IMG, SITE, fmt, bySlug } from '@/lib/data';
+import { campaigns, BREAKDOWN, IMG, SITE, fmt, bySlug } from '@/lib/data';
 import { donateButtonStyle } from '@/lib/donate-color';
 
 export function getCampaignGallery(camp) {
@@ -307,17 +307,9 @@ export function CampaignDetail({ initialSlug, money = fmt, toolbar = null, inter
   // Raised and donors stay live: starting totals plus payments received since (lib/live-stats.js).
   const liveStats = useLiveStats();
   const campaign = withLive(bySlug(slug) || campaigns[0], liveStats);
-  // Bar measured against the campaign that has raised the most (no targets); fills up after load.
-  const [barShown, setBarShown] = useState(false);
-  useEffect(() => {
-    const t = setTimeout(() => setBarShown(true), 120);
-    return () => clearTimeout(t);
-  }, []);
-  const bar = barShown ? raisedShare(campaign, liveStats, allCampaigns) : 0;
   const breakdown = BREAKDOWN[campaign.type] || BREAKDOWN.flood;
-  // Admin → Campaigns: "Show money raised". When it is off, the band shows why donors can trust SikhAid
-  // instead of the amount and bar (and the small trust line under the band is dropped, as it would repeat).
-  const showRaised = !campaign.hideRaised;
+  // The band under the hero: why donors can trust SikhAid, then Donate (no amount raised). On phones only
+  // the Donate button shows there; the trust points stay on larger screens.
   const trustFacts = international
     ? [
         { icon: '🛡️', title: 'Registered charity', text: 'Audited every year' },
@@ -325,7 +317,7 @@ export function CampaignDetail({ initialSlug, money = fmt, toolbar = null, inter
         { icon: '📩', title: 'Receipt by email', text: 'Right after you give' },
       ]
     : [
-        { icon: '🧾', title: '80G tax benefit', text: 'Certificate for every eligible gift' },
+        { icon: '🧾', title: '80G tax benefit', text: 'Save tax on your gift' },
         { icon: '💬', title: 'Receipt on WhatsApp', text: 'Right after you give' },
         { icon: '🛡️', title: 'Registered NGO', text: 'Audited every year' },
       ];
@@ -436,57 +428,24 @@ export function CampaignDetail({ initialSlug, money = fmt, toolbar = null, inter
         {toolbar}
         <section className="cd-band" id="give" aria-label="Campaign progress and donation">
           <div className="cd-band-inner">
-            {showRaised ? (
-              <>
-              <div className="cd-band-stat cd-band-raised">
-                <b className="cd-raised">{money(campaign.raised)}</b>
-                <span>
-                  Raised from {campaign.donors.toLocaleString('en-IN')} {campaign.donors === 1 ? 'donor' : 'donors'}
-                </span>
-              </div>
-              <div className="cd-band-progress">
-                <div className="cd-bar-track" role="img" aria-label={`${money(campaign.raised)} raised`}>
-                  <div className="cd-bar-fill" style={{ width: `${bar}%` }}></div>
-                </div>
-              </div>
-              </>
-            ) : (
-              <ul className="cd-band-facts" aria-label="Why donors trust SikhAid">
-                {trustFacts.map((f) => (
-                  <li key={f.title}>
-                    <span className="cd-fact-icon" aria-hidden="true">{f.icon}</span>
-                    <span><b>{f.title}</b><small>{f.text}</small></span>
-                  </li>
-                ))}
-              </ul>
-            )}
+            <ul className="cd-band-facts" aria-label="Why donors trust SikhAid">
+              {trustFacts.map((f) => (
+                <li key={f.title}>
+                  <span className="cd-fact-icon" aria-hidden="true">{f.icon}</span>
+                  <span><b>{f.title}</b><small>{f.text}</small></span>
+                </li>
+              ))}
+            </ul>
             <div className="cd-band-cta">
               <Link href={donateHref} className="btn btn-give" style={donateButtonStyle(campaign.donateColor, { fontWeight: 700 }, campaign.donateStyle)}>
                 {campaign.ctaText || 'Donate Now'}
               </Link>
-              <Link href={`${donateHref}?monthly=1`} className="btn btn-line" style={{ fontWeight: 700 }}>
+              <Link href={`${donateHref}?monthly=1`} className="btn btn-line cd-band-monthly" style={{ fontWeight: 700 }}>
                 Give Monthly
               </Link>
             </div>
           </div>
         </section>
-        {showRaised && (
-        <div className="cd-trust-row">
-          {international ? (
-            <>
-              <span>✓ Pay in your currency</span>
-              <span>✓ 256-bit SSL</span>
-              <span>✓ Cards &amp; PayPal</span>
-            </>
-          ) : (
-            <>
-              <span>✓ 80G Tax Receipt</span>
-              <span>✓ 256-bit SSL</span>
-              <span>✓ All UPI &amp; Cards</span>
-            </>
-          )}
-        </div>
-        )}
 
         <div className="cd-wrap cd-content" style={{ paddingTop: 0, paddingBottom: '80px' }}>
           <div className="cd-story">
@@ -846,17 +805,10 @@ export function CampaignDetail({ initialSlug, money = fmt, toolbar = null, inter
 
       {/* ─── MOBILE DOCK ─── */}
       <div className="cd-mobile-dock">
-        {showRaised ? (
-          <div>
-            <b style={{ fontSize: '16px' }}>{money(campaign.raised)}</b>
-            <span style={{ fontSize: '11px', color: 'var(--muted)' }}> raised from {campaign.donors.toLocaleString('en-IN')} {campaign.donors === 1 ? 'donor' : 'donors'}</span>
-          </div>
-        ) : (
-          <div style={{ fontSize: '13px', fontWeight: 800, color: 'var(--ink)', lineHeight: 1.35, whiteSpace: 'nowrap', minWidth: 0 }}>
-            {international ? 'Secure payment' : '80G tax benefit'}
-            <span style={{ display: 'block', fontSize: '11px', fontWeight: 600, color: 'var(--muted)' }}>{international ? 'In your currency' : 'Receipt on WhatsApp'}</span>
-          </div>
-        )}
+        <div style={{ fontSize: '13px', fontWeight: 800, color: 'var(--ink)', lineHeight: 1.35, whiteSpace: 'nowrap', minWidth: 0 }}>
+          {international ? 'Secure payment' : '80G tax benefit'}
+          <span style={{ display: 'block', fontSize: '11px', fontWeight: 600, color: 'var(--muted)' }}>{international ? 'In your currency' : 'Receipt on WhatsApp'}</span>
+        </div>
         <Link
           href={donateHref}
           className="btn btn-give"

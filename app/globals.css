@@ -6267,6 +6267,13 @@ input[type="number"] {
   .cd-band-facts { grid-template-columns: 1fr; gap: 8px; }
   .cd-fact-icon { width: 34px; height: 34px; font-size: 16px; }
 }
+/* Campaign band: trust points and both buttons on larger screens; on phones and tablets only Donate. */
+@media (max-width: 1040px) {
+  .cd-band .cd-band-facts,
+  .cd-band .cd-band-monthly { display: none; }
+  .cd-band .cd-band-cta { grid-template-columns: 1fr; }
+}
+
 .cd-trust-row {
   display: flex;
   flex-wrap: wrap;
