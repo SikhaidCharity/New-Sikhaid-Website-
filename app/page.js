@@ -207,20 +207,20 @@ export default function HomePage() {
   };
 
   const partners = [
-    ['Axis Bank', 'https://www.sikhaid.ngo/partners/AxisBank.svg'],
-    ["Domino's", 'https://www.sikhaid.ngo/partners/DominosLogo.svg'],
-    ['Duramix', 'https://www.sikhaid.ngo/partners/Duramix.webp'],
-    ['Hero MotoCorp', 'https://www.sikhaid.ngo/partners/Hero_MotoCorp.svg'],
-    ['realme', 'https://www.sikhaid.ngo/partners/realme_logo.svg'],
-    ['TCS', 'https://www.sikhaid.ngo/partners/tcs_logo.svg']
+    ['Axis Bank', '/partners/AxisBank.svg'],
+    ["Domino's", '/partners/DominosLogo.svg'],
+    ['Duramix', '/partners/Duramix.webp'],
+    ['Hero MotoCorp', '/partners/Hero_MotoCorp.svg'],
+    ['realme', '/partners/realme_logo.svg'],
+    ['TCS', '/partners/tcs_logo.svg']
   ];
 
   const payLogos = [
-    ['UPI', 'https://www.sikhaid.ngo/paymentLogo/UPI_logo.svg'],
-    ['RuPay', 'https://www.sikhaid.ngo/paymentLogo/RuPay.svg'],
-    ['Visa', 'https://www.sikhaid.ngo/paymentLogo/visa.svg'],
-    ['Mastercard', 'https://www.sikhaid.ngo/paymentLogo/mastercard.svg'],
-    ['Razorpay', 'https://www.sikhaid.ngo/paymentLogo/razorpay.svg']
+    ['UPI', '/paymentLogo/UPI_logo.svg'],
+    ['RuPay', '/paymentLogo/RuPay.svg'],
+    ['Visa', '/paymentLogo/visa.svg'],
+    ['Mastercard', '/paymentLogo/mastercard.svg'],
+    ['Razorpay', '/paymentLogo/razorpay.svg']
   ];
 
   return (

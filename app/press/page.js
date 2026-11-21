@@ -27,7 +27,7 @@ const PRESS_ITEMS = [
       'Special ground report on emergency relief boats navigating submerged villages in Assam to deliver warm meals, dry rations, and baby food to marooned families.',
     link: 'https://www.ndtv.com',
     tag: 'Disaster Relief',
-    image: 'https://www.sikhaid.ngo/api/img?src=https%3A%2F%2Fi.ibb.co%2FzWXc5WPS%2FIMG-1877.webp',
+    image: 'https://i.ibb.co/zWXc5WPS/IMG-1877.webp',
   },
   {
     id: 3,
@@ -39,7 +39,7 @@ const PRESS_ITEMS = [
       'When oxygen plants ran dry, volunteers coordinated non-stop logistics across state borders, ensuring critical patient distress calls were answered within hours.',
     link: 'https://www.hindustantimes.com',
     tag: 'Healthcare',
-    image: 'https://www.sikhaid.ngo/campaigns-bg/impact-healthcare.webp',
+    image: '/campaigns-bg/impact-healthcare.webp',
   },
   {
     id: 4,
@@ -51,7 +51,7 @@ const PRESS_ITEMS = [
       'On the sweltering Grand Road of Puri, 24-hour hydration camps, ORS distribution kiosks, and fresh langar served hundreds of thousands of pilgrims.',
     link: 'https://odishatv.in',
     tag: 'Langar Seva',
-    image: 'https://www.sikhaid.ngo/annapurna-seva/ratha-yatra-hero-4.webp',
+    image: '/annapurna-seva/ratha-yatra-hero-4.webp',
   },
   {
     id: 5,
@@ -63,7 +63,7 @@ const PRESS_ITEMS = [
       'Targeting remote rural panchayats, teams distributed biodegradable sanitary pads, iron supplements, and conducted vital female health hygiene workshops.',
     link: 'https://www.aninews.in',
     tag: "Women's Health",
-    image: 'https://www.sikhaid.ngo/gallery/gallery-153-sanitary-pads.webp',
+    image: '/gallery/gallery-153-sanitary-pads.webp',
   },
   {
     id: 6,
@@ -75,7 +75,7 @@ const PRESS_ITEMS = [
       'In an era where non-profit credibility is paramount, publishing dated photo proof and line-by-line fund utilisation reports for every single rupee raised.',
     link: 'https://www.tribuneindia.com',
     tag: 'Transparency',
-    image: 'https://www.sikhaid.ngo/gallery/gallery-164-ration-kits.webp',
+    image: '/gallery/gallery-164-ration-kits.webp',
   },
   {
     id: 7,
@@ -87,7 +87,7 @@ const PRESS_ITEMS = [
       'Rushing beyond borders, volunteer relief convoys crossed into flood-ravaged regions of Nepal, distributing emergency ration kits and water purification tablets.',
     link: 'https://www.indiatoday.in',
     tag: 'Disaster Relief',
-    image: 'https://www.sikhaid.ngo/api/img?src=https%3A%2F%2Fi.ibb.co%2FtwFzLXhg%2FDSC-3910.webp',
+    image: 'https://i.ibb.co/twFzLXhg/DSC-3910.webp',
   },
   {
     id: 8,
@@ -99,7 +99,7 @@ const PRESS_ITEMS = [
       'Braving sub-zero temperatures, volunteer teams reached deep forest settlements in Odisha to provide thermal blankets and winter wear to elderlies and children.',
     link: 'https://kalingatv.com',
     tag: 'Winter Relief',
-    image: 'https://www.sikhaid.ngo/campaigns-bg/mission-blanket.webp',
+    image: '/campaigns-bg/mission-blanket.webp',
   },
 ];
 

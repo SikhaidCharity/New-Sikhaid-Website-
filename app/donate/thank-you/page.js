@@ -117,7 +117,7 @@ function ThankYouContent() {
         <section id="official-receipt" className="rcp" aria-label="Donation receipt">
           <header className="rcp-top">
             <span className="rcp-logo">
-              <img src="https://www.sikhaid.ngo/sikhaidLogo.webp" alt="SikhAid" />
+              <img src="/sikhaidLogo.webp" alt="SikhAid" />
             </span>
             <b className="rcp-org">{trust.trustName || 'SikhAid Charitable Trust'}</b>
             <p className="rcp-regd">Regd No: {REGD_NO} · Section 80G Tax-Exempt NGO</p>

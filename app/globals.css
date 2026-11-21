@@ -1518,7 +1518,7 @@ table.data td { padding: 16px; border-top: 1px solid var(--line); font-variant-n
   background-color: #0A1128;
   background-image: 
     linear-gradient(180deg, rgba(10, 17, 40, 0.82) 0%, rgba(13, 22, 54, 0.85) 50%, rgba(10, 17, 40, 0.92) 100%),
-    url('https://www.sikhaid.ngo/gallery/gallery-147-langar-meals.webp');
+    url('/gallery/gallery-147-langar-meals.webp');
   background-size: cover;
   background-position: center 35%;
   background-repeat: no-repeat;

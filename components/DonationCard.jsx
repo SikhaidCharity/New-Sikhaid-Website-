@@ -576,7 +576,10 @@ function DonationCardHost() {
   const isOpen = donateParam !== null;
   const found = bySlug(donateParam) || bySlug(pageSlug) || GENERAL_FUND;
   const theme = LANDING_THEMES[pathname?.replace(/\/$/, '')];
-  const campaign = theme ? { ...found, ...theme } : found;
+  // ?test=1 lowers the minimum to ₹1 so the team can check payments with a small amount (e.g. ₹10).
+  const testMode = searchParams.get('test') === '1';
+  const themed = theme ? { ...found, ...theme } : found;
+  const campaign = testMode ? { ...themed, minAmount: 1 } : themed;
 
   // Remember UTM tags so they survive moving between pages and reach the donation record.
   useEffect(() => {

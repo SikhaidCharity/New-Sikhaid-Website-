@@ -22,7 +22,7 @@ export function getCampaignGallery(camp) {
   if (/winter|blanket|garmahat|cold wave/.test(`${t} ${(camp?.slug || '')} ${(camp?.title || '')}`.toLowerCase())) {
     return [
       { src: baseImg, caption: `${camp?.title || 'Mission Garmahat'}: blankets for elders and children`, tag: 'Garmahat' },
-      { src: 'https://www.sikhaid.ngo/campaigns-bg/mission-blanket.webp', caption: 'Volunteers wrapping elders in heavy blankets on a cold night', tag: 'Night Drive' },
+      { src: '/campaigns-bg/mission-blanket.webp', caption: 'Volunteers wrapping elders in heavy blankets on a cold night', tag: 'Night Drive' },
       { src: 'https://i.ibb.co/0j2BzXf5/162.png', caption: 'Blankets handed out to families with children and grandparents', tag: 'Families' },
     ];
   }
@@ -115,7 +115,7 @@ function standardStoryBlocks(camp) {
       img1Tag: 'Winter Need',
       img1Caption: 'Elders and children facing the winter cold with little to keep them warm',
       p2: `${name} is SikhAid's answer to that cold. When the temperature falls, our volunteers go out on night drives and door to door in slums and villages, looking for the people who are easiest to miss: the elder sleeping alone at the station, the children huddled beside a dying fire, the family whose only quilt is worn through. We kneel beside them, wrap them in heavy blankets with our own hands, and give families shawls, caps and socks for the weeks ahead. A blanket is the gift, but what stays is knowing that someone came, saw them, and cared whether they made it through the night.`,
-      img2: 'https://www.sikhaid.ngo/campaigns-bg/mission-blanket.webp',
+      img2: '/campaigns-bg/mission-blanket.webp',
       img2Tag: 'Night Drives',
       img2Caption: 'SikhAid volunteers handing out heavy blankets on a cold-wave night',
       p3: `Garmahat means warmth, and that is exactly what your gift carries. A blanket handed over in December is used every single night until spring, and often for winters after that. It means a grandfather who sleeps instead of shivering, a child who wakes up healthy enough for school, a mother who can finally rest. Every rupee you give takes us to one more elder and one more child before the coldest nights arrive. This winter, let no one face the cold alone. Be their Garmahat.`,

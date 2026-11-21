@@ -17,6 +17,14 @@ const FILES = {
   site: 'lib/content/site.json',
 };
 
+// sikhaid.ngo is now this website, so images the old site served (gallery, partners…) come from this
+// site's own public/ folder, and old-site image-proxy links go straight to the image.
+function localImages(json) {
+  return json
+    .replace(/https:\/\/www\.sikhaid\.ngo\/api\/img\?src=([^"\s)]+)/g, (m, src) => decodeURIComponent(src))
+    .replace(/https:\/\/www\.sikhaid\.ngo\/(?=(annapurna-seva|campaigns-bg|gallery|partners|paymentLogo|sikhaidLogo)\/?)/g, '/');
+}
+
 if (!base) {
   console.log('pull-content: ADMIN_API_URL not set, using the content files in the repo.');
   process.exit(0);
@@ -29,7 +37,7 @@ try {
     const data = content[name];
     const empty = data == null || (Array.isArray(data) ? data.length === 0 : Object.keys(data).length === 0);
     if (empty) continue; // never wipe a section just because the admin returned nothing
-    writeFileSync(path.join(root, file), JSON.stringify(data, null, 2) + '\n');
+    writeFileSync(path.join(root, file), localImages(JSON.stringify(data, null, 2)) + '\n');
   }
   console.log('pull-content: content updated from', base);
 } catch (e) {
