@@ -590,3 +590,7 @@
   color: var(--dc-text);
   font-weight: 600;
 }
+
+/* A payment that was cancelled or failed */
+.dc-pay-error { margin: 0 0 10px; padding: 10px 12px; border-radius: 10px; background: #FFF1EF; color: #B3261E; font-size: 14px; font-weight: 600; }
+.dc-cta:disabled { opacity: .75; cursor: progress; }

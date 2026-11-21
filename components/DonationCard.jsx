@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { saveDonation } from '@/lib/forms';
+import { PaymentCancelled, payDonation } from '@/lib/pay';
 import { bySlug, fmt } from '@/lib/data';
 import './DonationCard.css';
 import { donateCardStyle } from '@/lib/donate-color';
@@ -93,6 +93,8 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose, curren
   const [whatsappUpdates, setWhatsappUpdates] = useState(true);
   const [method, setMethod] = useState(intl ? 'card' : 'upi');
   const [errors, setErrors] = useState({});
+  const [paying, setPaying] = useState(false);
+  const [payError, setPayError] = useState('');
 
   const amount = parseInt(amountText, 10) || 0;
   const tipFor = (percent) => Math.round((amount * percent) / 100);
@@ -155,9 +157,19 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose, curren
     setStep('payment');
   };
 
-  const handlePay = () => {
-    const now = new Date();
-    const receiptNo = `SA/${intl ? 'INTL' : '80G'}/26-27/${String(Math.floor(now.getTime() / 1000) % 1000000).padStart(6, '0')}`;
+  // Monthly giving runs on the live site's page for now (UPI AutoPay / card mandates).
+  const monthlyLink = () => {
+    const slug = campaign.slug && campaign.slug !== 'general' ? `/${campaign.slug}` : '';
+    const params = new URLSearchParams({ type: 'monthly', ...readStoredUtm() });
+    return `https://www.sikhaid.ngo/donate${slug}?${params.toString()}`;
+  };
+
+  const handlePay = async () => {
+    if (paying) return;
+    if (isMonthly) {
+      window.location.assign(monthlyLink());
+      return;
+    }
     const utm = readStoredUtm();
     const donorRecord = {
       name: donor.name.trim(),
@@ -168,13 +180,12 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose, curren
     // International gifts are kept in rupees for the admin's totals, with the donor's own currency alongside.
     const rate = intl ? rates[intl.code] : 1;
     const inINR = (n) => (intl ? toInr(n, intl.code, rates) : n);
+    // Private code that lets this donor download their receipt and 80G certificate later.
+    const downloadToken = newDownloadToken();
     const donation = {
-      receiptNo,
-      // Private code that lets this donor download their receipt and 80G certificate later.
-      downloadToken: newDownloadToken(),
-      paidAt: now.toISOString(),
-      date: now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
-      time: now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }),
+      // Replaced by the Razorpay payment id once paid; the admin requires one to be present.
+      receiptNo: 'pending',
+      downloadToken,
       amount: inINR(amount),
       tipAmt: inINR(tipAmount),
       grandTotal: inINR(total),
@@ -188,26 +199,53 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose, curren
       }),
       cause: campaign.title,
       causeSlug: campaign.slug,
-      isMonthly,
+      isMonthly: false,
       paymentMethod: method,
       donor: donorRecord,
       optAccount: createAccount,
       optWa: whatsappUpdates,
-      taxDeductible: intl ? 0 : Math.round(amount * 0.5),
       utm,
     };
 
+    setPaying(true);
+    setPayError('');
+    let paid;
     try {
-      sessionStorage.setItem('sa-latest-receipt', JSON.stringify(donation));
+      paid = await payDonation(donation, {
+        method,
+        description: campaign.title,
+        color: campaign.donateColor || undefined,
+      });
+    } catch (e) {
+      setPaying(false);
+      setPayError(e instanceof PaymentCancelled ? e.message : e.message || 'Payment could not be completed. Please try again.');
+      return;
+    }
+
+    const now = new Date();
+    const receipt = {
+      ...donation,
+      receiptNo: paid.receiptNo,
+      razorpayPaymentId: paid.paymentId,
+      paidAt: now.toISOString(),
+      date: now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
+      time: now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }),
+      taxDeductible: intl ? 0 : Math.round(amount * 0.5),
+    };
+    try {
+      sessionStorage.setItem('sa-latest-receipt', JSON.stringify(receipt));
       const history = JSON.parse(localStorage.getItem('sa_donations') || '[]');
-      history.unshift(donation);
+      history.unshift(receipt);
       localStorage.setItem('sa_donations', JSON.stringify(history));
       localStorage.setItem('sa_donor_profile', JSON.stringify(donorRecord));
       localStorage.setItem('sa_donor_email', donorRecord.email);
     } catch (e) {}
-    saveDonation(donation);
+    // Tells Google Tag Manager (where a page loads it) that a donation was paid: Meta "Purchase".
+    try {
+      window.dataLayer?.push({ event: 'purchase', donation_value: inINR(total), value: inINR(total), currency: 'INR', transaction_id: paid.paymentId });
+    } catch (e) {}
 
-    const query = new URLSearchParams({ receipt: receiptNo, amt: String(amount), camp: campaign.title, ...(intl && { currency: intl.code }), ...utm });
+    const query = new URLSearchParams({ receipt: paid.receiptNo, amt: String(amount), camp: campaign.title, ...(intl && { currency: intl.code }), ...utm });
     router.push(`/donate/thank-you?${query.toString()}`);
   };
 
@@ -470,8 +508,8 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose, curren
               </div>
               {isMonthly && (
                 <p className="dc-note">
-                  You are setting up {intl ? 'a card mandate' : 'a UPI AutoPay or card mandate'} of {money(total)} every month. We remind you
-                  3 days before each debit, and you can pause or cancel from your account.
+                  Monthly giving of {money(total)} is set up on our secure monthly page with UPI AutoPay or a card
+                  mandate. We remind you before each debit, and you can pause or cancel any time.
                 </p>
               )}
             </section>
@@ -501,12 +539,14 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose, curren
               </div>
             </dl>
           </details>
+          {payError && <p className="dc-pay-error" role="alert">{payError}</p>}
           <button
             type="button"
             className="dc-cta"
             onClick={step === 'details' ? handleContinue : handlePay}
+            disabled={paying}
           >
-            {step === 'details' ? 'Continue to Payment' : 'Pay Securely'}
+            {step === 'details' ? 'Continue to Payment' : paying ? 'Opening secure payment…' : isMonthly ? 'Set up monthly giving' : 'Pay Securely'}
             <span className="dc-cta-total">{money(total)}{suffix}</span>
           </button>
           <p className="dc-protect">
