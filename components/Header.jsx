@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { IMG } from '@/lib/data';
 
 const EMERGENCY_ALERTS = [
   {
@@ -85,19 +84,8 @@ export default function Header() {
     <div ref={headerGroupRef} className="site-header-group">
       <header className="site-header">
         <div className="wrap">
-          <Link href="/" className="brand" aria-label="SikhAid Charitable Trust, home">
-            <span className="brand-mark">
-              <span style={{ color: 'var(--saffron)' }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M12 21s-7-4.4-9.3-9A5.4 5.4 0 0 1 12 6.3 5.4 5.4 0 0 1 21.3 12C19 16.6 12 21 12 21z"/>
-                </svg>
-              </span>
-              <img src={IMG.logo} alt="" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-            </span>
-            <span className="brand-name">
-              <b>SikhAid</b>
-              <span>Charitable Trust</span>
-            </span>
+          <Link href="/" className="brand brand-logo" aria-label="SikhAid Charitable Trust, home">
+            <img src="/brand/sikhaid-logo-header.png" alt="SikhAid" width="640" height="146" />
           </Link>
 
           <nav className={`nav ${menuOpen ? 'open' : ''}`} id="mainNav" aria-label="Main">

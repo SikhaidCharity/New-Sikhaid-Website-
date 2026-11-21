@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { IMG } from '@/lib/data';
 import { SITE, SITE_LINKS } from '@/lib/site';
 
 export default function Footer({ withCta = true }) {
@@ -68,40 +67,8 @@ export default function Footer({ withCta = true }) {
         <div className="wrap">
           <div className="cols">
             <div className="stack" style={{ gap: '16px' }}>
-              <Link className="brand" href="/" style={{ color: '#fff' }}>
-                <span
-                  className="brand-mark"
-                  style={{ background: 'var(--saffron)' }}
-                >
-                  <span style={{ color: 'var(--ink)' }}>
-                    <svg
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      aria-hidden="true"
-                    >
-                      <path d="M12 21s-7-4.4-9.3-9A5.4 5.4 0 0 1 12 6.3 5.4 5.4 0 0 1 21.3 12C19 16.6 12 21 12 21z" />
-                    </svg>
-                  </span>
-                  <img
-                    src={IMG.logo}
-                    alt=""
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none';
-                    }}
-                  />
-                </span>
-                <span className="brand-name">
-                  <b>SikhAid</b>
-                  <span style={{ color: 'var(--on-dark)' }}>
-                    Charitable Trust
-                  </span>
-                </span>
+              <Link className="brand brand-logo-footer" href="/" aria-label="SikhAid Charitable Trust, home">
+                <img src="/brand/sikhaid-logo-footer.png" alt="SikhAid" width="640" height="183" />
               </Link>
               <p style={{ maxWidth: '44ch' }}>
                 {SITE.tagline}

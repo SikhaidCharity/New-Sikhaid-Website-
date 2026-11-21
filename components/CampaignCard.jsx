@@ -1,10 +1,24 @@
+'use client';
+
 import Link from 'next/link';
 import Photo from '@/components/Photo';
-import { fmt, pct } from '@/lib/data';
+import { fmt } from '@/lib/data';
 import { donateButtonStyle } from '@/lib/donate-color';
+import { useEffect, useState } from 'react';
+import { allCampaigns } from '@/lib/data';
+import { raisedShare, useLiveStats, withLive } from '@/lib/live-stats';
 
-export default function CampaignCard({ campaign }) {
-  const p = pct(campaign);
+export default function CampaignCard({ campaign: built }) {
+  // Raised and donors stay live: starting totals plus payments received since (lib/live-stats.js).
+  const stats = useLiveStats();
+  const campaign = withLive(built, stats);
+  // The bar fills up after the card appears, then follows the live total.
+  const [shown, setShown] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setShown(true), 60);
+    return () => clearTimeout(t);
+  }, []);
+  const bar = shown ? raisedShare(campaign, stats, allCampaigns) : 0;
   const badge = campaign.urgent ? (
     <span className="badge urgent">
       <span className="dot pulse"></span>Emergency
@@ -43,15 +57,14 @@ export default function CampaignCard({ campaign }) {
         </h3>
 
         <div className="ccard-stats">
-          <div className="progress" role="img" aria-label={`${p}% funded`}>
-            <i style={{ width: `${p}%` }}></i>
+          <div className="progress" role="img" aria-label={`${fmt(campaign.raised)} raised`}>
+            <i style={{ width: `${bar}%` }}></i>
           </div>
           <div className="money">
             <span>
               <b className="num">{fmt(campaign.raised)}</b>
               <span className="goal-sub"> Raised</span>
             </span>
-            <span className="ccard-pct">{p}%</span>
           </div>
           <div className="meta">
             <span>

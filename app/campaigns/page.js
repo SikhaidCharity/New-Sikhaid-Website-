@@ -4,7 +4,8 @@ import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import Photo from '@/components/Photo';
 import CampaignCard from '@/components/CampaignCard';
-import { campaigns, completed, fmt, pct } from '@/lib/data';
+import { useLiveStats, withLive } from '@/lib/live-stats';
+import { campaigns, completed, fmt } from '@/lib/data';
 
 // Big rupee amounts in short Indian form for the stat cards: ₹2.04 Cr, ₹45.6 L.
 const shortInr = (n) => (n >= 1e7 ? `₹${(n / 1e7).toFixed(2)} Cr` : n >= 1e5 ? `₹${(n / 1e5).toFixed(1)} L` : fmt(n));
@@ -15,8 +16,10 @@ export default function CampaignsPage() {
 
   const groups = ['All', 'Emergency', 'Hunger', 'Healthcare', 'Women', 'Community'];
 
-  const totalRaised = useMemo(() => campaigns.reduce((s, c) => s + c.raised, 0), []);
-  const totalDonors = useMemo(() => campaigns.reduce((s, c) => s + c.donors, 0), []);
+  // Live: starting totals plus payments received since (lib/live-stats.js).
+  const stats = useLiveStats();
+  const totalRaised = useMemo(() => campaigns.reduce((s, c) => s + withLive(c, stats).raised, 0), [stats]);
+  const totalDonors = useMemo(() => campaigns.reduce((s, c) => s + withLive(c, stats).donors, 0), [stats]);
   const activeEmergencies = useMemo(() => campaigns.filter((c) => c.urgent).length, []);
 
   const filteredCampaigns = useMemo(() => {

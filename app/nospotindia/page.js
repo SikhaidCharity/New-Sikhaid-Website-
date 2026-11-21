@@ -6,6 +6,7 @@
 // Razorpay payments and records the Meta "Purchase" through the same GTM. The ad's UTM tags go along.
 import { CAMPAIGN_IMPACT_TIERS, bySlug, fmt } from '@/lib/data';
 import Gtm from '@/components/Gtm';
+import LiveNumber from '@/components/LiveNumber';
 import ShareButton from './ShareButton';
 import StickyDonate from './StickyDonate';
 import KeepUtm from './KeepUtm';
@@ -101,8 +102,9 @@ function Icon({ name }) {
 export default function NoSpotPage() {
   const camp = bySlug('no-spot') || { raised: 0, donors: 0 };
   const tiers = CAMPAIGN_IMPACT_TIERS['no-spot'] || [];
-  const raised = fmt(camp.raised);
-  const donors = Number(camp.donors || 0).toLocaleString('en-IN');
+  // Live: starting totals plus payments received since (lib/live-stats.js).
+  const raised = <LiveNumber slug="no-spot" field="raised" initial={camp.raised} />;
+  const donors = <LiveNumber slug="no-spot" field="donors" initial={camp.donors} />;
 
   return (
     <div className="ns">

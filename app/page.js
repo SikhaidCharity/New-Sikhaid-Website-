@@ -4,11 +4,12 @@ import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import Photo from '@/components/Photo';
 import CampaignCard from '@/components/CampaignCard';
+import { useLiveStats, withLive } from '@/lib/live-stats';
 import Lightbox from '@/components/Lightbox';
 import IndiaMap from '@/components/IndiaMap';
 import ImpactDashboard from '@/components/ImpactDashboard';
 import CelebritySupportSection from '@/components/CelebritySupportSection';
-import { IMG, allCampaigns, campaigns, fmt, pct } from '@/lib/data';
+import { IMG, allCampaigns, campaigns, fmt } from '@/lib/data';
 import hero from '@/lib/content/hero.json';
 import home from '@/lib/content/home.json';
 
@@ -39,6 +40,7 @@ function HeroSlides({ images, seconds, className }) {
 }
 
 export default function HomePage() {
+  const liveStats = useLiveStats();
   const nepal = campaigns.find((c) => c.slug === 'nepal-flood-relief-2026');
 
   // Hero video sound control
@@ -185,7 +187,7 @@ export default function HomePage() {
     ['Donations & 80G', 'Why Do You Ask For My PAN?', 'Income Tax rules require your PAN on 80G receipts so the donation can be reported and claimed. PAN is optional for giving, but needed if you want to claim the deduction.'],
     ['Donations & 80G', 'Can I Cancel A Monthly Donation?', 'Yes. Pause, change the amount or cancel anytime from My account, or write to help@sikhaid.ngo. We remind you 3 days before every debit.'],
     ['Campaigns', 'Where Does My Donation Actually Go?', 'Every donation funds a specific outcome: meals, hygiene kits, shelter and rehabilitation for disaster-affected families. Each campaign page shows a fund-use breakdown and dated updates, so you can see exactly how your gift was used.'],
-    ['Campaigns', 'What Happens If A Campaign Raises More Than Its Goal?', 'Extra funds go to the next phase of the same response, usually rehabilitation, and are shown in that campaign’s utilisation report.'],
+    ['Campaigns', 'What Happens If A Campaign Raises More Than It Needs?', 'Extra funds go to the next phase of the same response, usually rehabilitation, and are shown in that campaign’s utilisation report.'],
     ['About SikhAid', 'Is SikhAid A Registered Charity?', 'Yes. SikhAid Charitable Trust is a registered Indian non-governmental organisation operating since 2020, working across multiple states with full transparency on fund utilisation.'],
     ['Volunteering', 'How Can I Volunteer With SikhAid?', 'Visit Get Involved → Volunteering and submit your details. We respond within a few working days with open roles and field opportunities that match your skills and location.'],
     ['CSR', 'How Can Companies Partner Or Contribute CSR Funds?', 'We work with corporate partners on CSR projects across disaster relief, langar, sanitation drives and rural healthcare. Write to help@sikhaid.ngo and our partnerships team replies within 2 business days.'],
@@ -341,7 +343,7 @@ export default function HomePage() {
                     </span>
                     <b style={{ color: 'var(--ink)', fontSize: '16px', lineHeight: 1.3 }}>{c.title}</b>
                     <span style={{ fontSize: '13.5px', color: 'var(--muted)' }}>
-                      {fmt(c.raised)} Raised · {pct(c)}%
+                      {fmt(withLive(c, liveStats).raised)} raised from {withLive(c, liveStats).donors.toLocaleString('en-IN')} donors
                     </span>
                     <span style={{ fontSize: '14px', fontWeight: 800, color: 'var(--red)' }}>
                       Donate &amp; know more →

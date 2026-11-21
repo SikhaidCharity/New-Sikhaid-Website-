@@ -6374,3 +6374,19 @@ input[type="number"] {
 .login-tabs button[aria-selected="true"] { background: #fff; color: var(--ink); box-shadow: 0 2px 8px rgba(18, 26, 74, .1); }
 .link-btn { border: 0; padding: 0; background: none; font: inherit; font-weight: 700; color: var(--indigo); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .link-btn:disabled { opacity: .5; cursor: default; }
+
+/* Campaign bars: no target or percentage, just how much a campaign has raised compared with the one
+   that has raised the most. They fill up smoothly when the page opens and grow as payments arrive. */
+.ccard-stats .progress { height: 10px; border-radius: 999px; }
+.ccard-stats .progress i { border-radius: 999px; transition: width 1.2s cubic-bezier(.2, .8, .2, 1); }
+.cd-band-progress .cd-bar-track { height: 12px; }
+.cd-bar-fill { transition: width 1.4s cubic-bezier(.2, .8, .2, 1); }
+
+/* SikhAid logo (public/brand): header on white, footer on a white card over the dark footer */
+.brand-logo img { display: block; height: 42px; width: auto; }
+.brand-logo-footer { display: inline-block; align-self: flex-start; }
+.brand-logo-footer img { display: block; height: 56px; width: auto; }
+@media (max-width: 640px) {
+  .brand-logo img { height: 32px; }
+  .brand-logo-footer img { height: 46px; }
+}

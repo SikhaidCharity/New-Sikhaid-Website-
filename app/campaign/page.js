@@ -1,11 +1,13 @@
 'use client';
 
+import { raisedShare, useLiveStats, withLive } from '@/lib/live-stats';
+
 import { useState, useEffect, useRef, useMemo, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Photo from '@/components/Photo';
 import CampaignCard from '@/components/CampaignCard';
-import { campaigns, BREAKDOWN, IMG, SITE, fmt, pct, bySlug } from '@/lib/data';
+import { allCampaigns, campaigns, BREAKDOWN, IMG, SITE, fmt, bySlug } from '@/lib/data';
 import { donateButtonStyle } from '@/lib/donate-color';
 
 export function getCampaignGallery(camp) {
@@ -302,7 +304,16 @@ export function CampaignDetail({ initialSlug, money = fmt, toolbar = null, inter
     }
   }, [initialSlug, searchParams]);
 
-  const campaign = bySlug(slug) || campaigns[0];
+  // Raised and donors stay live: starting totals plus payments received since (lib/live-stats.js).
+  const liveStats = useLiveStats();
+  const campaign = withLive(bySlug(slug) || campaigns[0], liveStats);
+  // Bar measured against the campaign that has raised the most (no targets); fills up after load.
+  const [barShown, setBarShown] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setBarShown(true), 120);
+    return () => clearTimeout(t);
+  }, []);
+  const bar = barShown ? raisedShare(campaign, liveStats, allCampaigns) : 0;
   const breakdown = BREAKDOWN[campaign.type] || BREAKDOWN.flood;
 
   const [openFaq, setOpenFaq] = useState(null);
@@ -339,7 +350,6 @@ export function CampaignDetail({ initialSlug, money = fmt, toolbar = null, inter
 
   const otherScrollerRef = useRef(null);
 
-  const p = pct(campaign);
   const donateHref = `/donate/${campaign.slug || 'general'}`;
 
   const activeGalleryPhoto = activeGalleryIndex !== null ? galleryPhotos[activeGalleryIndex] : null;
@@ -419,8 +429,8 @@ export function CampaignDetail({ initialSlug, money = fmt, toolbar = null, inter
               </span>
             </div>
             <div className="cd-band-progress">
-              <div className="cd-bar-track">
-                <div className="cd-bar-fill" style={{ width: `${Math.min(p, 100)}%` }}></div>
+              <div className="cd-bar-track" role="img" aria-label={`${money(campaign.raised)} raised`}>
+                <div className="cd-bar-fill" style={{ width: `${bar}%` }}></div>
               </div>
             </div>
             <div className="cd-band-cta">
@@ -809,7 +819,7 @@ export function CampaignDetail({ initialSlug, money = fmt, toolbar = null, inter
       <div className="cd-mobile-dock">
         <div>
           <b style={{ fontSize: '16px' }}>{money(campaign.raised)}</b>
-          <span style={{ fontSize: '11px', color: 'var(--muted)' }}> Raised</span>
+          <span style={{ fontSize: '11px', color: 'var(--muted)' }}> raised from {campaign.donors.toLocaleString('en-IN')} {campaign.donors === 1 ? 'donor' : 'donors'}</span>
         </div>
         <Link
           href={donateHref}
