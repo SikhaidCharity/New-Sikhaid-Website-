@@ -530,7 +530,7 @@
   },
   {
     "publishStatus": "published",
-    "slug": "blanket-distribution",
+    "slug": "mission-garmahat",
     "title": "Mission Garmahat",
     "short": "Garmahat",
     "subtitle": "Warmth for elders and children this winter",
@@ -555,7 +555,10 @@
     "days": null,
     "tone": "#4A4A6A",
     "img": "https://i.ibb.co/zWNmNZhN/Blanket-Main.png",
-    "updatedAt": "2026-11-21T04:28:00.768Z"
+    "updatedAt": "2026-11-21T04:46:43.636Z",
+    "previousSlugs": [
+      "blanket-distribution"
+    ]
   },
   {
     "publishStatus": "published",

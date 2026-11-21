@@ -1,3 +1,6 @@
+// Old campaign address → new one (keep in step with lib/data.js RENAMED).
+const RENAMED_CAMPAIGNS = { 'blanket-distribution': 'mission-garmahat' };
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -16,6 +19,13 @@ const nextConfig = {
     const campaignCard = '/campaigns/:slug?donate=1';
     const campaignSlug = ':slug((?!thank-you$|general$|checkout$)[^/]+)';
     return [
+      // Campaigns that were renamed: old links (ads, WhatsApp, shares) go to the new address.
+      ...Object.entries(RENAMED_CAMPAIGNS).flatMap(([from, to]) => [
+        { source: `/campaigns/${from}`, destination: `/campaigns/${to}`, permanent: true },
+        { source: `/campaign/${from}`, destination: `/campaigns/${to}`, permanent: true },
+        { source: `/donate/${from}`, destination: `/campaigns/${to}?donate=1`, permanent: false },
+        { source: `/donate/${from}/checkout`, destination: `/campaigns/${to}?donate=1`, permanent: false },
+      ]),
       { source: '/donate', destination: generalFund, permanent: false },
       { source: '/donate.html', destination: generalFund, permanent: false },
       { source: '/donate/checkout', destination: generalFund, permanent: false },

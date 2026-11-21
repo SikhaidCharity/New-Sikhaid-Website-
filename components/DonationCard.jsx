@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { PaymentCancelled, payDonation } from '@/lib/pay';
-import { bySlug, fmt } from '@/lib/data';
+import { LIVE_SLUG, bySlug, fmt } from '@/lib/data';
 import './DonationCard.css';
 import { donateCardStyle } from '@/lib/donate-color';
 import { CURRENCIES, CURRENCY_CODES, currencyOf, formatMoney, isCurrency, toInr } from '@/lib/currency';
@@ -49,7 +49,7 @@ const CAMPAIGN_PATH = /^\/campaigns?\/([^/]+)/;
 
 // The international donation page: one campaign, shown in the donor's own currency.
 export const INTERNATIONAL_PATH = '/international-donation';
-export const INTERNATIONAL_SLUG = 'blanket-distribution'; // Mission Garmahat (winter blankets)
+export const INTERNATIONAL_SLUG = 'mission-garmahat'; // Mission Garmahat (winter blankets)
 // Campaign landing pages reached only by link: the card opens on the page for that campaign.
 const LANDING_PAGES = { [INTERNATIONAL_PATH]: INTERNATIONAL_SLUG, '/nospotindia': 'no-spot' };
 const slugForPath = (pathname) => LANDING_PAGES[pathname?.replace(/\/$/, '')] || pathname?.match(CAMPAIGN_PATH)?.[1];
@@ -159,7 +159,8 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose, curren
 
   // Monthly giving runs on the live site's page for now (UPI AutoPay / card mandates).
   const monthlyLink = () => {
-    const slug = campaign.slug && campaign.slug !== 'general' ? `/${campaign.slug}` : '';
+    const own = campaign.slug && campaign.slug !== 'general' ? LIVE_SLUG[campaign.slug] || campaign.slug : '';
+    const slug = own ? `/${own}` : '';
     const params = new URLSearchParams({ type: 'monthly', ...readStoredUtm() });
     return `https://www.sikhaid.ngo/donate${slug}?${params.toString()}`;
   };
