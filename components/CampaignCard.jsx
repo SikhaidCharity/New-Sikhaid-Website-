@@ -3,8 +3,9 @@
 import Link from 'next/link';
 import Photo from '@/components/Photo';
 import { donateButtonStyle } from '@/lib/donate-color';
+import { cardLine } from '@/lib/card-lines';
 
-// A compact campaign card: photo, category, title and the two buttons (no amounts, donors or bar).
+// A compact campaign card: photo, category, title, one line on what a gift does, and the two buttons.
 export default function CampaignCard({ campaign }) {
   const badge = campaign.urgent ? (
     <span className="badge urgent">
@@ -41,6 +42,7 @@ export default function CampaignCard({ campaign }) {
         <h3 style={{ fontWeight: 700 }}>
           <Link href={`/campaigns/${campaign.slug}`}>{campaign.title}</Link>
         </h3>
+        {cardLine(campaign) && <p className="ccard-line">{cardLine(campaign)}</p>}
 
         <div className="acts">
           <Link className="btn btn-line" href={`/campaigns/${campaign.slug}`} style={{ fontWeight: 700 }}>

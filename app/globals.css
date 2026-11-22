@@ -453,7 +453,6 @@ button { font-family: inherit; }
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  min-height: 2.6em;
   max-height: 2.6em;
 }
 
@@ -476,6 +475,11 @@ button { font-family: inherit; }
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+.ccard .ccard-line {
+  margin-top: 6px;
+  -webkit-line-clamp: 2;
 }
 
 .ccard-stats {
