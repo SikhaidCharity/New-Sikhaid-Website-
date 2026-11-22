@@ -232,6 +232,11 @@ export default function Footer({ withCta = true }) {
             </div>
           </div>
 
+          <p className="foot-dev">
+            Developed by{' '}
+            <a href="https://www.pixelwebpages.com" target="_blank" rel="noopener">Pixel Web Pages</a>
+          </p>
+
           <div className="foot-base">
             <p className="foot-legal">
               <span>© 2026 SikhAid Charitable Trust</span>
@@ -239,12 +244,15 @@ export default function Footer({ withCta = true }) {
               <span>Trust Reg. No. 40392100359/2021</span>
             </p>
             <div className="foot-pay">
-              <span>Secure payments by Razorpay</span>
+              <span className="foot-secure">
+                Secure payments by
+                <span className="pay-chip pay-razorpay"><img src="/paymentLogo/razorpay.svg" alt="Razorpay" width="72" height="15" loading="lazy" /></span>
+              </span>
               <span className="foot-chips">
-                <span className="pay-chip">UPI</span>
-                <span className="pay-chip">RuPay</span>
-                <span className="pay-chip">Visa</span>
-                <span className="pay-chip">Mastercard</span>
+                <span className="pay-chip"><img src="/paymentLogo/UPI_logo.svg" alt="UPI" width="46" height="16" loading="lazy" /></span>
+                <span className="pay-chip"><img src="/paymentLogo/RuPay.svg" alt="RuPay" width="50" height="16" loading="lazy" /></span>
+                <span className="pay-chip"><img src="/paymentLogo/visa.svg" alt="Visa" width="44" height="14" loading="lazy" /></span>
+                <span className="pay-chip"><img src="/paymentLogo/mastercard.svg" alt="Mastercard" width="30" height="19" loading="lazy" /></span>
               </span>
             </div>
           </div>

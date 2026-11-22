@@ -31,7 +31,8 @@ export default async function CampaignSlugPage({ params }) {
         </div>
       }
     >
-      <CampaignDetail initialSlug={resolvedParams.slug} />
+      {/* key: a new campaign starts fresh (gallery, FAQ, donation card), nothing carries over */}
+      <CampaignDetail key={resolvedParams.slug} initialSlug={resolvedParams.slug} />
     </Suspense>
   );
 }

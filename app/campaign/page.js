@@ -291,22 +291,15 @@ export function CampaignDetail({ initialSlug, money = fmt, toolbar = null, inter
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const [slug, setSlug] = useState(initialSlug || 'bihar-flood-relief-2026');
-
-  useEffect(() => {
-    if (initialSlug && bySlug(initialSlug)) {
-      setSlug(initialSlug);
-      return;
-    }
-    const s = searchParams?.get('slug');
-    if (s && bySlug(s)) {
-      setSlug(s);
-    }
-  }, [initialSlug, searchParams]);
+  // The campaign is always the one in the address: /campaigns/<slug>, or an old link /campaign?slug=
+  // (also ?id= or ?campaign=). It is worked out on every render, never kept from an earlier page, and an
+  // address that matches no campaign shows "not found" instead of some other campaign.
+  const querySlug = searchParams?.get('slug') || searchParams?.get('id') || searchParams?.get('campaign') || '';
+  const found = (initialSlug && bySlug(initialSlug)) || (querySlug && bySlug(querySlug)) || null;
 
   // Raised and donors stay live: starting totals plus payments received since (lib/live-stats.js).
   const liveStats = useLiveStats();
-  const campaign = withLive(bySlug(slug) || campaigns[0], liveStats);
+  const campaign = withLive(found || campaigns[0], liveStats);
   const breakdown = BREAKDOWN[campaign.type] || BREAKDOWN.flood;
   // The band under the hero: why donors can trust SikhAid, then Donate (no amount raised). On phones only
   // the Donate button shows there; the trust points stay on larger screens.
@@ -383,6 +376,16 @@ export function CampaignDetail({ initialSlug, money = fmt, toolbar = null, inter
       setTimeout(() => setToastMessage(''), 2400);
     }
   };
+
+  if (!found) {
+    return (
+      <main className="wrap" style={{ padding: '80px 20px', textAlign: 'center' }}>
+        <h1 style={{ fontSize: 'clamp(26px, 4vw, 36px)' }}>We couldn&apos;t find that campaign</h1>
+        <p style={{ color: 'var(--muted)' }}>It may have ended or moved. See all our campaigns below.</p>
+        <Link className="btn btn-give" href="/campaigns">See all campaigns</Link>
+      </main>
+    );
+  }
 
   return (
     <>

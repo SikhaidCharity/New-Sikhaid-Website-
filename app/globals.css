@@ -348,7 +348,14 @@ button { font-family: inherit; }
   .foot-legal span + span::before { content: none; }
   .foot-pay { flex-direction: column; align-items: flex-start; }
 }
-.pay-chip { border: 1px solid rgba(255,255,255,.25); border-radius: 6px; padding: 3px 9px; font-weight: 800; color: #fff; font-size: 12px; }
+/* Payment logos sit on small white tiles so their own colours show on the dark footer. */
+.pay-chip { display: inline-flex; align-items: center; justify-content: center; background: #fff; border-radius: 6px; height: 28px; padding: 0 8px; min-width: 52px; }
+.pay-chip img { display: block; height: 16px; width: auto; max-width: 56px; }
+.pay-chip.pay-razorpay img { height: 15px; max-width: 76px; }
+.foot-secure { display: inline-flex; align-items: center; gap: 8px; }
+.foot-dev { margin: 0; padding-bottom: 14px; font-size: 13px; text-align: right; opacity: .85; }
+.foot-dev a { font-weight: 700; }
+@media (max-width: 560px) { .foot-dev { text-align: left; } }
 
 /* ---------- campaign card (beautiful, minimalist, uncluttered) ---------- */
 .ccard {
