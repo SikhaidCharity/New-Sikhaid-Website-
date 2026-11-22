@@ -4,14 +4,15 @@ import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { fmt } from '@/lib/data';
+import { SITE_LINKS } from '@/lib/site';
 import {
   downloadDonationPdf, getAccount, isSignedIn, saveProfile, setPassword, signOut,
 } from '@/lib/donor-api';
 
 const TABS = [
   ['overview', 'Overview'],
-  ['history', 'Donations & receipts'],
-  ['monthly', 'Monthly giving'],
+  ['history', 'Receipts'],
+  ['monthly', 'Monthly'],
   ['profile', 'Profile'],
 ];
 
@@ -87,196 +88,162 @@ export default function AccountPage() {
 
   if (error) {
     return (
-      <main className="wrap" style={{ padding: '80px 20px', textAlign: 'center' }}>
+      <main className="wrap ac-state">
         <p>{error}</p>
         <button type="button" className="btn btn-line" onClick={() => window.location.reload()}>Try again</button>
       </main>
     );
   }
   if (!data) {
-    return <main className="wrap" style={{ padding: '80px 20px', textAlign: 'center' }}>Loading your account…</main>;
+    return <main className="wrap ac-state">Loading your account…</main>;
   }
 
   const firstName = (donor.name || '').split(/\s+/)[0] || 'friend';
+  const since = donor.firstDonationAt
+    ? `Donor since ${new Date(donor.firstDonationAt).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' })}`
+    : '';
 
   return (
-    <>
-      <main className="wrap acc">
-        <nav className="side" aria-label="Account" role="tablist">
-          <div className="me">
-            <span className="av">{initials(donor.name)}</span>
-            <span>
-              <b style={{ color: 'var(--ink)' }}>{donor.name || 'SikhAid Donor'}</b>
-              <br />
-              <span style={{ fontSize: '13px', color: 'var(--muted)' }}>
-                {donor.firstDonationAt ? `Donor since ${new Date(donor.firstDonationAt).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' })}` : donor.email}
-              </span>
-            </span>
+    <main className="ac">
+      <div className="wrap ac-wrap">
+        {/* Who you are, what you've given, and the two things you'd do next */}
+        <header className="ac-hero">
+          <div className="ac-hero-top">
+            <span className="ac-avatar" aria-hidden="true">{initials(donor.name)}</span>
+            <div className="ac-hello">
+              <span>Sat Sri Akal,</span>
+              <h1>{firstName}</h1>
+              <small>{[since, donor.email].filter(Boolean).join(' · ')}</small>
+            </div>
+            <div className="ac-hero-acts">
+              <Link className="btn btn-give" href="/campaigns">Donate again</Link>
+              <button type="button" className="ac-logout" onClick={logOut}>Log out</button>
+            </div>
           </div>
+          <dl className="ac-stats">
+            <div><dt>Total given</dt><dd>{fmt(lifetime)}</dd><small>{oneTime.length} donation{oneTime.length === 1 ? '' : 's'}</small></div>
+            <div><dt>This year</dt><dd>{fmt(fyTotal)}</dd><small>{thisFy}, for your tax filing</small></div>
+            <div><dt>80G certificates</dt><dd>{certCount}</dd><small>For gifts of {fmt(data.min80g)} or more</small></div>
+          </dl>
+        </header>
+
+        {!donor.pan && (
+          <div className="ac-note" role="note">
+            <span>Add your PAN to get 80G certificates for your donations.</span>
+            <button type="button" onClick={() => setActiveTab('profile')}>Add PAN</button>
+          </div>
+        )}
+
+        <div className="ac-tabs" role="tablist" aria-label="Your account">
           {TABS.map(([id, label]) => (
             <button key={id} type="button" role="tab" aria-selected={activeTab === id} onClick={() => setActiveTab(id)}>
               {label}
             </button>
           ))}
-          <button type="button" onClick={logOut} style={{ color: 'var(--muted)' }}>Log out</button>
-        </nav>
-
-        <div className="stack" style={{ gap: '22px', minWidth: 0 }}>
-          {activeTab === 'overview' && (
-            <>
-              <div className="row between">
-                <div className="stack" style={{ gap: '4px' }}>
-                  <span style={{ color: 'var(--muted)' }}>Sat Sri Akal,</span>
-                  <h1 style={{ fontSize: 'clamp(30px, 4vw, 40px)' }}>
-                    {firstName}, here’s the good you’ve done
-                  </h1>
-                </div>
-                <Link className="btn btn-give" href="/campaigns">Donate again</Link>
-              </div>
-
-              <div className="kpis">
-                <div className="kpi dark">
-                  <span>Lifetime donated</span>
-                  <b>{fmt(lifetime)}</b>
-                  <span style={{ fontSize: '13px' }}>across {oneTime.length} donation{oneTime.length === 1 ? '' : 's'}</span>
-                </div>
-                <div className="kpi">
-                  <span style={{ color: 'var(--muted)' }}>This year ({thisFy})</span>
-                  <b>{fmt(fyTotal)}</b>
-                  <span style={{ fontSize: '13px', color: 'var(--muted)' }}>For your tax filing</span>
-                </div>
-                <div className="kpi">
-                  <span style={{ color: 'var(--muted)' }}>80G certificates</span>
-                  <b>{certCount}</b>
-                  <span style={{ fontSize: '13px', color: 'var(--muted)' }}>Donations of {fmt(data.min80g)} or more</span>
-                </div>
-              </div>
-
-              <div className="box stack" style={{ gap: '12px' }}>
-                <div className="row between">
-                  <h2 style={{ fontSize: '20px' }}>Recent donations</h2>
-                  <button type="button" className="btn btn-line" onClick={() => setActiveTab('history')}>See all</button>
-                </div>
-                <DonationTable rows={donations.slice(0, 5)} onDownload={download} downloading={downloading} />
-              </div>
-            </>
-          )}
-
-          {activeTab === 'history' && (
-            <>
-              <h1 style={{ fontSize: 'clamp(28px, 4vw, 36px)' }}>Donations & receipts</h1>
-              <div className="row" style={{ gap: '12px', flexWrap: 'wrap' }}>
-                <label className="field" style={{ minWidth: '180px' }}>
-                  Year
-                  <select value={selectedFy} onChange={(e) => setSelectedFy(e.target.value)}>
-                    {years.map((y) => <option key={y} value={y}>{y === 'All' ? 'All years' : y}</option>)}
-                  </select>
-                </label>
-                <label className="field" style={{ minWidth: '220px' }}>
-                  Campaign
-                  <select value={selectedCamp} onChange={(e) => setSelectedCamp(e.target.value)}>
-                    {causes.map((c) => <option key={c} value={c}>{c === 'All' ? 'All campaigns' : c}</option>)}
-                  </select>
-                </label>
-              </div>
-              <p style={{ color: 'var(--muted)', margin: 0 }}>
-                {history.length} donation{history.length === 1 ? '' : 's'} · <b style={{ color: 'var(--ink)' }}>{fmt(history.reduce((s, d) => s + d.grandTotal, 0))}</b>
-              </p>
-              <div className="box">
-                <DonationTable rows={history} onDownload={download} downloading={downloading} />
-              </div>
-            </>
-          )}
-
-          {activeTab === 'monthly' && (
-            <>
-              <h1 style={{ fontSize: 'clamp(28px, 4vw, 36px)' }}>Monthly giving</h1>
-              {monthly.length === 0 ? (
-                <div className="box stack" style={{ gap: '12px' }}>
-                  <p style={{ margin: 0, color: 'var(--muted)' }}>You don’t have a monthly donation yet.</p>
-                  <Link className="btn btn-give" href="/campaigns" style={{ alignSelf: 'flex-start' }}>Start giving monthly</Link>
-                </div>
-              ) : (
-                <div className="box">
-                  <div className="table-box">
-                    <table className="data">
-                      <thead>
-                        <tr>
-                          <th scope="col">Started</th>
-                          <th scope="col">Campaign</th>
-                          <th scope="col">Monthly amount</th>
-                          <th scope="col">Status</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {monthly.map((d) => (
-                          <tr key={d.id}>
-                            <td style={{ color: 'var(--muted)', whiteSpace: 'nowrap' }}>{dateText(d.createdAt)}</td>
-                            <td><b style={{ color: 'var(--ink)' }}>{d.cause}</b></td>
-                            <td><b>{fmt(d.grandTotal)}</b></td>
-                            <td>{MANDATE[d.mandateStatus] || 'Pending setup'}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                  <p style={{ color: 'var(--muted)', fontSize: '14px', marginBottom: 0 }}>
-                    To pause or cancel, contact us and we’ll update it the same day.
-                  </p>
-                </div>
-              )}
-            </>
-          )}
-
-          {activeTab === 'profile' && <Profile donor={donor} onSaved={(d) => { setData((x) => ({ ...x, donor: d })); toast('Profile saved'); }} onPassword={() => { setData((x) => ({ ...x, donor: { ...x.donor, hasPassword: true } })); toast('Password saved'); }} />}
         </div>
-      </main>
-      {toastMsg && <div className="toast" role="status" style={{ position: 'fixed', bottom: '24px', left: '50%', transform: 'translateX(-50%)', background: 'var(--ink)', color: '#fff', padding: '12px 20px', borderRadius: '12px', fontWeight: 700, zIndex: 50 }}>{toastMsg}</div>}
-    </>
+
+        {activeTab === 'overview' && (
+          <section className="ac-card">
+            <div className="ac-card-head">
+              <h2>Recent donations</h2>
+              {donations.length > 5 && <button type="button" className="ac-link" onClick={() => setActiveTab('history')}>See all</button>}
+            </div>
+            <DonationList rows={donations.slice(0, 5)} onDownload={download} downloading={downloading} />
+          </section>
+        )}
+
+        {activeTab === 'history' && (
+          <section className="ac-card">
+            <div className="ac-card-head">
+              <h2>Donations &amp; receipts</h2>
+              <span className="ac-sum">{history.length} · <b>{fmt(history.reduce((s, d) => s + d.grandTotal, 0))}</b></span>
+            </div>
+            <div className="ac-filters">
+              <label>
+                <span className="sr-only">Year</span>
+                <select value={selectedFy} onChange={(e) => setSelectedFy(e.target.value)}>
+                  {years.map((y) => <option key={y} value={y}>{y === 'All' ? 'All years' : y}</option>)}
+                </select>
+              </label>
+              <label>
+                <span className="sr-only">Campaign</span>
+                <select value={selectedCamp} onChange={(e) => setSelectedCamp(e.target.value)}>
+                  {causes.map((c) => <option key={c} value={c}>{c === 'All' ? 'All campaigns' : c}</option>)}
+                </select>
+              </label>
+            </div>
+            <DonationList rows={history} onDownload={download} downloading={downloading} />
+          </section>
+        )}
+
+        {activeTab === 'monthly' && (
+          <section className="ac-card">
+            <div className="ac-card-head"><h2>Monthly giving</h2></div>
+            {monthly.length === 0 ? (
+              <div className="ac-empty">
+                <p>You don’t give monthly yet. A small amount every month keeps langar and relief going all year.</p>
+                <Link className="btn btn-give" href="/campaigns">Start giving monthly</Link>
+              </div>
+            ) : (
+              <>
+                <ul className="ac-list">
+                  {monthly.map((d) => (
+                    <li key={d.id} className="ac-item">
+                      <div className="ac-item-main">
+                        <b>{d.cause}</b>
+                        <span>Started {dateText(d.createdAt)}</span>
+                      </div>
+                      <div className="ac-item-end">
+                        <b className="ac-amt">{fmt(d.grandTotal)}<small>/month</small></b>
+                        <span className={`ac-pill ${d.mandateStatus === 'active' ? 'ok' : ''}`}>{MANDATE[d.mandateStatus] || 'Pending setup'}</span>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+                <p className="ac-hint">To pause or cancel, message us and we’ll update it the same day.</p>
+              </>
+            )}
+          </section>
+        )}
+
+        {activeTab === 'profile' && <Profile donor={donor} onSaved={(d) => { setData((x) => ({ ...x, donor: d })); toast('Profile saved'); }} onPassword={() => { setData((x) => ({ ...x, donor: { ...x.donor, hasPassword: true } })); toast('Password saved'); }} />}
+
+        <aside className="ac-help">
+          <span>Need help with a receipt or your 80G certificate?</span>
+          <a href={SITE_LINKS.whatsapp} target="_blank" rel="noopener noreferrer">WhatsApp us</a>
+          <a href={SITE_LINKS.mail}>Email us</a>
+        </aside>
+      </div>
+      {toastMsg && <div className="ac-toast" role="status">{toastMsg}</div>}
+    </main>
   );
 }
 
-function DonationTable({ rows, onDownload, downloading }) {
-  if (rows.length === 0) return <p style={{ color: 'var(--muted)', margin: 0 }}>No donations to show.</p>;
+// Each donation as one easy row: what, when, how much, and its receipt.
+function DonationList({ rows, onDownload, downloading }) {
+  if (rows.length === 0) return <p className="ac-hint">No donations to show.</p>;
   return (
-    <div className="table-box">
-      <table className="data">
-        <thead>
-          <tr>
-            <th scope="col">Date</th>
-            <th scope="col">Campaign</th>
-            <th scope="col">Amount</th>
-            <th scope="col">Receipt</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((d) => (
-            <tr key={d.id}>
-              <td style={{ color: 'var(--muted)', whiteSpace: 'nowrap' }}>{dateText(d.createdAt)}</td>
-              <td>
-                {d.causeSlug ? (
-                  <Link href={`/campaigns/${d.causeSlug}`} style={{ fontWeight: 800, color: 'var(--ink)', textDecoration: 'none' }}>{d.cause}</Link>
-                ) : (
-                  <b style={{ color: 'var(--ink)' }}>{d.cause}</b>
-                )}
-                <br />
-                <span style={{ fontSize: '13px', color: 'var(--muted)' }}>{d.isMonthly ? 'Monthly' : 'One-time'} · {d.receiptNo}</span>
-              </td>
-              <td style={{ whiteSpace: 'nowrap' }}><b>{fmt(d.grandTotal)}</b></td>
-              <td>
-                {d.isMonthly ? (
-                  <span style={{ color: 'var(--muted)', fontSize: '13px' }}>Sent each month</span>
-                ) : (
-                  <button type="button" className="dl" onClick={() => onDownload(d)} disabled={downloading === d.id}>
-                    {downloading === d.id ? 'Preparing…' : d.has80g ? 'Receipt + 80G' : 'Receipt'}
-                  </button>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <ul className="ac-list">
+      {rows.map((d) => (
+        <li key={d.id} className="ac-item">
+          <div className="ac-item-main">
+            {d.causeSlug ? <Link href={`/campaigns/${d.causeSlug}`}>{d.cause}</Link> : <b>{d.cause}</b>}
+            <span>{dateText(d.createdAt)} · {d.isMonthly ? 'Monthly' : 'One-time'}{d.receiptNo ? ` · ${d.receiptNo}` : ''}</span>
+          </div>
+          <div className="ac-item-end">
+            <b className="ac-amt">{fmt(d.grandTotal)}</b>
+            {d.isMonthly ? (
+              <span className="ac-hint">Receipt sent each month</span>
+            ) : (
+              <button type="button" className="ac-dl" onClick={() => onDownload(d)} disabled={downloading === d.id}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14" /></svg>
+                {downloading === d.id ? 'Preparing…' : d.has80g ? 'Receipt + 80G' : 'Receipt'}
+              </button>
+            )}
+          </div>
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -319,33 +286,31 @@ function Profile({ donor, onSaved, onPassword }) {
 
   return (
     <>
-      <h1 style={{ fontSize: 'clamp(28px, 4vw, 36px)' }}>Profile</h1>
-      <form className="box stack" style={{ gap: '14px' }} onSubmit={save}>
-        <p style={{ margin: 0, color: 'var(--muted)', fontSize: '14px' }}>
-          These details go on your receipts and 80G certificates. Your PAN is needed to claim 80G.
-        </p>
-        <div className="grid g2">
+      <form className="ac-card" onSubmit={save}>
+        <div className="ac-card-head"><h2>Your details</h2></div>
+        <p className="ac-hint">These go on your receipts and 80G certificates. Your PAN is needed to claim 80G.</p>
+        <div className="ac-form">
           <label className="field">Full name<input value={form.name || ''} onChange={(e) => set('name', e.target.value)} /></label>
           <label className="field">Email<input value={donor.email || 'Not given'} disabled /></label>
           <label className="field">Mobile<input inputMode="numeric" value={form.phone || ''} onChange={(e) => set('phone', e.target.value.replace(/[^0-9]/g, '').slice(0, 10))} /></label>
           <label className="field">PAN<input maxLength={10} value={form.pan || ''} placeholder="ABCDE1234F" onChange={(e) => set('pan', e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))} /></label>
+          <label className="field ac-wide">Address<textarea rows={2} value={form.address || ''} onChange={(e) => set('address', e.target.value)} /></label>
         </div>
-        <label className="field">Address<textarea rows={2} value={form.address || ''} onChange={(e) => set('address', e.target.value)} /></label>
-        {error && <p role="alert" style={{ color: 'var(--red)', fontWeight: 700, margin: 0 }}>{error}</p>}
-        <button className="btn btn-dark" type="submit" disabled={busy} style={{ alignSelf: 'flex-start' }}>{busy ? 'Saving…' : 'Save profile'}</button>
+        {error && <p role="alert" className="ac-error">{error}</p>}
+        <button className="btn btn-dark" type="submit" disabled={busy}>{busy ? 'Saving…' : 'Save details'}</button>
       </form>
 
-      <form className="box stack" style={{ gap: '14px' }} onSubmit={savePassword}>
-        <h2 style={{ fontSize: '20px' }}>{donor.hasPassword ? 'Change password' : 'Set a password'}</h2>
-        <p style={{ margin: 0, color: 'var(--muted)', fontSize: '14px' }}>
+      <form className="ac-card" onSubmit={savePassword}>
+        <div className="ac-card-head"><h2>{donor.hasPassword ? 'Change password' : 'Set a password'}</h2></div>
+        <p className="ac-hint">
           {donor.email ? `Log in with ${donor.email} and this password.` : 'Add an email to your donations to log in with a password.'}
         </p>
-        <div className="grid g2">
+        <div className="ac-form">
           <label className="field">New password<input type="password" autoComplete="new-password" value={pwd} onChange={(e) => setPwd(e.target.value)} /></label>
           <label className="field">Confirm password<input type="password" autoComplete="new-password" value={pwd2} onChange={(e) => setPwd2(e.target.value)} /></label>
         </div>
-        {pwdError && <p role="alert" style={{ color: 'var(--red)', fontWeight: 700, margin: 0 }}>{pwdError}</p>}
-        <button className="btn btn-give" type="submit" style={{ alignSelf: 'flex-start' }}>Save password</button>
+        {pwdError && <p role="alert" className="ac-error">{pwdError}</p>}
+        <button className="btn btn-line" type="submit">Save password</button>
       </form>
     </>
   );

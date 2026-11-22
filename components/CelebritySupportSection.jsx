@@ -6,7 +6,10 @@ import bigCards from '@/lib/content/celeb-big-cards.json';
 
 // Each part has its own entries in Admin > Celebrity Support.
 const CARDS = imageCards.filter((card) => card.active);
-const STORIES = bigCards.filter((card) => card.active);
+const BIG = bigCards.filter((card) => card.active);
+// One big slide per small card, in the same order: its own big card when there is one, otherwise the
+// small card's image, so every small card opens to a picture. Extra big cards follow at the end.
+const STORIES = Array.from({ length: Math.max(CARDS.length, BIG.length) }, (_, i) => BIG[i] || CARDS[i]);
 
 export default function CelebritySupportSection() {
   const [activeIdx, setActiveIdx] = useState(0);
@@ -78,8 +81,8 @@ export default function CelebritySupportSection() {
           <div className="support-grid-col">
             <div className="support-3x3-grid" role="tablist" aria-label="Celebrity Endorsement Stories">
               {CARDS.map((s, idx) => {
-                // A card highlights while the big card in the same position is showing.
-                const isActive = STORIES.length > 0 && idx % STORIES.length === activeIdx;
+                // A card highlights while its big slide is showing.
+                const isActive = idx === activeIdx;
                 return (
                   <button
                     key={`${s.id}-${idx}`}
@@ -88,7 +91,7 @@ export default function CelebritySupportSection() {
                     aria-selected={isActive}
                     aria-label={`View story ${idx + 1} (${s.name})`}
                     className={`support-square-card ${isActive ? 'active-card' : ''}`}
-                    onClick={() => STORIES.length > 0 && setActiveIdx(idx % STORIES.length)}
+                    onClick={() => setActiveIdx(idx)}
                   >
                     <img
                       src={s.image}

@@ -6463,3 +6463,76 @@ input[type="number"] {
   .brand-logo img { height: 32px; }
   .brand-logo-footer img { height: 46px; }
 }
+
+/* ── Donor account page: one column, a header with totals, tabs, and simple lists ── */
+.ac { background: var(--bg-alt); min-height: 70vh; }
+.ac-wrap { max-width: 880px; padding-block: 28px 72px; display: flex; flex-direction: column; gap: 18px; }
+.ac-state { padding: 80px 20px; text-align: center; }
+.ac-hero { background: var(--ink); color: var(--on-dark); border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 22px; }
+.ac-hero-top { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.ac-avatar { width: 56px; height: 56px; border-radius: 50%; background: var(--saffron); color: var(--ink); display: grid; place-items: center; font-family: var(--display); font-weight: 800; font-size: 20px; flex: none; }
+.ac-hello { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.ac-hello > span { font-size: 14px; opacity: .8; }
+.ac-hello h1 { color: #fff; font-size: clamp(26px, 4vw, 34px); line-height: 1.15; margin: 0; overflow-wrap: anywhere; }
+.ac-hello small { font-size: 13px; opacity: .7; overflow-wrap: anywhere; }
+.ac-hero-acts { display: flex; align-items: center; gap: 10px; }
+.ac-logout { background: transparent; border: 1.5px solid rgba(255,255,255,.3); color: #fff; border-radius: 12px; min-height: 48px; padding: 0 16px; font-weight: 700; font-size: 15px; cursor: pointer; }
+.ac-logout:hover { background: rgba(255,255,255,.08); }
+.ac-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 0; }
+.ac-stats > div { background: rgba(255,255,255,.07); border-radius: 16px; padding: 14px 16px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.ac-stats dt { font-size: 13px; opacity: .8; }
+.ac-stats dd { margin: 0; font-family: var(--display); font-size: clamp(22px, 3.4vw, 30px); font-weight: 800; color: var(--saffron); font-variant-numeric: tabular-nums; }
+.ac-stats small { font-size: 12px; opacity: .65; }
+.ac-note { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--saffron-soft); color: var(--saffron-deep); border-radius: 16px; padding: 12px 16px; font-weight: 600; font-size: 15px; }
+.ac-note button { border: 0; background: var(--saffron); color: var(--ink); font-weight: 800; border-radius: 10px; min-height: 40px; padding: 0 14px; cursor: pointer; white-space: nowrap; }
+.ac-tabs { display: flex; gap: 6px; background: var(--bg); border-radius: 16px; padding: 6px; overflow-x: auto; }
+.ac-tabs button { flex: 1; min-height: 44px; padding: 0 14px; border: 0; border-radius: 11px; background: transparent; color: var(--muted); font-weight: 700; font-size: 15px; cursor: pointer; white-space: nowrap; }
+.ac-tabs button[aria-selected="true"] { background: var(--indigo); color: #fff; }
+.ac-card { background: var(--bg); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+.ac-card > .btn { align-self: flex-start; }
+.ac-card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.ac-card-head h2 { font-size: 20px; margin: 0; }
+.ac-link { border: 0; background: none; color: var(--indigo); font-weight: 800; font-size: 15px; cursor: pointer; padding: 6px; }
+.ac-sum { color: var(--muted); font-size: 15px; white-space: nowrap; }
+.ac-sum b { color: var(--ink); }
+.ac-filters { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.ac-filters select { width: 100%; font: inherit; font-weight: 600; font-size: 15px; color: var(--ink); background: var(--bg-alt); border: 0; border-radius: 12px; min-height: 46px; padding: 0 12px; }
+.ac-list { list-style: none; margin: 0; padding: 0; }
+.ac-item { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 14px 0; border-top: 1px solid var(--line); }
+.ac-item:first-child { border-top: 0; padding-top: 4px; }
+.ac-item-main { display: flex; flex-direction: column; min-width: 0; }
+.ac-item-main a, .ac-item-main b { color: var(--ink); font-weight: 800; text-decoration: none; overflow-wrap: anywhere; }
+.ac-item-main a:hover { color: var(--indigo); }
+.ac-item-main span { font-size: 13px; color: var(--muted); }
+.ac-item-end { display: flex; align-items: center; gap: 12px; flex: none; }
+.ac-amt { font-size: 17px; color: var(--ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ac-amt small { font-size: 12px; color: var(--muted); font-weight: 600; }
+.ac-dl { display: inline-flex; align-items: center; gap: 6px; border: 0; background: var(--indigo-soft); color: var(--indigo); font-weight: 800; font-size: 14px; border-radius: 10px; min-height: 40px; padding: 0 12px; cursor: pointer; white-space: nowrap; }
+.ac-dl:disabled { opacity: .6; cursor: wait; }
+.ac-pill { font-size: 12px; font-weight: 800; border-radius: 999px; padding: 4px 10px; background: var(--bg-alt); color: var(--muted); white-space: nowrap; }
+.ac-pill.ok { background: var(--green-soft); color: var(--green); }
+.ac-hint { margin: 0; color: var(--muted); font-size: 14px; }
+.ac-empty { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+.ac-empty p { margin: 0; color: var(--muted); }
+.ac-form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.ac-form .ac-wide { grid-column: 1 / -1; }
+.ac-form textarea { min-height: 80px; }
+.ac-error { color: var(--red); font-weight: 700; margin: 0; }
+.ac-help { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px 14px; color: var(--muted); font-size: 14px; padding: 6px; text-align: center; }
+.ac-help a { color: var(--indigo); font-weight: 800; text-decoration: none; }
+.ac-toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--ink); color: #fff; padding: 12px 20px; border-radius: 12px; font-weight: 700; z-index: 50; }
+@media (max-width: 640px) {
+  .ac-wrap { padding-block: 16px 56px; gap: 14px; }
+  .ac-hero { padding: 18px; border-radius: 20px; }
+  .ac-hero-acts { width: 100%; }
+  .ac-hero-acts .btn { flex: 1; }
+  .ac-stats { grid-template-columns: 1fr 1fr; }
+  .ac-stats > div:first-child { grid-column: 1 / -1; }
+  .ac-note { flex-direction: column; align-items: flex-start; }
+  .ac-card { padding: 16px; }
+  .ac-filters, .ac-form { grid-template-columns: 1fr; }
+  .ac-tabs { gap: 2px; padding: 4px; }
+  .ac-tabs button { padding: 0 6px; font-size: 14px; min-width: 0; }
+  .ac-item { flex-direction: column; align-items: stretch; gap: 8px; }
+  .ac-item-end { justify-content: space-between; }
+}
