@@ -332,7 +332,7 @@ export default function HomePage() {
           <div className="grid g3">
             {reliefCampaigns
               .map((c) => (
-                <Link key={c.slug} className="ecard" href={`/campaign#${c.slug}`}>
+                <Link key={c.slug} className="ecard" href={`/campaigns/${c.slug}`}>
                   <Photo src={c.img} tone={c.tone} label={c.title} style={{ width: '108px', flex: 'none', borderRadius: '12px', minHeight: '108px' }} />
                   <span className="stack" style={{ gap: '5px', minWidth: 0 }}>
                     <span style={{ fontSize: '12px', fontWeight: 800, letterSpacing: '.08em', textTransform: 'uppercase', color: 'var(--red)' }}>

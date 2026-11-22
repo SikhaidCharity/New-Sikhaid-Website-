@@ -296,6 +296,14 @@ export function CampaignDetail({ initialSlug, money = fmt, toolbar = null, inter
   // address that matches no campaign shows "not found" instead of some other campaign.
   const querySlug = searchParams?.get('slug') || searchParams?.get('id') || searchParams?.get('campaign') || '';
   const found = (initialSlug && bySlug(initialSlug)) || (querySlug && bySlug(querySlug)) || null;
+  // Older links put the campaign after a # (/campaign#langar-sewa): send those to the campaign's page.
+  const [checkingHash, setCheckingHash] = useState(!initialSlug && !querySlug);
+  useEffect(() => {
+    if (initialSlug || querySlug) return;
+    const hashCamp = bySlug(decodeURIComponent(window.location.hash.slice(1)));
+    if (hashCamp) router.replace(`/campaigns/${hashCamp.slug}`);
+    else Promise.resolve().then(() => setCheckingHash(false));
+  }, [initialSlug, querySlug, router]);
 
   // Raised and donors stay live: starting totals plus payments received since (lib/live-stats.js).
   const liveStats = useLiveStats();
@@ -378,6 +386,7 @@ export function CampaignDetail({ initialSlug, money = fmt, toolbar = null, inter
   };
 
   if (!found) {
+    if (checkingHash) return <main className="wrap" style={{ padding: '80px 20px', textAlign: 'center' }}>Loading...</main>;
     return (
       <main className="wrap" style={{ padding: '80px 20px', textAlign: 'center' }}>
         <h1 style={{ fontSize: 'clamp(26px, 4vw, 36px)' }}>We couldn&apos;t find that campaign</h1>
