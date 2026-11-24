@@ -12,7 +12,9 @@ import { useRates } from '@/lib/fx-client';
 const AMOUNTS = [500, 1500, 2500, 5000];
 const SUGGESTED_AMOUNT = 2500;
 const OLD_AMOUNTS = '701,1701,2701,5701';
-const MIN_AMOUNT = 100;
+const MIN_AMOUNT = 300;
+// Campaigns saved with the old standard minimum (₹100) use the current one.
+const OLD_MIN_AMOUNT = 100;
 const TIP_SLABS = [
   { value: 0, label: 'No thanks' },
   { value: 5, label: '5%' },
@@ -84,7 +86,8 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose, curren
   const custom = campaign.donationAmounts?.length && campaign.donationAmounts.join() !== OLD_AMOUNTS;
   const amounts = intl ? intl.amounts : custom ? campaign.donationAmounts : AMOUNTS;
   const suggestedAmount = intl ? intl.suggested : (custom && campaign.suggestedAmount) || SUGGESTED_AMOUNT;
-  const minAmount = intl ? intl.min : campaign.minAmount || MIN_AMOUNT;
+  const savedMin = Number(campaign.minAmount) || 0;
+  const minAmount = intl ? intl.min : savedMin && savedMin !== OLD_MIN_AMOUNT ? savedMin : MIN_AMOUNT;
   const startAmount = initialAmount >= minAmount ? initialAmount : suggestedAmount;
 
   const [step, setStep] = useState('details');
@@ -128,7 +131,7 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose, curren
   const validate = () => {
     const found = {};
     const pan = donor.pan.trim();
-    if (amount < minAmount) found.amount = `Please enter an amount of ${money(minAmount)} or more.`;
+    if (amount < minAmount) found.amount = `Minimum amount ${money(minAmount)}`;
     if (!donor.name.trim()) found.name = 'Please enter your full name.';
     if (!donor.email.trim()) {
       found.email = 'Please enter your email address.';
@@ -326,7 +329,7 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose, curren
                     type="text"
                     inputMode="numeric"
                     aria-label={intl ? `Donation amount in ${intl.code}` : 'Donation amount in rupees'}
-                    placeholder={`Minimum ${minAmount}`}
+                    placeholder="Enter amount"
                     value={amountText}
                     onChange={(e) => {
                       setAmountText(e.target.value.replace(/[^0-9]/g, ''));
@@ -334,7 +337,12 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose, curren
                     }}
                   />
                 </div>
-                {errors.amount && <p className="dc-error">{errors.amount}</p>}
+                {/* The minimum isn't shown up front, only as a small note once a lower amount is typed. */}
+                {errors.amount ? (
+                  <p className="dc-error">{errors.amount}</p>
+                ) : amountText && amount < minAmount ? (
+                  <p className="dc-min-note">Minimum amount {money(minAmount)}</p>
+                ) : null}
               </section>
 
               <div className="dc-tip-row">
