@@ -10,7 +10,7 @@ import { CURRENCIES, CURRENCY_CODES, currencyOf, formatMoney, isCurrency, toInr 
 import { useRates } from '@/lib/fx-client';
 
 const AMOUNTS = [500, 1500, 2500, 5000];
-const SUGGESTED_AMOUNT = 1500;
+const SUGGESTED_AMOUNT = 2500;
 const OLD_AMOUNTS = '701,1701,2701,5701';
 const MIN_AMOUNT = 100;
 const TIP_SLABS = [
