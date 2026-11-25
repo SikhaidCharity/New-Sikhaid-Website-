@@ -578,7 +578,7 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose, curren
               </div>
               {step === 'payment' && extraAmount > 0 && (
                 <div>
-                  <dt>{offer?.offer === 'blanket' ? `Blankets × ${extraChoice.qty}` : `Langar × ${extraChoice.qty} (${extraChoice.qty * 8} people)`}</dt>
+                  <dt>{offer?.offer === 'blanket' ? `Blankets × ${extraChoice.qty}` : `Langar × ${extraChoice.qty} (${extraChoice.qty * 5} people)`}</dt>
                   <dd>{money(extraAmount)}</dd>
                 </div>
               )}
@@ -609,23 +609,25 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose, curren
         {offerOpen && offer && (
           <div className="dc-offer-backdrop" role="presentation">
             <div className="dc-offer" role="dialog" aria-modal="true" aria-labelledby="dc-offer-title">
-              <span className="dc-offer-emoji" aria-hidden="true">{offer.emoji}</span>
-              <h3 id="dc-offer-title">{offer.title}</h3>
-              <p>{offer.text}</p>
-              <p className="dc-offer-each">{offer.each}</p>
-              <div className="dc-offer-qty" role="group" aria-label="How many">
-                <button type="button" aria-label="One less" onClick={() => setOfferQty((q) => Math.max(1, q - 1))} disabled={offerQty <= 1}>−</button>
-                <output aria-live="polite">{offerQty}</output>
-                <button type="button" aria-label="One more" onClick={() => setOfferQty((q) => Math.min(EXTRA_MAX_QTY, q + 1))} disabled={offerQty >= EXTRA_MAX_QTY}>+</button>
+              <img className="dc-offer-img" src={offer.image} alt={offer.imageAlt} />
+              <div className="dc-offer-body">
+                <h3 id="dc-offer-title">{offer.title}</h3>
+                <p>{offer.text}</p>
+                <p className="dc-offer-each">{offer.each}</p>
+                <div className="dc-offer-qty" role="group" aria-label="How many">
+                  <button type="button" aria-label="One less" onClick={() => setOfferQty((q) => Math.max(1, q - 1))} disabled={offerQty <= 1}>−</button>
+                  <output aria-live="polite">{offerQty}</output>
+                  <button type="button" aria-label="One more" onClick={() => setOfferQty((q) => Math.min(EXTRA_MAX_QTY, q + 1))} disabled={offerQty >= EXTRA_MAX_QTY}>+</button>
+                </div>
+                <p className="dc-offer-impact">{offer.impact(offerQty)} · <b>{fmt(offerQty * EXTRA_UNIT_PRICE)}</b></p>
+                <button type="button" className="dc-cta" onClick={() => chooseOffer(true)}>
+                  Yes, add it
+                  <span className="dc-cta-total">{fmt(total + offerQty * EXTRA_UNIT_PRICE)}</span>
+                </button>
+                <button type="button" className="dc-offer-skip" onClick={() => chooseOffer(false)}>
+                  No thanks, continue with {fmt(total)}
+                </button>
               </div>
-              <p className="dc-offer-impact">{offer.impact(offerQty)} · <b>{fmt(offerQty * EXTRA_UNIT_PRICE)}</b></p>
-              <button type="button" className="dc-cta" onClick={() => chooseOffer(true)}>
-                Yes, add it
-                <span className="dc-cta-total">{fmt(total + offerQty * EXTRA_UNIT_PRICE)}</span>
-              </button>
-              <button type="button" className="dc-offer-skip" onClick={() => chooseOffer(false)}>
-                No thanks, continue with {fmt(total)}
-              </button>
             </div>
           </div>
         )}
