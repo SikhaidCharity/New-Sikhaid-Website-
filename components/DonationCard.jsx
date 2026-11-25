@@ -8,6 +8,7 @@ import './DonationCard.css';
 import { donateCardStyle } from '@/lib/donate-color';
 import { CURRENCIES, CURRENCY_CODES, currencyOf, formatMoney, isCurrency, toInr } from '@/lib/currency';
 import { useRates } from '@/lib/fx-client';
+import { EXTRA_MAX_QTY, EXTRA_UNIT_PRICE, extraOfferFor } from '@/lib/extra-offers';
 
 const AMOUNTS = [500, 1500, 2500, 5000];
 const SUGGESTED_AMOUNT = 2500;
@@ -100,12 +101,21 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose, curren
   const [method, setMethod] = useState(intl ? 'card' : 'upi');
   const [errors, setErrors] = useState({});
   const [paying, setPaying] = useState(false);
+  // The "add one more" offer (blanket on Langar Sewa, langar on Mission Garmahat): asked once, on Pay.
+  const offer = !intl ? extraOfferFor(campaign.slug) : null;
+  const [offerOpen, setOfferOpen] = useState(false);
+  const [offerQty, setOfferQty] = useState(1);
+  // The donor's answer ({ offer, accepted, qty }), asked on Continue to Payment and used when paying.
+  const [extraChoice, setExtraChoice] = useState(null);
   const [payError, setPayError] = useState('');
 
   const amount = parseInt(amountText, 10) || 0;
   const tipFor = (percent) => Math.round((amount * percent) / 100);
   const tipAmount = tipFor(tipPercent);
   const total = amount + tipAmount;
+  // The blanket / langar the donor added at the offer (0 if they said no thanks).
+  const extraAmount = extraChoice?.accepted ? extraChoice.qty * EXTRA_UNIT_PRICE : 0;
+  const payTotal = total + extraAmount;
   // PAN is for Indian income tax only, so it isn't asked on the international page.
   const panRequired = !intl && total >= PAN_REQUIRED_FROM;
   const suffix = isMonthly ? '/month' : '';
@@ -160,23 +170,43 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose, curren
       document.getElementById(`dc-${firstInvalid}`)?.focus();
       return;
     }
+    // On a campaign with an offer (one-time gifts), the offer shows first; its answer leads on to payment.
+    if (offer && !isMonthly) {
+      setExtraChoice(null);
+      setOfferOpen(true);
+      return;
+    }
+    setExtraChoice(null);
     setStep('payment');
   };
 
   // Monthly giving runs on the live site's page for now (UPI AutoPay / card mandates).
   const monthlyLink = () => {
-    const own = campaign.slug && campaign.slug !== 'general' ? LIVE_SLUG[campaign.slug] || campaign.slug : '';
+    const own = campaign.slug && campaign.slug !== 'general' ? LIVE_SLUG[campaign.testOf || campaign.slug] || campaign.testOf || campaign.slug : '';
     const slug = own ? `/${own}` : '';
     const params = new URLSearchParams({ type: 'monthly', ...readStoredUtm() });
     return `https://www.sikhaid.ngo/donate${slug}?${params.toString()}`;
   };
 
-  const handlePay = async () => {
+  const handlePay = () => {
     if (paying) return;
     if (isMonthly) {
       window.location.assign(monthlyLink());
       return;
     }
+    payNow();
+  };
+
+  const chooseOffer = (accepted) => {
+    setExtraChoice({ offer: offer.offer, accepted, qty: accepted ? offerQty : 0 });
+    setOfferOpen(false);
+    setStep('payment');
+  };
+
+  const payNow = async () => {
+    if (paying) return;
+    // What the donor added on top (recorded either way, so the admin sees opt-ins and opt-outs).
+    const extra = extraChoice && { ...extraChoice, unitPrice: EXTRA_UNIT_PRICE, amount: extraAmount };
     const utm = readStoredUtm();
     const donorRecord = {
       name: donor.name.trim(),
@@ -195,7 +225,8 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose, curren
       downloadToken,
       amount: inINR(amount),
       tipAmt: inINR(tipAmount),
-      grandTotal: inINR(total),
+      grandTotal: inINR(payTotal),
+      ...(extra && { extra }),
       ...(intl && {
         international: true,
         currency: intl.code,
@@ -249,7 +280,7 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose, curren
     } catch (e) {}
     // Tells Google Tag Manager (where a page loads it) that a donation was paid: Meta "Purchase".
     try {
-      window.dataLayer?.push({ event: 'purchase', donation_value: inINR(total), value: inINR(total), currency: 'INR', transaction_id: paid.paymentId });
+      window.dataLayer?.push({ event: 'purchase', donation_value: inINR(payTotal), value: inINR(payTotal), currency: 'INR', transaction_id: paid.paymentId });
     } catch (e) {}
 
     const query = new URLSearchParams({ receipt: paid.receiptNo, amt: String(amount), camp: campaign.title, ...(intl && { currency: intl.code }), ...utm });
@@ -545,9 +576,15 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose, curren
                 <dt>{tipLabel}</dt>
                 <dd>{money(tipAmount)}</dd>
               </div>
+              {step === 'payment' && extraAmount > 0 && (
+                <div>
+                  <dt>{offer?.offer === 'blanket' ? `Blankets × ${extraChoice.qty}` : `Langar × ${extraChoice.qty} (${extraChoice.qty * 8} people)`}</dt>
+                  <dd>{money(extraAmount)}</dd>
+                </div>
+              )}
               <div className="dc-summary-total">
                 <dt>Total</dt>
-                <dd>{money(total)}{suffix}</dd>
+                <dd>{money(step === 'payment' ? payTotal : total)}{suffix}</dd>
               </div>
             </dl>
           </details>
@@ -559,7 +596,7 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose, curren
             disabled={paying}
           >
             {step === 'details' ? 'Continue to Payment' : paying ? 'Opening secure payment…' : isMonthly ? 'Set up monthly giving' : 'Pay Securely'}
-            <span className="dc-cta-total">{money(total)}{suffix}</span>
+            <span className="dc-cta-total">{money(step === 'payment' ? payTotal : total)}{suffix}</span>
           </button>
           <p className="dc-protect">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -569,6 +606,29 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose, curren
             SikhAid protects your donation
           </p>
         </footer>
+        {offerOpen && offer && (
+          <div className="dc-offer-backdrop" role="presentation">
+            <div className="dc-offer" role="dialog" aria-modal="true" aria-labelledby="dc-offer-title">
+              <span className="dc-offer-emoji" aria-hidden="true">{offer.emoji}</span>
+              <h3 id="dc-offer-title">{offer.title}</h3>
+              <p>{offer.text}</p>
+              <p className="dc-offer-each">{offer.each}</p>
+              <div className="dc-offer-qty" role="group" aria-label="How many">
+                <button type="button" aria-label="One less" onClick={() => setOfferQty((q) => Math.max(1, q - 1))} disabled={offerQty <= 1}>−</button>
+                <output aria-live="polite">{offerQty}</output>
+                <button type="button" aria-label="One more" onClick={() => setOfferQty((q) => Math.min(EXTRA_MAX_QTY, q + 1))} disabled={offerQty >= EXTRA_MAX_QTY}>+</button>
+              </div>
+              <p className="dc-offer-impact">{offer.impact(offerQty)} · <b>{fmt(offerQty * EXTRA_UNIT_PRICE)}</b></p>
+              <button type="button" className="dc-cta" onClick={() => chooseOffer(true)}>
+                Yes, add it
+                <span className="dc-cta-total">{fmt(total + offerQty * EXTRA_UNIT_PRICE)}</span>
+              </button>
+              <button type="button" className="dc-offer-skip" onClick={() => chooseOffer(false)}>
+                No thanks, continue with {fmt(total)}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

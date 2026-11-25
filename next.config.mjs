@@ -26,6 +26,9 @@ const nextConfig = {
         { source: `/donate/${from}`, destination: `/campaigns/${to}?donate=1`, permanent: false },
         { source: `/donate/${from}/checkout`, destination: `/campaigns/${to}?donate=1`, permanent: false },
       ]),
+      // The Mission Garmahat test copy, also typed without the last dash.
+      { source: '/campaigns/mission-garmahat-testing1', destination: '/campaigns/mission-garmahat-testing-1', permanent: false },
+      { source: '/campaigns/mission-garmahat-testing1-', destination: '/campaigns/mission-garmahat-testing-1', permanent: false },
       { source: '/donate', destination: generalFund, permanent: false },
       { source: '/donate.html', destination: generalFund, permanent: false },
       { source: '/donate/checkout', destination: generalFund, permanent: false },

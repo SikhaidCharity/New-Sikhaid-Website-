@@ -1,9 +1,9 @@
 import { Suspense } from 'react';
 import { CampaignDetail } from '@/app/campaign/page';
-import { allCampaigns, bySlug } from '@/lib/data';
+import { TEST_SLUGS, allCampaigns, bySlug } from '@/lib/data';
 
 export function generateStaticParams() {
-  return allCampaigns.map((c) => ({ slug: c.slug }));
+  return [...allCampaigns.map((c) => c.slug), ...TEST_SLUGS].map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }) {
@@ -18,6 +18,8 @@ export async function generateMetadata({ params }) {
   return {
     title: `${camp.title} | SikhAid Charitable Trust`,
     description: camp.blurb || `Support the ${camp.title} mission. 100% transparent on-ground humanitarian relief.`,
+    // Test copies stay out of search results.
+    ...(camp.testOf && { robots: { index: false, follow: false } }),
   };
 }
 
