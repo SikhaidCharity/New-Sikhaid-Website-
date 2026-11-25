@@ -26,9 +26,14 @@ const nextConfig = {
         { source: `/donate/${from}`, destination: `/campaigns/${to}?donate=1`, permanent: false },
         { source: `/donate/${from}/checkout`, destination: `/campaigns/${to}?donate=1`, permanent: false },
       ]),
-      // The Mission Garmahat test copy, also typed without the last dash.
-      { source: '/campaigns/mission-garmahat-testing1', destination: '/campaigns/mission-garmahat-testing-1', permanent: false },
-      { source: '/campaigns/mission-garmahat-testing1-', destination: '/campaigns/mission-garmahat-testing-1', permanent: false },
+      // The A/B ad pages were first at -testing-1 (and the Mission Garmahat one typed as -testing1): old links go to -ad-1.
+      ...['langar-sewa', 'mission-garmahat'].flatMap((base) => [
+        { source: `/campaigns/${base}-testing-1`, destination: `/campaigns/${base}-ad-1`, permanent: false },
+        { source: `/campaign/${base}-testing-1`, destination: `/campaigns/${base}-ad-1`, permanent: false },
+        { source: `/donate/${base}-testing-1`, destination: `/campaigns/${base}-ad-1?donate=1`, permanent: false },
+      ]),
+      { source: '/campaigns/mission-garmahat-testing1', destination: '/campaigns/mission-garmahat-ad-1', permanent: false },
+      { source: '/campaigns/mission-garmahat-testing1-', destination: '/campaigns/mission-garmahat-ad-1', permanent: false },
       { source: '/donate', destination: generalFund, permanent: false },
       { source: '/donate.html', destination: generalFund, permanent: false },
       { source: '/donate/checkout', destination: generalFund, permanent: false },
