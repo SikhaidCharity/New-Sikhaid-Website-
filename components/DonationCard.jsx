@@ -8,7 +8,7 @@ import './DonationCard.css';
 import { donateCardStyle } from '@/lib/donate-color';
 import { CURRENCIES, CURRENCY_CODES, currencyOf, formatMoney, isCurrency, toInr } from '@/lib/currency';
 import { useRates } from '@/lib/fx-client';
-import { EXTRA_MAX_QTY, EXTRA_TEST_PRICE, EXTRA_UNIT_PRICE, extraOfferFor } from '@/lib/extra-offers';
+import { EXTRA_MAX_QTY, EXTRA_UNIT_PRICE, extraOfferFor } from '@/lib/extra-offers';
 
 const AMOUNTS = [500, 1500, 2500, 5000];
 const SUGGESTED_AMOUNT = 2500;
@@ -114,9 +114,7 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose, curren
   const tipAmount = tipFor(tipPercent);
   const total = amount + tipAmount;
   // The blanket / langar the donor added at the offer (0 if they said no thanks).
-  // A ?test=1 link prices the offer at ₹10 so the team can try a real payment cheaply.
-  const unitPrice = campaign.testMode ? EXTRA_TEST_PRICE : EXTRA_UNIT_PRICE;
-  const extraAmount = extraChoice?.accepted ? extraChoice.qty * unitPrice : 0;
+  const extraAmount = extraChoice?.accepted ? extraChoice.qty * EXTRA_UNIT_PRICE : 0;
   const payTotal = total + extraAmount;
   // PAN is for Indian income tax only, so it isn't asked on the international page.
   const panRequired = !intl && total >= PAN_REQUIRED_FROM;
@@ -208,7 +206,7 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose, curren
   const payNow = async () => {
     if (paying) return;
     // What the donor added on top (recorded either way, so the admin sees opt-ins and opt-outs).
-    const extra = extraChoice && { ...extraChoice, unitPrice, amount: extraAmount, ...(campaign.testMode && { test: true }) };
+    const extra = extraChoice && { ...extraChoice, unitPrice: EXTRA_UNIT_PRICE, amount: extraAmount };
     const utm = readStoredUtm();
     const donorRecord = {
       name: donor.name.trim(),
@@ -615,16 +613,16 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose, curren
               <div className="dc-offer-body">
                 <h3 id="dc-offer-title">{offer.title}</h3>
                 <p>{offer.text}</p>
-                <p className="dc-offer-each">{offer.each(fmt(unitPrice))}</p>
+                <p className="dc-offer-each">{offer.each}</p>
                 <div className="dc-offer-qty" role="group" aria-label="How many">
                   <button type="button" aria-label="One less" onClick={() => setOfferQty((q) => Math.max(1, q - 1))} disabled={offerQty <= 1}>−</button>
                   <output aria-live="polite">{offerQty}</output>
                   <button type="button" aria-label="One more" onClick={() => setOfferQty((q) => Math.min(EXTRA_MAX_QTY, q + 1))} disabled={offerQty >= EXTRA_MAX_QTY}>+</button>
                 </div>
-                <p className="dc-offer-impact">{offer.impact(offerQty)} · <b>{fmt(offerQty * unitPrice)}</b></p>
+                <p className="dc-offer-impact">{offer.impact(offerQty)} · <b>{fmt(offerQty * EXTRA_UNIT_PRICE)}</b></p>
                 <button type="button" className="dc-cta" onClick={() => chooseOffer(true)}>
                   Yes, add it
-                  <span className="dc-cta-total">{fmt(total + offerQty * unitPrice)}</span>
+                  <span className="dc-cta-total">{fmt(total + offerQty * EXTRA_UNIT_PRICE)}</span>
                 </button>
                 <button type="button" className="dc-offer-skip" onClick={() => chooseOffer(false)}>
                   No thanks, continue with {fmt(total)}
@@ -654,7 +652,7 @@ function DonationCardHost() {
   // ?test=1 lowers the minimum to ₹1 so the team can check payments with a small amount (e.g. ₹10).
   const testMode = searchParams.get('test') === '1';
   const themed = theme ? { ...found, ...theme } : found;
-  const campaign = testMode ? { ...themed, minAmount: 1, testMode: true } : themed;
+  const campaign = testMode ? { ...themed, minAmount: 1 } : themed;
 
   // Remember UTM tags so they survive moving between pages and reach the donation record.
   useEffect(() => {
