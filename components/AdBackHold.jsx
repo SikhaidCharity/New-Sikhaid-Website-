@@ -5,7 +5,7 @@ import { bySlug } from '@/lib/data';
 import { cardLine } from '@/lib/card-lines';
 import './AdBackHold.css';
 
-// Only on the ad pages (lib/data.js TEST_CAMPAIGNS). After the visitor's first tap, one extra
+// On every campaign page (/campaigns/<slug>). After the visitor's first tap, one extra
 // history step is added, so the first Back press shows "Before you go" instead of leaving.
 // A second Back press (or "Leave page") leaves as normal. Browsers only honour the extra step
 // after a real tap, which is why it waits for one.

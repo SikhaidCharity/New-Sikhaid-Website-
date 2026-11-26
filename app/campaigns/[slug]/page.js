@@ -36,8 +36,8 @@ export default async function CampaignSlugPage({ params }) {
     >
       {/* key: a new campaign starts fresh (gallery, FAQ, donation card), nothing carries over */}
       <CampaignDetail key={resolvedParams.slug} initialSlug={resolvedParams.slug} />
-      {/* Ad pages only: the first Back press shows "Before you go" */}
-      {TEST_SLUGS.includes(resolvedParams.slug) && <AdBackHold slug={resolvedParams.slug} />}
+      {/* Every campaign page: the first Back press shows "Before you go" */}
+      {bySlug(resolvedParams.slug) && <AdBackHold key={`hold-${resolvedParams.slug}`} slug={resolvedParams.slug} />}
     </Suspense>
   );
 }
