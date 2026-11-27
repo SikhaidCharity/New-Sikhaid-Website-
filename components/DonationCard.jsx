@@ -9,7 +9,6 @@ import { donateCardStyle } from '@/lib/donate-color';
 import { CURRENCIES, CURRENCY_CODES, currencyOf, formatMoney, isCurrency, toInr } from '@/lib/currency';
 import { useRates } from '@/lib/fx-client';
 import { EXTRA_MAX_QTY, EXTRA_UNIT_PRICE, extraOfferFor } from '@/lib/extra-offers';
-import { inTestMode, startTestMode } from '@/lib/test-mode';
 
 const AMOUNTS = [500, 1500, 2500, 5000];
 const SUGGESTED_AMOUNT = 2500;
@@ -50,7 +49,9 @@ const INTERNATIONAL_METHODS = [
 const DIAL_CODES = { USD: '+1', CAD: '+1', GBP: '+44', EUR: '+49', AUD: '+61', AED: '+971' };
 
 const DONATE_LINK = /^\/donate(?:\/([^/]+))?(?:\/checkout)?\/?$/i;
-const CAMPAIGN_PATH = /^\/campaigns?\/([^/]+)/;
+const CAMPAIGN_PATH = /^(?:\/test)?\/campaigns?\/([^/]+)/;
+// The team's test site (sikhaid.ngo/test and /test/campaigns/<slug>): the only place a donation can be ₹1.
+const TEST_SITE = /^\/test(?:\/|$)/;
 
 // The international donation page: one campaign, shown in the donor's own currency.
 export const INTERNATIONAL_PATH = '/international-donation';
@@ -652,15 +653,8 @@ function DonationCardHost() {
   const isOpen = donateParam !== null;
   const found = bySlug(donateParam) || bySlug(pageSlug) || GENERAL_FUND;
   const theme = LANDING_THEMES[pathname?.replace(/\/$/, '')];
-  // Test mode (sikhaid.ngo/test, or ?test=1) lowers the minimum to ₹1 so the team can check payments.
-  // It stays on for the rest of that browser tab only.
-  const testParam = searchParams.get('test') === '1';
-  const [testTab, setTestTab] = useState(false);
-  useEffect(() => {
-    if (testParam) startTestMode();
-    setTestTab(inTestMode());
-  }, [testParam, pathname, isOpen]);
-  const testMode = testParam || testTab;
+  // Only on the test site (/test/…) can a donation be ₹1; the main site keeps its minimum.
+  const testMode = TEST_SITE.test(pathname || '');
   const themed = theme ? { ...found, ...theme } : found;
   const campaign = testMode ? { ...themed, minAmount: 1, testMode: true } : themed;
 
@@ -694,7 +688,8 @@ function DonationCardHost() {
       if (linkCampaign && linkCampaign.slug !== currentSlug) {
         params.delete('slug');
         params.set('donate', '1');
-        router.push(`/campaigns/${linkCampaign.slug}?${params.toString()}`);
+        const base = TEST_SITE.test(window.location.pathname) ? '/test' : '';
+        router.push(`${base}/campaigns/${linkCampaign.slug}?${params.toString()}`);
         return;
       }
       params.set('donate', bySlug(currentSlug) ? '1' : 'general');
