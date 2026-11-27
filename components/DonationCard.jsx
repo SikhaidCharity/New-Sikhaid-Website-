@@ -8,6 +8,7 @@ import './DonationCard.css';
 import { donateCardStyle } from '@/lib/donate-color';
 import { CURRENCIES, CURRENCY_CODES, currencyOf, formatMoney, isCurrency, toInr } from '@/lib/currency';
 import { useRates } from '@/lib/fx-client';
+import { giftTiersFor } from '@/lib/gift-tiers';
 import { EXTRA_MAX_QTY, EXTRA_UNIT_PRICE, extraOfferFor } from '@/lib/extra-offers';
 
 const AMOUNTS = [500, 1500, 2500, 5000];
@@ -87,8 +88,10 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose, curren
   // Each campaign can set its own amounts in the admin panel.
   // A campaign still on the old standard amounts (₹701 / 1,701 / 2,701 / 5,701) gets the current ones.
   const custom = campaign.donationAmounts?.length && campaign.donationAmounts.join() !== OLD_AMOUNTS;
-  const amounts = intl ? intl.amounts : custom ? campaign.donationAmounts : AMOUNTS;
-  const suggestedAmount = intl ? intl.suggested : (custom && campaign.suggestedAmount) || SUGGESTED_AMOUNT;
+  // Mission Garmahat shows what each amount does (lib/gift-tiers.js) instead of plain amounts.
+  const gifts = intl ? null : giftTiersFor(campaign);
+  const amounts = intl ? intl.amounts : gifts ? gifts.tiers.map((t) => t.amount) : custom ? campaign.donationAmounts : AMOUNTS;
+  const suggestedAmount = intl ? intl.suggested : gifts ? gifts.suggested : (custom && campaign.suggestedAmount) || SUGGESTED_AMOUNT;
   const savedMin = Number(campaign.minAmount) || 0;
   const minAmount = intl ? intl.min : savedMin && savedMin !== OLD_MIN_AMOUNT ? savedMin : MIN_AMOUNT;
   const startAmount = initialAmount >= minAmount ? initialAmount : suggestedAmount;
@@ -340,23 +343,41 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose, curren
                     </select>
                   )}
                 </div>
-                <div className="dc-amounts">
-                  {amounts.map((value) => (
-                    <button
-                      key={value}
-                      type="button"
-                      className="dc-amount"
-                      aria-pressed={amount === value}
-                      onClick={() => {
-                        setAmountText(String(value));
-                        setErrors((current) => ({ ...current, amount: undefined }));
-                      }}
-                    >
-                      {value === suggestedAmount && <span className="dc-suggested">Suggested ✨</span>}
-                      {money(value)}
-                    </button>
-                  ))}
+                {gifts && <p className="dc-gift-intro">{gifts.intro}</p>}
+                <div className={`dc-amounts${gifts ? ' dc-tiers' : ''}`}>
+                  {amounts.map((value) => {
+                    const tier = gifts?.tiers.find((t) => t.amount === value);
+                    return (
+                      <button
+                        key={value}
+                        type="button"
+                        className={`dc-amount${tier ? ' dc-tier' : ''}`}
+                        aria-pressed={amount === value}
+                        onClick={() => {
+                          setAmountText(String(value));
+                          setErrors((current) => ({ ...current, amount: undefined }));
+                        }}
+                      >
+                        {value === suggestedAmount && <span className="dc-suggested">Suggested ✨</span>}
+                        {tier ? (
+                          <>
+                            <span className="dc-tier-amt">{money(value)}</span>
+                            <span className="dc-tier-title">{tier.title}</span>
+                          </>
+                        ) : money(value)}
+                      </button>
+                    );
+                  })}
                 </div>
+                {gifts?.tiers.some((t) => t.amount === amount) && (
+                  <p className="dc-gift-impact" aria-live="polite">
+                    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M19.5 12.6 12 20l-7.5-7.4A4.7 4.7 0 0 1 12 6.4a4.7 4.7 0 0 1 7.5 6.2Z" />
+                      <path d="M12 6.4 9.6 9a1.6 1.6 0 0 0 2.3 2.3L13.5 10l2.4 2.4" />
+                    </svg>
+                    {gifts.tiers.find((t) => t.amount === amount).line}
+                  </p>
+                )}
                 <div className={`dc-amount-input ${errors.amount ? 'has-error' : ''}`}>
                   <span aria-hidden="true">{intl ? intl.symbol.trim() : '₹'}</span>
                   <input
