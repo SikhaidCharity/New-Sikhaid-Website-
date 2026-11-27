@@ -9,6 +9,7 @@ import { donateCardStyle } from '@/lib/donate-color';
 import { CURRENCIES, CURRENCY_CODES, currencyOf, formatMoney, isCurrency, toInr } from '@/lib/currency';
 import { useRates } from '@/lib/fx-client';
 import { EXTRA_MAX_QTY, EXTRA_UNIT_PRICE, extraOfferFor } from '@/lib/extra-offers';
+import { inTestMode, startTestMode } from '@/lib/test-mode';
 
 const AMOUNTS = [500, 1500, 2500, 5000];
 const SUGGESTED_AMOUNT = 2500;
@@ -227,6 +228,8 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose, curren
       tipAmt: inINR(tipAmount),
       grandTotal: inINR(payTotal),
       ...(extra && { extra }),
+      // From sikhaid.ngo/test: saved as a test payment, left out of the public totals.
+      ...(campaign.testMode && { test: true }),
       ...(intl && {
         international: true,
         currency: intl.code,
@@ -649,10 +652,17 @@ function DonationCardHost() {
   const isOpen = donateParam !== null;
   const found = bySlug(donateParam) || bySlug(pageSlug) || GENERAL_FUND;
   const theme = LANDING_THEMES[pathname?.replace(/\/$/, '')];
-  // ?test=1 lowers the minimum to ₹1 so the team can check payments with a small amount (e.g. ₹10).
-  const testMode = searchParams.get('test') === '1';
+  // Test mode (sikhaid.ngo/test, or ?test=1) lowers the minimum to ₹1 so the team can check payments.
+  // It stays on for the rest of that browser tab only.
+  const testParam = searchParams.get('test') === '1';
+  const [testTab, setTestTab] = useState(false);
+  useEffect(() => {
+    if (testParam) startTestMode();
+    setTestTab(inTestMode());
+  }, [testParam, pathname, isOpen]);
+  const testMode = testParam || testTab;
   const themed = theme ? { ...found, ...theme } : found;
-  const campaign = testMode ? { ...themed, minAmount: 1 } : themed;
+  const campaign = testMode ? { ...themed, minAmount: 1, testMode: true } : themed;
 
   // Remember UTM tags so they survive moving between pages and reach the donation record.
   useEffect(() => {
