@@ -9,6 +9,7 @@ import { donateCardStyle } from '@/lib/donate-color';
 import { CURRENCIES, CURRENCY_CODES, currencyOf, formatMoney, isCurrency, toInr } from '@/lib/currency';
 import { useRates } from '@/lib/fx-client';
 import { giftTiersFor } from '@/lib/gift-tiers';
+import trust80g from '@/lib/content/trust-80g.json';
 import { EXTRA_MAX_QTY, EXTRA_UNIT_PRICE, extraOfferFor } from '@/lib/extra-offers';
 
 const AMOUNTS = [500, 1500, 2500, 5000];
@@ -62,6 +63,48 @@ const LANDING_PAGES = { [INTERNATIONAL_PATH]: INTERNATIONAL_SLUG, '/nospotindia'
 const slugForPath = (pathname) => LANDING_PAGES[pathname?.replace(/\/$/, '')] || pathname?.match(CAMPAIGN_PATH)?.[1];
 // A landing page can dress the card in its own colours (only there; the campaign's own pages keep theirs).
 const LANDING_THEMES = { '/nospotindia': { donateColor: '#A3375F', donateStyle: 'solid' } };
+
+// Meta's browser id (_fbp) and ad click id (_fbc) for the server-side "Purchase" (admin lib/meta-capi.js),
+// so Meta can match a donation to the ad even when its Pixel is blocked. The click id comes from the
+// _fbc cookie, or from the fbclid the ad brought (kept for this visit).
+const FBCLID_KEY = 'sa_fbclid';
+function readCookie(name) {
+  const m = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
+  return m ? decodeURIComponent(m[1]) : '';
+}
+function metaTracking() {
+  try {
+    let fbc = readCookie('_fbc');
+    if (!fbc) {
+      const saved = JSON.parse(sessionStorage.getItem(FBCLID_KEY) || 'null');
+      if (saved?.id) fbc = `fb.1.${saved.at}.${saved.id}`;
+    }
+    return { fbp: readCookie('_fbp'), fbc, url: window.location.href.split('#')[0] };
+  } catch (e) {
+    return {};
+  }
+}
+
+// GTM's Meta "Purchase" tag calls fbq('track', 'Purchase', {...}) without an event id. This passes the
+// Razorpay payment id along as eventID, the same id the admin sends to Meta's Conversions API, so Meta
+// counts a donation once when it hears from both. Works without editing the GTM tag.
+function withPurchaseEventId(eventId) {
+  try {
+    window.__saPurchaseEventId = eventId;
+    const fbq = window.fbq;
+    if (typeof fbq !== 'function' || fbq.__saWrapped) return;
+    const wrapped = function (...args) {
+      if (args[0] === 'track' && args[1] === 'Purchase' && !args[3] && window.__saPurchaseEventId) {
+        args[2] = args[2] || {};
+        args[3] = { eventID: window.__saPurchaseEventId };
+      }
+      return fbq.apply(this, args);
+    };
+    Object.keys(fbq).forEach((key) => { wrapped[key] = fbq[key]; });
+    wrapped.__saWrapped = true;
+    window.fbq = wrapped;
+  } catch (e) {}
+}
 
 function readStoredUtm() {
   try {
@@ -234,6 +277,7 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose, curren
       ...(extra && { extra }),
       // From sikhaid.ngo/test: saved as a test payment, left out of the public totals.
       ...(campaign.testMode && { test: true }),
+      tracking: metaTracking(),
       ...(intl && {
         international: true,
         currency: intl.code,
@@ -287,7 +331,10 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose, curren
     } catch (e) {}
     // Tells Google Tag Manager (where a page loads it) that a donation was paid: Meta "Purchase".
     try {
-      window.dataLayer?.push({ event: 'purchase', donation_value: inINR(payTotal), value: inINR(payTotal), currency: 'INR', transaction_id: paid.paymentId });
+      // event_id = the Razorpay payment id, the same id the admin sends to Meta's Conversions API, so a
+      // donation seen by both is counted once (withPurchaseEventId hands it to fbq as eventID).
+      withPurchaseEventId(paid.paymentId);
+      window.dataLayer?.push({ event: 'purchase', donation_value: inINR(payTotal), value: inINR(payTotal), currency: 'INR', transaction_id: paid.paymentId, event_id: paid.paymentId });
     } catch (e) {}
 
     const query = new URLSearchParams({ receipt: paid.receiptNo, amt: String(amount), camp: campaign.title, ...(intl && { currency: intl.code }), ...utm });
@@ -322,6 +369,7 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose, curren
         <div className="dc-body">
           {step === 'details' ? (
             <>
+              <TrustStrip intl={intl} />
               <section>
                 <div className="dc-amount-head">
                   <h3 className="dc-h">Choose an Amount</h3>
@@ -661,6 +709,37 @@ function DonationCard({ campaign, initialAmount, initialMonthly, onClose, curren
   );
 }
 
+// Three reasons to give with confidence, at the top of the donation card (every campaign).
+const TRUST_ICONS = {
+  tax: <><path d="M12 3 4.5 6v5.2c0 4.6 3.2 8.4 7.5 9.8 4.3-1.4 7.5-5.2 7.5-9.8V6L12 3Z" /><path d="m8.8 12 2.2 2.2 4.2-4.4" /></>,
+  lock: <><rect x="5" y="10.5" width="14" height="10" rx="2.5" /><path d="M8 10.5V7.8a4 4 0 0 1 8 0v2.7" /><path d="M12 14.6v2" /></>,
+  receipt: <><path d="M6.5 3.5h11v17l-2.2-1.4-2.1 1.4-1.2-.8-1.2.8-2.1-1.4-2.2 1.4v-17Z" /><path d="M9.5 8.5h5M9.5 12h5M9.5 15.5h3" /></>,
+  heart: <path d="M12 20s-7.5-4.4-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.6-7.5 10-7.5 10Z" />,
+};
+
+function TrustStrip({ intl }) {
+  const min = Number(trust80g.minAmount) || 2000;
+  const items = [
+    intl
+      ? { icon: 'heart', label: 'Registered trust', title: 'SikhAid Charitable Trust, serving since 2020' }
+      : { icon: 'tax', label: '80G tax benefit', title: `80G tax benefit on donations of ${fmt(min)} and above` },
+    { icon: 'lock', label: 'Secure payment', title: 'Payments are processed securely by Razorpay' },
+    { icon: 'receipt', label: 'Instant receipt', title: 'Your receipt is ready right after you pay' },
+  ];
+  return (
+    <ul className="dc-trust" aria-label="Why give with SikhAid">
+      {items.map((item) => (
+        <li key={item.icon} title={item.title}>
+          <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            {TRUST_ICONS[item.icon]}
+          </svg>
+          {item.label}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 function DonationCardHost() {
   const pathname = usePathname();
   const router = useRouter();
@@ -686,6 +765,12 @@ function DonationCardHost() {
       const value = searchParams.get(key);
       if (value) incoming[key] = value;
     });
+    const fbclid = searchParams.get('fbclid');
+    if (fbclid) {
+      try {
+        sessionStorage.setItem(FBCLID_KEY, JSON.stringify({ id: fbclid.slice(0, 250), at: Date.now() }));
+      } catch (e) {}
+    }
     if (Object.keys(incoming).length === 0) return;
     try {
       sessionStorage.setItem(UTM_STORAGE_KEY, JSON.stringify(incoming));
